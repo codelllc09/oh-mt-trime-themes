@@ -12,10 +12,15 @@
 #   · 推送不刪手機端其他檔案（userdb、其他方案不受影響）。
 set -euo pipefail
 
-ROOT="$(git rev-parse --show-toplevel)"
-TOOLS="$ROOT/lua/codelllc09/tools"
+ROOT="$(git rev-parse --show-toplevel)"                       # 本倉（安卓資產）
 PHONE_DIR="${TRIME_PHONE_DIR:-/storage/emulated/0/rime}"
-DESKTOP_RIME="${RIME_DESKTOP_DIR:-$HOME/.config/ibus/rime}"   # 桌面主工作樹（部署源）
+DESKTOP_RIME="${RIME_DESKTOP_DIR:-$HOME/.config/ibus/rime}"   # 桌面主倉（共享 schema/詞典/lua；部署源）
+TOOLS="$DESKTOP_RIME/lua/codelllc09/tools"                    # 台賬寫主倉（獨立成倉 2026-11-07）
+src_of() {  # 清單源雙根解析：先本倉（資產），後主倉（共享件）
+  if [ -f "$ROOT/$1" ]; then echo "$ROOT/$1"
+  elif [ -f "$DESKTOP_RIME/$1" ]; then echo "$DESKTOP_RIME/$1"
+  else echo "$1"; fi
+}
 # 多目標支持（2026-11-05）：USB 真機默認；設 TRIME_ADB_SERIAL 指向 Waydroid 容器
 # （如 localhost:5555）或網絡 adb 設備，例：
 #   TRIME_ADB_SERIAL=localhost:5555 android/deploy.sh push
@@ -26,7 +31,7 @@ note() {  # _ledger 台賬（寫盤留痕；失敗不阻塞但會打印）
   python3 "$TOOLS/_ledger.py" "$1" "$2" "$3" || echo "[!] 台賬寫入失敗（不阻塞）" >&2
 }
 
-manifest() { python3 "$ROOT/android/tools/check_trime.py" manifest; }
+manifest() { python3 "$ROOT/tools/check_trime.py" manifest; }
 
 case "${1:-}" in
 pkg)
@@ -34,10 +39,10 @@ pkg)
   ZIP="$ROOT/tmp/tongwen-pkg-$(date +%Y%m%d-%H%M).zip"
   STAGE="$(mktemp -d)"
   trap 'rm -rf "$STAGE"' EXIT
-  python3 "$ROOT/android/tools/check_trime.py" gen-custom "$STAGE" 2>/dev/null   # 個人配置二件（不入庫，gen-custom 生成）
+  python3 "$ROOT/tools/check_trime.py" gen-custom "$STAGE" 2>/dev/null   # 個人配置二件（不入庫，gen-custom 生成）
   manifest | while IFS=$'\t' read -r src dst; do
     mkdir -p "$STAGE/$(dirname "$dst")"
-    cp "$ROOT/$src" "$STAGE/$dst"
+    cp "$(src_of "$src")" "$STAGE/$dst"
   done
   # /add spool 佔位（手機端 io.open 追加寫需要目錄已存在）
   mkdir -p "$STAGE/lua/codelllc09/tools/dict_pipeline"
@@ -52,13 +57,13 @@ push)
   command -v adb >/dev/null || { echo '✗ 缺 adb（android-tools 或 scrcpy 附帶）'; exit 1; }
   adbx get-state >/dev/null 2>&1 || { echo '✗ adb 設備不在线（或 TRIME_ADB_SERIAL 設錯）'; exit 1; }
   GENDIR="$(mktemp -d)"; trap 'rm -rf "$GENDIR"' EXIT
-  python3 "$ROOT/android/tools/check_trime.py" gen-custom "$GENDIR" 2>/dev/null
+  python3 "$ROOT/tools/check_trime.py" gen-custom "$GENDIR" 2>/dev/null
   for f in default.custom.yaml luna_pinyin.custom.yaml; do
     adbx push "$GENDIR/$f" "$PHONE_DIR/$f" >/dev/null && echo "  pushed $f (gen)"
   done
   adbx shell "mkdir -p $PHONE_DIR/lua/codelllc09/tools/dict_pipeline"
   manifest | while IFS=$'\t' read -r src dst; do
-    adbx push "$ROOT/$src" "$PHONE_DIR/$dst" >/dev/null
+    adbx push "$(src_of "$src")" "$PHONE_DIR/$dst" >/dev/null
     echo "  pushed $dst"
   done
   echo '✓ 推送完成。手機端操作：同文 → 部署 → 主題選「徐碼」→ 配色選「徐碼·宣紙/夜墨」'
@@ -67,12 +72,12 @@ push)
   # 部署時 Trime 仍會走正常 import 鏈）
   INTERNAL_DIR="${TRIME_INTERNAL_DIR:-/storage/emulated/0/Android/data/com.osfans.trime/files/rime}"
   for f in xuma_L.custom.yaml v1.trime.yaml; do
-    adbx push "$ROOT/android/$f" "$INTERNAL_DIR/$f" >/dev/null 2>&1 \
+    adbx push "$ROOT/$f" "$INTERNAL_DIR/$f" >/dev/null 2>&1 \
       && echo "  synced → 內部副本 $f" || true
   done
   # 鍵盤字體（key_font 從內部 userDataDir/fonts 讀；與 themes 同批推送）
   adbx shell "mkdir -p $INTERNAL_DIR/fonts" >/dev/null 2>&1
-  if [ -d "$ROOT/android/fonts" ]; then
+  if [ -d "$ROOT/fonts" ]; then
     for f in "$ROOT"/android/fonts/*; do
       [ -f "$f" ] || continue
       adbx push "$f" "$INTERNAL_DIR/fonts/$(basename "$f")" >/dev/null 2>&1 \

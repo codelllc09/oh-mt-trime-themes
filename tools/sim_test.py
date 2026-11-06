@@ -33,9 +33,10 @@ import tempfile
 import time
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent          # android/tools
-ANDROID = HERE.parent
-REPO = ANDROID.parent
+HERE = Path(__file__).resolve().parent          # tools/
+ANDROID = HERE.parent                            # 本倉根（安卓資產）
+# 共享件根＝桌面主倉（schema/詞典/lua/基準檔）；獨立成倉後經 RIME_DESKTOP_DIR 指引（2026-11-07）
+REPO = Path(os.environ.get('RIME_DESKTOP_DIR', str(Path.home() / '.config/ibus/rime'))).expanduser()
 SIM = REPO / 'tmp' / 'simtest'
 BASELINE = REPO / 'lua/codelllc09/tools/dict_pipeline/archive/rulings/驗收基準.txt'
 
@@ -240,7 +241,8 @@ def stage_sandbox(user: Path):
         src, dst = line.split('\t')
         target = user / dst
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(REPO / src, target)
+        srcp = (ANDROID / src) if (ANDROID / src).exists() else (REPO / src)
+        shutil.copy2(srcp, target)
     sp = user / 'lua/codelllc09/tools/dict_pipeline'
     sp.mkdir(parents=True, exist_ok=True)
     (sp / 'spool_pending.txt').touch()

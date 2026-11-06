@@ -17,14 +17,16 @@
 #                                                   # （--check 只比對漂移，不寫盤）
 
 import re
+import os
 import sys
 from pathlib import Path
 
 import yaml
 
-HERE = Path(__file__).resolve().parent          # android/tools
-ANDROID = HERE.parent                            # android/
-REPO = ANDROID.parent                            # 倉庫根
+HERE = Path(__file__).resolve().parent          # tools/
+ANDROID = HERE.parent                            # 本倉根（安卓資產；原 android/）
+# 共享件根（schema/詞典/lua/台賬）＝桌面主倉；獨立成倉後經 RIME_DESKTOP_DIR 指引（2026-11-07）
+REPO = Path(os.environ.get('RIME_DESKTOP_DIR', str(Path.home() / '.config/ibus/rime'))).expanduser()
 
 # ── Trime v3.3.13 默認主題（assets/shared/trime.yaml）preset_keys 名單 ──
 # 來源：https://github.com/osfans/trime/blob/v3.3.13/app/src/main/assets/shared/trime.yaml
@@ -351,20 +353,20 @@ def manifest():
         ('luna_pinyin.extended.dict.yaml', 'luna_pinyin.extended.dict.yaml'),
         ('luna_pinyin.hanyu.dict.yaml', 'luna_pinyin.hanyu.dict.yaml'),
         ('symbols.yaml', 'symbols.yaml'),
-        ('android/xuma_L.custom.yaml', 'xuma_L.custom.yaml'),
-        ('android/backgrounds/globe_light.png', 'backgrounds/globe_light.png'),
-        ('android/backgrounds/globe_dark.png', 'backgrounds/globe_dark.png'),
-        ('android/fonts/xuma_key.otf', 'fonts/xuma_key.otf'),
-        ('android/fonts/xuma_latin.ttf', 'fonts/xuma_latin.ttf'),
-        ('android/v1.trime.yaml', 'v1.trime.yaml'),   # 自包含主題（獨立 configId，不與內建「預設」撞名）
+        ('xuma_L.custom.yaml', 'xuma_L.custom.yaml'),
+        ('backgrounds/globe_light.png', 'backgrounds/globe_light.png'),
+        ('backgrounds/globe_dark.png', 'backgrounds/globe_dark.png'),
+        ('fonts/xuma_key.otf', 'fonts/xuma_key.otf'),
+        ('fonts/xuma_latin.ttf', 'fonts/xuma_latin.ttf'),
+        ('v1.trime.yaml', 'v1.trime.yaml'),   # 自包含主題（獨立 configId，不與內建「預設」撞名）
                                                 #  補齊 text_color 等必須鍵，修 PreeditDelegate 崩潰）
     ]
     for p in lua_runtime_files():
         pairs.append((str(p.relative_to(REPO)), str(p.relative_to(REPO))))
     out = []
     for src, dst in pairs:
-        if not (REPO / src).exists():
-            print(f'[✗] 清單源缺失：{src}', file=sys.stderr)
+        if not (REPO / src).exists() and not (ANDROID / src).exists():
+            print(f'[✗] 清單源缺失（主倉與本倉皆無）：{src}', file=sys.stderr)
             sys.exit(1)
         out.append(f'{src}\t{dst}')
     print('\n'.join(out))
