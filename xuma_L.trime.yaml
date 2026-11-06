@@ -461,7 +461,10 @@ preset_keyboards:
       - {click: l, long_click: "'"}   # 長按 → ‘’ 連按交替
       - {width: 5}
       # ── 行 3 ──
-      - {click: Shift_L, width: 15, key_text_size: 15,
+      # Shift 寬 10、左側留白 5：與底行的地球鍵／12# 湊成「品」字
+      # （Shift 正好騎在下面兩鍵的縫上）。字母起點 x=15 不變。
+      - {width: 5}
+      - {click: Shift_L, width: 10, key_text_size: 15,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       - {click: z, long_click: grave_lead}
       - {click: x, long_click: cut}
@@ -473,13 +476,13 @@ preset_keyboards:
       - {click: BackSpace, width: 15,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       # ── 行 4：底行（僅 , . / 三個直接標點；長按給最常用的 ？！ ）──
-      - {click: Mode_switch, long_click: theme_menu, width: 15,
+      - {click: Mode_switch, long_click: theme_menu, width: 10,
          label_symbol: ' ',
          key_back_color: globe_img, hilited_key_back_color: globe_hl_back_color}
       - {click: sym, long_click: schema_menu,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       - {click: ',', long_click: ';'}    # 中文 ，；長按 → ；    # 中文：，／長按 ？
-      - {click: space_zh, ascii: space_en, width: 30,
+      - {click: space_zh, ascii: space_en, width: 35,
          key_back_color: space_back_color, key_text_color: space_text_color}
       - {click: '.', long_click: '!'}    # 中文 。；長按 → ！    # 中文：。／長按 ！
       # 斜線：**送 ASCII `/`**（送給 Rime，由 punctuator 給 、/／÷ 候選）。

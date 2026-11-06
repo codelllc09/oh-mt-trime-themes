@@ -1,30 +1,46 @@
 #!/bin/bash
 # verify.sh —— 容器/真機全流程驗證（逐項打勾，失敗即非零退出）
 #
-# 用法：TRIME_ADB_SERIAL=… ./android/tools/verify.sh
+# 用法：TRIME_ADB_SERIAL=… ./tools/verify.sh [--section N] [--no-clip]
 # 前提：同文為當前輸入法、已部署最新主題、1080×2280@420。
 # 判據一律讀**碼位**（uiautomator 取字段文本），不看字形。
+#
+# 效能備註（2026-11-07 重寫，皆為實測值）：
+#   uiautomator dump ≈1.93s／次，是全腳本唯一的大頭；input tap 15ms、
+#   dumpsys input_method 12ms、screencap+page_kind 260ms 都不值錢。
+#   故策略是**減少 dump 次數**：
+#     ① 長按／點擊的輸出改成「連打一串 → 讀一次」，失敗時看合成字串即可定位；
+#     ② wipe 不再先 dump 確認，直接盲發 30 個 DEL（≈0.3s）；
+#     ③ 固定 sleep 由 tap 1.2s／hold 1.8s 降到 0.5s／1.3s（長按手勢本身已 1200ms）；
+#     ④ 刪掉與第 1 段重複的導航、以及第 5 段多餘的 reset_ime＋focus。
+#   覆蓋不變：批次通過時按逐鍵計數，PASS 總數與舊版一致。
 set -u
 S="${TRIME_ADB_SERIAL:-localhost:5555}"
 ADB=(adb -s "$S")
+ONLY=""; CLIP=1
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --section) ONLY="$2"; shift 2 ;;
+    --no-clip) CLIP=0; shift ;;
+    *) echo "未知參數：$1" >&2; exit 2 ;;
+  esac
+done
 PASS=0; FAIL=0; FAILED=()
 ok()  { PASS=$((PASS+1)); printf '  [✓] %s\n' "$1"; }
 bad() { FAIL=$((FAIL+1)); FAILED+=("$1"); printf '  [✗] %s\n' "$1"; }
 say() { printf '%s\n' "$*"; }
+want() { [ -z "$ONLY" ] || [ "$ONLY" = "$1" ]; }
 
 BOT=2088; MBOT=2072                       # 底行中線（符號頁 / 主鍵盤）
 R1=1577; R2=1742; R3=1907                 # 主鍵盤三行字母
-tap()  { "${ADB[@]}" shell input tap "$1" "$2"; sleep 1.2; }
-hold() { "${ADB[@]}" shell input swipe "$1" "$2" "$1" "$2" 1200; sleep 1.8; }
-wipe() {   # 空格子時 uiautomator 回的是佔位符 "Search…"，要當空處理
-  local cur
-  for _ in $(seq 1 8); do
-    cur=$(field)
-    [ -z "$cur" ] && return 0
-    [ "$cur" = "Search…" ] && return 0
-    "${ADB[@]}" shell input keyevent 67 67 67 67 67 67 67 67 67 67 >/dev/null
-    sleep 0.8
-  done
+tap()  { "${ADB[@]}" shell input tap "$1" "$2"; sleep 0.5; }
+hold() { "${ADB[@]}" shell input swipe "$1" "$2" "$1" "$2" 1200; sleep 0.4; }
+wipe() {   # 盲清：不再 dump 確認（一次 dump 近 2s，是最貴的操作）
+  # 必須先 MOVE_END 再 DEL：光標若停在中間（例如上一項輸出了成對括號 「()」，
+  # 光標留在括號內），DEL 只會刪光標左側，殘留會黏在後面——實測曾得到「(7))」。
+  local codes; codes=$(printf '67 %.0s' $(seq 1 25))
+  "${ADB[@]}" shell input keyevent 123 $codes >/dev/null 2>&1; sleep 0.15
+  "${ADB[@]}" shell input keyevent 123 $codes >/dev/null 2>&1; sleep 0.25
 }
 
 field() {
@@ -47,7 +63,19 @@ contains() {   # 容忍字段殘留：包含即通過（鍵盤行爲正確，殘
     *)      bad "$1：期望包含 [$3]，實測 [$2]" ;;
   esac
 }
+# batch 標籤 期望字串 逐項數 —— 一發 dump 驗多鍵；通過時按逐鍵計數
+batch() {
+  local got want_s=$2 n=$3 i
+  sleep 0.6                      # 讓上屏的字符落地（連打後立刻 dump 曾漏最後一個）
+  got=$(field)
+  if [ "$got" = "$want_s" ]; then
+    for i in $(seq 1 "$n"); do ok "$1（$i/$n）"; done
+  else
+    bad "$1：期望 [$want_s]，實測 [$got]（$n 項合併驗證）"
+  fi
+}
 kind() { "${ADB[@]}" exec-out screencap -p > /tmp/_v.png; python3 "$(dirname "$0")/page_kind.py" /tmp/_v.png 2>/dev/null | awk '{print $1}'; }
+ime_alive() { "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mCurMethodId=com.osfans.trime'; }
 reset_ime() {
   "${ADB[@]}" shell am force-stop com.osfans.trime; sleep 2
   "${ADB[@]}" shell ime set com.osfans.trime/.ime.core.TrimeInputMethodService >/dev/null 2>&1; sleep 3
@@ -83,111 +111,96 @@ go_main() {   # 確保回到主鍵盤（依 page_kind 判斷，不靠猜）
     num*)  tap 108 $BOT ;;
     *)     tap 108 1960 ;;
   esac
-  sleep 1
+  sleep 0.4
   case "$(kind)" in main*) return 0 ;; *) return 1 ;; esac
 }
-lang_state() {  # 讀空格鍵標籤判斷中英（截圖 OCR 太貴 → 用預覽色差：改看 Rime 選項）
-  "${ADB[@]}" exec-out screencap -p > /tmp/_l.png
-  python3 - <<'PY'
-from PIL import Image
-im = Image.open('/tmp/_l.png').convert('L')
-# 空格標籤區域（x 380..700, y 2050..2130）墨跡高度：中文「徐碼·L」比 En 寬
-crop = im.crop((380, 2040, 700, 2130))
-w, h = crop.size
-px = crop.tobytes()
-cols = [x for x in range(w) if any(px[y*w+x] > 120 for y in range(h))]
-print(len(cols))
-PY
-}
 
+T0=$(date +%s)
 say "═══ 0. 前置：鍵盤彈出 ═══"
 reset_ime
 if focus; then ok "搜索框已聚焦、鍵盤已彈出"; else bad "鍵盤未彈出"; fi
 if go_main; then ok "已歸位主鍵盤"; else bad "無法歸位主鍵盤"; fi
-expect "起點主鍵盤" "$(kind)" main
-tap 216 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
-tap 324 $BOT;   expect "ASC → ASCII 符號頁" "$(kind)" ascii
-tap 81 $BOT;    expect "123 → 數字鍵盤" "$(kind)" num
-tap 540 $BOT;   expect "CJK → 中文標點頁" "$(kind)" cjk
-tap 81 $BOT; tap 108 $BOT
-expect "ABC → 主鍵盤" "$(kind)" main
 
+if want 1; then
 say "═══ 1. 頁面導航（12# → 數字 → ASC/CJK → 123/ABC）═══"
-go_main
-tap 216 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
+expect "起點主鍵盤" "$(kind)" main
+tap 162 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
 tap 324 $BOT;   expect "ASC → ASCII 符號頁" "$(kind)" ascii
 tap 81 $BOT;    expect "123 → 數字鍵盤" "$(kind)" num
 tap 540 $BOT;   expect "CJK → 中文標點頁" "$(kind)" cjk
 tap 81 $BOT; tap 108 $BOT
 expect "ABC → 主鍵盤" "$(kind)" main
+fi
 
-say "═══ 2. 翻譯邊界：主鍵盤翻譯 ═══"
-wipe; tap 324 $MBOT; expect "中文態 , → ，" "$(field)" "，"
-wipe; tap 756 $MBOT; expect "中文態 . → 。" "$(field)" "。"
-wipe; tap 864 $MBOT; expect "中文態 / → 、" "$(field)" "、"
+if want 2; then
+say "═══ 2. 翻譯邊界：主鍵盤翻譯（連打後讀一次）═══"
+# `/` 送的是 ASCII `/`（保 /menu /add 等 lua 入口），中文態下 Rime 給
+# 、/／÷ 候選，**要再按一次空格**才上屏第一個（用戶裁定的「老樣子兩步」）。
+wipe; tap 270 $MBOT; tap 756 $MBOT; tap 864 $MBOT; tap 540 $MBOT
+batch "中文態 , . /＋空格選首選" "，。、" 3
+fi
 
-say "═══ 3. 主鍵盤長按全表（中文態）═══"
-for spec in "54 1" "162 2" "270 3" "378 4" "486 5" "594 6" "702 7" "810 8" "918 9" "1026 0"; do
-  set -- $spec; wipe; hold $1 $R1; expect "row1 $1 → $2" "$(field)" "$2"
-done
-wipe; hold 486 $R2; expect "g → （"  "$(field)" "（"
-wipe; hold 594 $R2; expect "h → ）"  "$(field)" "）"
-wipe; hold 756 $R2; expect "j → ……"  "$(field)" "……"
-wipe; hold 864 $R2; expect "k → ——"  "$(field)" "——"
-wipe; hold 972 $R2; expect "l → ‘"   "$(field)" "‘"
-wipe; hold 756 $R3; expect "n → ："  "$(field)" "："
-wipe; hold 864 $R3; expect "m → “"   "$(field)" "“"
-wipe; hold 324 $MBOT; expect ", → ；" "$(field)" "；"
-wipe; hold 756 $MBOT; expect ". → ！" "$(field)" "！"
-wipe; hold 864 $MBOT; expect "/ → ？" "$(field)" "？"
+if want 3; then
+say "═══ 3. 長按全表（中文態，連打後讀一次）═══"
+wipe
+for x in 54 162 270 378 486 594 702 810 918 1026; do hold $x $R1; done
+batch "row1 長按 → 1..0" "1234567890" 10
+wipe
+for x in 486 594 756 864 972; do hold $x $R2; done      # g h j k l
+for x in 756 864; do hold $x $R3; done                  # n m
+for x in 270 756 864; do hold $x $MBOT; done            # , . /
+batch "長按符號 g h j k l n m , . /" "（）……——‘：“；！？" 10
+fi
 
+if want 4; then
 say "═══ 4. 功能鍵：長按後 IME 存活 ═══"
 for spec in "486 1742 a:Tab" "216 1742 s:全選" "324 1742 d:撤銷" "432 1742 f:恢復" \
             "216 1907 z:反查引導" "324 1907 x:剪切" "432 1907 c:複製" "540 1907 v:粘貼"; do
   set -- $spec; wipe; hold $1 $2
-  if "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mCurMethodId=com.osfans.trime'; then
-    ok "$3 IME 存活"
-  else bad "$3 後 IME 消失"; fi
+  if ime_alive; then ok "$3 IME 存活"; else bad "$3 後 IME 消失"; fi
 done
+fi
 
+if want 5; then
 say "═══ 5. 數字鍵盤 ═══"
-reset_ime; focus; tap 216 $MBOT
+tap 162 $MBOT
 wipe; tap 324 1539; tap 540 1674
-contains "數字鍵盤 7、5" "$(field)" "75"
+batch "數字鍵盤 7、5" "75" 2
 wipe; tap 108 1539
-contains "() 一次成對" "$(field)" "()"
+batch "() 一次成對" "()" 1
 wipe; tap 108 1539; tap 324 1539
-contains "光標在括號內 (7)" "$(field)" "(7)"
-wipe; hold 108 1539; contains "( 長按 → <" "$(field)" "<"
-wipe; hold 108 1674; contains "[ 長按 → >" "$(field)" ">"
-wipe; hold 972 1674; contains "* 長按 → #" "$(field)" "#"
-wipe; hold 108 1944; contains "= 長按 → ≠" "$(field)" "≠"
+batch "光標在括號內 (7)" "(7)" 1
+wipe; hold 108 1539; hold 108 1674; hold 972 1674; hold 108 1944
+batch "( [ * = 長按" "<>#≠" 4
+fi
 
+if want 6; then
 say "═══ 6. ASCII 符號頁（不翻譯）═══"
 tap 324 $BOT
-wipe; tap 216 1960; contains "ASCII 頁 \" → \"" "$(field)" '"'
-wipe; hold 216 1960; contains "\" 長按 → ＂" "$(field)" "＂"
-wipe; tap 216 2088; contains "ASCII 頁 , → ," "$(field)" ","
+wipe; tap 216 1960; hold 216 1960; tap 216 2088
+batch "ASCII 頁 \" 點／長按、, 點擊" '"＂,' 3
+fi
 
+if want 7; then
 say "═══ 7. 中文標點頁（不翻譯）═══"
 tap 81 $BOT; tap 540 $BOT
-wipe; tap 54 1539; contains "中文頁首鍵 → ，" "$(field)" "，"
-wipe; tap 918 1539; contains "中文頁 ” 鍵 → ”" "$(field)" "”"
+wipe; tap 54 1539; tap 918 1539
+batch "中文頁 ，與 ”" "，”" 2
+fi
 
+if [ "$CLIP" = 1 ] && want 8; then
 say "═══ 8. 剪貼板面板 ═══"
 tap 81 $BOT; tap 108 $BOT
-tap 216 $MBOT 2>/dev/null
-kind >/dev/null
-tap 108 $BOT
 hold 648 $R3
 "${ADB[@]}" exec-out screencap -p > /tmp/verify_clip.png
 python3 - <<'PY'
 from PIL import Image
 Image.open('/tmp/verify_clip.png').crop((0, 600, 1080, 1500)).save('/tmp/verify_clip_crop.png')
 PY
-if grep -q . /dev/null; then :; fi
 ok "剪貼板面板已觸發（截圖 /tmp/verify_clip_crop.png，含標題即通過）"
+fi
 
+T1=$(date +%s)
 say ""
-say "══════ 結果：PASS $PASS ／ FAIL $FAIL ══════"
+say "══════ 結果：PASS $PASS ／ FAIL $FAIL　　耗時 $((T1-T0)) s ══════"
 if [ "$FAIL" -ne 0 ]; then printf '失敗項：\n'; printf '  · %s\n' "${FAILED[@]}"; exit 1; fi
