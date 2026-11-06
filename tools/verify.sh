@@ -131,7 +131,7 @@ if go_main; then ok "已歸位主鍵盤"; else bad "無法歸位主鍵盤"; fi
 if want 1; then
 say "═══ 1. 頁面導航（12# → 數字 → ASC/CJK → 123/ABC）═══"
 expect "起點主鍵盤" "$(kind)" main
-tap 162 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
+tap 54 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
 tap 324 $BOT;   expect "ASC → ASCII 符號頁" "$(kind)" ascii
 tap 81 $BOT;    expect "123 → 數字鍵盤" "$(kind)" num
 tap 540 $BOT;   expect "CJK → 中文標點頁" "$(kind)" cjk
@@ -170,7 +170,7 @@ fi
 
 if want 5; then
 say "═══ 5. 數字鍵盤 ═══"
-tap 162 $MBOT
+tap 54 $MBOT
 wipe; tap 324 1539; tap 540 1674
 batch "數字鍵盤 7、5" "75" 2
 wipe; tap 108 1539

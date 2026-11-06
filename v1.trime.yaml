@@ -3204,12 +3204,11 @@ preset_keyboards:
     - click: l
       long_click: ''''
     - width: 5
-    - width: 5
     - click: Shift_L
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 15
-      width: 10
+      width: 15
     - click: z
       long_click: grave_lead
     - click: x
@@ -3228,23 +3227,23 @@ preset_keyboards:
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       width: 15
+    - click: sym
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      long_click: schema_menu
     - click: Mode_switch
       hilited_key_back_color: globe_hl_back_color
       key_back_color: globe_img
       label_symbol: ' '
       long_click: theme_menu
       width: 10
-    - click: sym
-      key_back_color: fn_back_color
-      key_text_color: fn_text_color
-      long_click: schema_menu
     - click: ','
       long_click: ;
     - ascii: space_en
       click: space_zh
       key_back_color: space_back_color
       key_text_color: space_text_color
-      key_text_size: 28
+      key_text_size: 20
       width: 35
     - click: .
       long_click: '!'
@@ -3708,7 +3707,7 @@ preset_keys:
     send: space
   space_en:
     functional: false
-    label: En
+    label: English
     repeatable: false
     send: space
   space_num:
@@ -3718,7 +3717,7 @@ preset_keys:
     send: space
   space_zh:
     functional: false
-    label: ㄓ
+    label: SUIGEM
     repeatable: false
     send: space
   sym:

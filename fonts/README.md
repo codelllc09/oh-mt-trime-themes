@@ -37,7 +37,8 @@ OFL/Apache 對修改版的硬性要求。
 uv run --with fonttools python3 tools/rebuild_key_font.py
 ```
 
-它做三件事：讀現有 `xuma_key.otf` 的 cmap（保證不丟字）∪ `EXTRA_CHARS`（現為 `ㄓ`）
+它做三件事：讀現有 `xuma_key.otf` 的 cmap（保證不丟字）∪ `EXTRA_CHARS`（現保留 `ㄓ`，
+鍵面暫不使用——注音字形留着，日後想換回 RIME 圖標式鍵面不必重建）
 → 從系統 `NotoSansCJK-VF.ttc` 用 `varLib.instancer` 固定 `wght=400`（**不能直接子集
 可變字體**，默認實例是 Thin）→ 子集、改家族名、寫回。現有 175 字形、62 KB。
 
