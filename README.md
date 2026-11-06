@@ -141,3 +141,10 @@ luna_pinyin.custom.yaml 解）；`u` 單字與碼位反查引導衝突（u+數�
 3. `tools/aesthetics.py`（配色對比 WCAG）。
 
 真機側（`deploy.sh push`、`verify.sh`、`shots.sh`）需要 adb 與 Waydroid，不在 CI 跑。
+
+## 工作方式
+
+- **設計類改動（版面／鍵位／配色）先出可互動 HTML 示意圖**，放 `design-refs/`，
+  經選定再改主題；理由與做法見 `design-refs/README.md` 的「設計流程規約」。
+- 改主題後跑 `tools/check_trime.py gen-theme` 生成自包含 `v1.trime.yaml`，
+  再 `./deploy.sh push`；驗證按改動風險選檔次（見 `TESTING.md`）。
