@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>數字頁改版構想 — 徐碼·L 同文主題</title>
+<style>
+  :root{
+    --bg:#101113; --key:#2C2F33; --text:#E6E8EB; --fn:#454A51; --fntext:#E6E8EB;
+    --accent:#8AB4F8; --accent-text:#1B1C1E; --space:#33363B; --space-text:#B4B9C0;
+    --comment:#8A9098; --page:#0B0C0E; --card:#17191C; --line:#26292D;
+  }
+  body.light{
+    --bg:#DEE1E6; --key:#FFFFFF; --text:#1F2124; --fn:#C6CBD2; --fntext:#2E3134;
+    --accent:#1A73E8; --accent-text:#FFFFFF; --space:#F1F3F6; --space-text:#5F6368;
+    --comment:#8A9098; --page:#F6F7F9; --card:#FFFFFF; --line:#E2E5EA;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:28px 34px 60px; background:var(--page); color:var(--text);
+    font:15px/1.7 system-ui,"Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+  }
+  h1{font-size:21px;margin:0 0 4px;font-weight:650}
+  .sub{color:var(--comment);font-size:13.5px;margin-bottom:22px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+  .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+  .seg button{
+    border:0;background:transparent;color:var(--text);padding:8px 15px;font:inherit;
+    font-size:13.5px;cursor:pointer;
+  }
+  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-text);font-weight:600}
+  .hintline{color:var(--comment);font-size:13px}
+
+  .stage{display:flex;gap:34px;align-items:flex-start;flex-wrap:wrap}
+  .kbwrap{flex:0 0 auto}
+  .kb{
+    width:min(1080px,calc(100vw - 460px)); background:var(--bg); border-radius:18px;
+    padding:16px 0 18px; display:flex; flex-direction:column; gap:34px;
+    box-shadow:0 18px 50px rgba(0,0,0,.28);
+  }
+  .row{display:flex; gap:13px; padding:0 13px}
+  .key{
+    position:relative; height:97px; border-radius:22px; background:var(--key); color:var(--text);
+    display:flex; align-items:center; justify-content:center; font-size:44px; user-select:none;
+    cursor:pointer; transition:transform .06s, background .12s;
+  }
+  .key.fn{background:var(--fn); color:var(--fntext)}
+  .key.space{background:var(--space); color:var(--space-text); font-size:17px; letter-spacing:.04em}
+  .key.accent{background:var(--accent); color:var(--accent-text); font-size:22px}
+  .key.new::after{
+    content:"NEW"; position:absolute; right:8px; bottom:6px; font-size:9px; letter-spacing:.08em;
+    color:var(--accent); opacity:.95; font-weight:700;
+  }
+  .key.dim{opacity:.38}
+  .key .hint{
+    position:absolute; top:5px; left:0; right:0; text-align:center; font-size:13px;
+    color:var(--comment); line-height:1.1;
+  }
+  .key:active,.key.hit{transform:scale(.965)}
+  .key.hit{background:var(--accent); color:var(--accent-text)}
+  .key .ring{
+    position:absolute; inset:0; border-radius:22px; border:2px solid var(--accent);
+    opacity:0; transition:opacity .08s;
+  }
+  .key.holding .ring{opacity:1}
+
+  .panel{flex:1 1 340px; min-width:320px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:16px}
+  .card h2{font-size:14px;margin:0 0 10px;font-weight:650;letter-spacing:.02em}
+  .out{
+    font:600 26px/1.4 ui-monospace,"Roboto Mono",monospace; min-height:44px;
+    padding:8px 12px; border-radius:10px; background:var(--bg); color:var(--text);
+    word-break:break-all;
+  }
+  .out small{display:block;font:400 12px/1.5 system-ui;color:var(--comment);margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--comment);font-weight:500;font-size:12px}
+  td.mono{font-family:ui-monospace,"Roboto Mono",monospace}
+  .pill{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11.5px;background:var(--accent);color:var(--accent-text)}
+  .keep{font-size:13px;color:var(--comment);margin:0;padding-left:18px}
+  .keep li{margin:2px 0}
+  .legend{font-size:12.5px;color:var(--comment);margin-top:10px}
+</style>
+</head>
+<body class="dark">
+<h1>數字鍵盤改版構想 · 徐碼·L / 同文</h1>
+<div class="sub">
+  1 單位 = 10.8px（1080p@420 實機寬）· 鍵高 97px · 橫縫 13px · 行縫 34px ·
+  <b>鍵上小字＝長按輸出</b>；按住鍵 0.45 秒可看到長按行爲。
+</div>
+
+<div class="toolbar">
+  <div class="seg" id="segScheme">
+    <button data-v="now" aria-pressed="false">現狀</button>
+    <button data-v="a" aria-pressed="true">方案 A（等寬）</button>
+    <button data-v="b" aria-pressed="false">方案 B（數字寬）</button>
+  </div>
+  <div class="seg" id="segTheme">
+    <button data-v="dark" aria-pressed="true">深色 · 墨空</button>
+    <button data-v="light" aria-pressed="false">淺色 · 雲白</button>
+  </div>
+  <div class="seg" id="segNew">
+    <button data-v="1" aria-pressed="true">標出新鍵</button>
+    <button data-v="0" aria-pressed="false">只看形狀</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="kbwrap">
+    <div class="kb" id="kb"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="panel">
+    <div class="card">
+      <h2>輸入框（點鍵試試；按住不放 = 長按）</h2>
+      <div class="out" id="out"><span style="color:var(--comment);font-weight:400">——</span></div>
+      <div class="legend">試打 <b>1 9 0 8 , 0 9 8</b> 看千分位；或按住 <b>√</b> 看長按 π。
+        <a href="#" id="clr" style="color:var(--accent);text-decoration:none">清空</a></div>
+    </div>
+    <div class="card">
+      <h2>新列四鍵：點擊 ／ 長按</h2>
+      <table>
+        <thead><tr><th>鍵</th><th>點擊</th><th>長按</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><b>,</b></td><td class="mono">,</td><td class="mono">，</td><td>千分位 1,908,098,233</td></tr>
+          <tr><td class="mono"><b>%</b></td><td class="mono">%</td><td class="mono">‰</td><td>百分比／千分率</td></tr>
+          <tr><td class="mono"><b>√</b></td><td class="mono">√</td><td class="mono">π</td><td>開方／圓周率</td></tr>
+          <tr><td class="mono"><b>°</b></td><td class="mono">°</td><td class="mono">℃</td><td>角度／溫度</td></tr>
+        </tbody>
+      </table>
+      <div class="legend">另外用掉兩個原本空着的長按槽：<b>/</b> → ÷、<b>-</b> → ±</div>
+    </div>
+    <div class="card">
+      <h2>原本的長按，一個都不動</h2>
+      <ul class="keep">
+        <li><b>( )</b> → &lt;　<b>[ ]</b> → &gt;</li>
+        <li><b>8 4 6 2</b> → ↑ ← → ↓（方向鍵事件）</li>
+        <li><b>*</b> → #　<b>+</b> → @　<b>=</b> → ≠　<b>.</b> → ,</li>
+      </ul>
+      <div class="legend">所以 <b>×</b> 沒有加：<b>*</b> 本身就是乘號的 ASCII 形式，它的長按已給 #（電話／密碼要用）。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROWS = {
+  now: [
+    [['( )','( )','<','fn'],['7'],['8','8','↑','key'],['9'],['/',null,'','fn']],
+    [['[ ]','[ ]','>','fn'],['4','4','←','key'],['5'],['6','6','→','key'],['*',null,'#','fn']],
+    [['{ }','{ }','','fn'],['1'],['2','2','↓','key'],['3'],['+',null,'@','fn']],
+    [['=','=','≠','fn'],['0'],['.','.',' ,'.trim(),'key'],['-',null,'','fn'],['⌫',null,'','fn']],
+    [['ABC',null,'','fn'],['ASC',null,'','fn'],['CJK',null,'','fn'],['數字',null,'','space'],['⏎',null,'','accent']]
+  ],
+  a: [
+    [[' ,'.trim(),',','，','fn',true],['( )','( )','<','fn'],['7'],['8','8','↑','key'],['9'],['/','/','÷','fn']],
+    [['%','%','‰','fn',true],['[ ]','[ ]','>','fn'],['4','4','←','key'],['5'],['6','6','→','key'],['*',null,'#','fn']],
+    [['√','√','π','fn',true],['{ }','{ }','','fn'],['1'],['2','2','↓','key'],['3'],['+',null,'@','fn']],
+    [['°','°','℃','fn',true],['=','=','≠','fn'],['0'],['.','.',' ,'.trim(),'key'],['-',null,'±','fn'],['⌫',null,'','fn']],
+    [['ABC',null,'','fn'],['ASC',null,'','fn'],['CJK',null,'','fn'],['數字',null,'','space'],['⏎',null,'','accent']]
+  ]
+};
+ROWS.b = ROWS.a;   // 佈局相同，只有寬度不同
+
+const UNITS = {
+  now: {fixed:20, lastRow:20},
+  a:   {cols:[16.7,16.7,16.7,16.7,16.7,16.7], lastRow:[20,20,20,20,20]},
+  b:   {cols:[13,14,18.25,18.25,18.25,18.25], lastRow:[20,20,20,20,20]}
+};
+
+let scheme='a', theme='dark', markNew=true;
+const kb=document.getElementById('kb');
+const legend=document.getElementById('legend');
+const out=document.getElementById('out');
+
+function unitsFor(rowIdx, n){
+  if (scheme==='now') return Array(n).fill(20);
+  if (rowIdx===4) return UNITS.b.lastRow;      // 底行固定 5×20
+  return UNITS[scheme].cols;
+}
+
+function render(){
+  kb.innerHTML='';
+  ROWS[scheme].forEach((row, ri)=>{
+    const el=document.createElement('div'); el.className='row';
+    const u=unitsFor(ri,row.length);
+    row.forEach((k, ki)=>{
+      const [label, clickRaw, long, kind='key', isNew=false]=k;
+      const box=document.createElement('div');
+      box.className='key'+(kind==='key'?'':' '+kind)+(isNew&&markNew?' new':'')+(isNew&&!markNew?' dim':'');
+      box.style.flex=`${u[ki]} 1 0`;
+      box.innerHTML=`<div class="ring"></div>${long?`<div class="hint">${long}</div>`:''}<span>${label}</span>`;
+      if (kind==='space') box.innerHTML=`<div class="ring"></div><span>數字</span>`;
+      box.dataset.click = clickRaw ?? label;
+      box.dataset.long = long || '';
+      wire(box);
+      el.appendChild(box);
+    });
+    kb.appendChild(el);
+  });
+  const widths = scheme==='now' ? '每鍵 20 單位 → 216×97px（2.2:1）'
+    : scheme==='a' ? '每鍵 16.7 單位 → 167×97px（1.72:1）'
+                   : '數字鍵 18.25 單位 → 197×97px（2.03:1）';
+  legend.textContent = widths + ' · ' + (scheme==='now' ? '25 鍵 / 35 個輸出' : '29 鍵 / 45 個輸出（原有 10 個長按全部保留）');
+}
+
+function flash(box){ box.classList.add('hit'); setTimeout(()=>box.classList.remove('hit'),110); }
+
+let buffer='';
+function emit(box, isLong){
+  const val = isLong ? box.dataset.long : box.dataset.click;
+  if(!val){ return; }
+  if(val==='⌫'){ buffer = buffer.slice(0,-1); }
+  else if(val==='⏎'){ buffer += '\n'; }
+  else if(['↑','↓','←','→'].includes(val)){ /* 方向鍵事件，不上屏 */ }
+  else { buffer += val; }
+  out.innerHTML = (buffer
+      ? `<span>${buffer.replace(/\n/g,'⏎')}</span>`
+      : `<span style="color:var(--comment);font-weight:400">——</span>`)
+    + `<small>${isLong?'長按':'點擊'} → ${val||'（無）'}</small>`;
+}
+
+function wire(box){
+  let timer=null, fired=false;
+  const start=()=>{
+    fired=false; box.classList.add('holding');
+    timer=setTimeout(()=>{ fired=true; box.classList.remove('holding'); if(box.dataset.long){ flash(box); emit(box,true);} },450);
+  };
+  const end=()=>{
+    box.classList.remove('holding');
+    clearTimeout(timer);
+    if(!fired){ flash(box); emit(box,false); }
+  };
+  box.addEventListener('pointerdown', e=>{ e.preventDefault(); start(); });
+  box.addEventListener('pointerup', end);
+  box.addEventListener('pointerleave', ()=>{ box.classList.remove('holding'); clearTimeout(timer); });
+}
+
+document.getElementById('segScheme').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  scheme=b.dataset.v;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  render();
+});
+document.getElementById('segTheme').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  theme=b.dataset.v;
+  document.body.className=theme;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+});
+document.getElementById('segNew').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  markNew = b.dataset.v==='1';
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  render();
+});
+
+document.getElementById('clr').addEventListener('click', e=>{
+  e.preventDefault(); buffer=''; out.innerHTML='<span style="color:var(--comment);font-weight:400">——</span>';
+});
+
+render();
+</script>
+</body>
+</html>
