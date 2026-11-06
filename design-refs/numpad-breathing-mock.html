@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<title>數字小鍵盤：留白與「接近正方形」</title>
+<title>數字小鍵盤：留白與「接近正方形」（按實機像素繪製）</title>
 <style>
   :root{
     --bg:#101113; --key:#2C2F33; --text:#E6E8EB; --fn:#454A51; --fntext:#E6E8EB;
@@ -21,7 +21,7 @@
     font:15px/1.7 system-ui,"Noto Sans CJK SC",sans-serif}
   h1{font-size:21px;margin:0 0 4px;font-weight:650}
   h1 span{font-size:13px;color:var(--comment);font-weight:400;margin-left:10px}
-  .sub{color:var(--comment);font-size:13.5px;margin-bottom:16px}
+  .sub{color:var(--comment);font-size:13.5px;margin-bottom:14px}
   .alert{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
     border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0 16px}
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
@@ -37,23 +37,23 @@
   .meta{font:12px/1.5 ui-monospace,"Roboto Mono",monospace;color:var(--comment);margin-left:auto}
   .card p{font-size:12.6px;color:var(--comment);margin:6px 0 10px}
 
-  /* 鍵盤本體：以 1080px 邏輯寬等比縮到卡片內，尺寸與實機同比例 */
-  .kb{position:relative;background:var(--bg);border-radius:12px;padding:12px 0 14px}
-  .row{display:flex}
-  .key{position:relative;height:44px;border-radius:10px;background:var(--key);color:var(--text);
-    display:flex;align-items:center;justify-content:center;font-size:17px;
-    font-family:"Liberation Sans",Roboto,system-ui,"Noto Sans CJK SC",sans-serif}
-  .key.fn{background:var(--fn);color:var(--fntext)}
-  .key.space{background:var(--space);color:var(--space-text);font-size:12px;letter-spacing:.14em}
-  .key.accent{background:var(--accent);color:var(--accent-text)}
-  .key.nav{background:var(--nav-bg);color:var(--nav-fg)}
-  .key .hint{position:absolute;top:0px;left:50%;transform:translateX(-50%);font-size:8px;
-    color:var(--comment);line-height:1.15}
-  .key .mark{position:absolute;top:0px;left:50%;transform:translateX(-50%);font-size:8px;
-    color:var(--comment);line-height:1.15}
-  .gapmark{position:relative}
-  .gapmark::after{content:"";position:absolute;left:0;right:0;top:0;bottom:0;
-    border-left:1px dashed var(--accent);border-right:1px dashed var(--accent);opacity:.5}
+  /* 實機像素繪製：內層 1080px 寬，整體縮放顯示 */
+  .viewport{position:relative;overflow:hidden;border-radius:12px;background:var(--bg)}
+  .stage{position:absolute;top:0;left:0;width:1080px;transform-origin:top left}
+  .k{position:absolute;background:var(--key);color:var(--text);border-radius:22px;
+    display:flex;align-items:center;justify-content:center;font-size:52px;padding-top:8px;
+    font-family:"Liberation Sans",Roboto,system-ui,"Noto Sans CJK SC",sans-serif;
+    overflow:hidden;white-space:nowrap}
+  .k.fn{background:var(--fn);color:var(--fntext)}
+  .k.space{background:var(--space);color:var(--space-text);font-size:34px;letter-spacing:.16em}
+  .k.accent{background:var(--accent);color:var(--accent-text);font-size:40px}
+  .k.nav{background:var(--nav-bg);color:var(--nav-fg)}
+  .k .hint{position:absolute;top:4px;left:50%;transform:translateX(-50%);
+    font-size:26px;line-height:1.1;color:var(--comment)}
+  .k .mark{position:absolute;top:2px;left:50%;transform:translateX(-50%);
+    font-size:26px;line-height:1.1;color:var(--comment)}
+  .gapvis{outline:2px dashed var(--accent);outline-offset:-2px;background:transparent !important}
+
   table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
   th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line)}
   th{color:var(--comment);font-weight:500;font-size:12px}
@@ -62,17 +62,16 @@
 </style>
 </head>
 <body class="dark">
-<h1>數字小鍵盤：留白與「接近正方形」<span>2026-11-07</span></h1>
+<h1>數字小鍵盤：留白與「接近正方形」<span>按實機像素繪製（1080px 寬、鍵高 97px、行距 34px）· 2026-11-07</span></h1>
 
 <div class="alert">
-  <b>先回答你的問題①：</b>我的「現狀」色卡是對的——實機 ABC 鍵的三角是中性灰
-  <code>#8A9098</code>（我才量過），所以<b>顏色不用改</b>。
-  但要注意：實機現在畫的是<b>單個</b> ◀，<b>雙三角 ◀◀ 還沒上線</b>（上次被你叫停時撤回了）。
+  <b>① 現狀色卡是對的：</b>實機 ABC 鍵的三角是中性灰 <code>#8A9098</code>（實測過），
+  <b>顏色不用改</b>。但實機現在是<b>單個 ◀</b>，雙三角 <b>◀◀ 還沒上線</b>。
 </div>
 
 <div class="sub">
-  留白靠兩個旋鈕：<b>數字頁專用的 <code>horizontal_gap</code></b>（縫變寬，鍵自然變窄 → 更接近正方形）
-  與 <b>數字區與左側欄之間的 spacer</b>（讓小鍵盤成一塊）。下面是 4 檔組合。
+  本頁所有鍵都<b>按實機像素</b>畫：1 單位 = 10.8px、鍵高 97px、行間距 34px、
+  鍵與鍵之間留 <code>horizontal_gap</code>（dp × 2.625px），整體等比縮小顯示。
 </div>
 
 <div class="toolbar">
@@ -80,80 +79,133 @@
     <button data-v="dark" aria-pressed="true">墨空</button>
     <button data-v="light">雲白</button>
   </div>
-  <div class="seg" id="segSpacer">
-    <button data-v="0" aria-pressed="false">標空隙：無</button>
-    <button data-v="1" aria-pressed="true">標空隙：顯示</button>
+  <div class="seg" id="segGap">
+    <button data-v="0">隱藏 spacer</button>
+    <button data-v="1" aria-pressed="true">標出 spacer</button>
   </div>
 </div>
 
 <div class="grid" id="grid"></div>
 
 <div class="card" style="margin-top:18px">
-  <h2>四檔的實測尺寸（1080p，鍵高 97px）</h2>
+  <h2>四檔實測（1080p）</h2>
   <table>
     <thead><tr><th>檔</th><th>horizontal_gap</th><th>spacer</th><th>數字鍵</th><th>長寬比</th><th>觀感</th></tr></thead>
     <tbody>
-      <tr><td>A 現狀</td><td>5dp</td><td>0</td><td>167×97</td><td>1.72</td><td>偏長條，小鍵盤與左欄黏在一起</td></tr>
-      <tr><td><b>B 推薦</b></td><td>14dp</td><td>3u</td><td>144×97</td><td><b>1.49</b></td><td>縫夠寬、小鍵盤成塊，數字不再像長條</td></tr>
-      <tr><td>C 更寬</td><td>18dp</td><td>3u</td><td>134×97</td><td>1.38</td><td>更接近方，但鍵面利用率下降</td></tr>
-      <tr><td>D 極致</td><td>18dp</td><td>5u</td><td>128×97</td><td>1.32</td><td>最「方」，空格/底部 5 鍵也跟着變窄</td></tr>
+      <tr><td>A 現狀</td><td>5dp（13px）</td><td>0</td><td>167×97</td><td>1.72</td><td>偏長條，小鍵盤與左欄黏在一起</td></tr>
+      <tr><td><b>B 推薦</b></td><td>14dp（37px）</td><td>3u（32px）</td><td>138×97</td><td><b>1.42</b></td><td>縫夠寬、小鍵盤成塊，數字不再像長條</td></tr>
+      <tr><td>C</td><td>18dp（47px）</td><td>3u</td><td>127×97</td><td>1.31</td><td>更接近方，鍵面利用率下降</td></tr>
+      <tr><td>D</td><td>18dp（47px）</td><td>5u</td><td>124×97</td><td>1.28</td><td>最「方」，底行也跟着變窄</td></tr>
     </tbody>
   </table>
-  <div class="legend">註：<code>horizontal_gap</code> 是整頁生效（連同底行的 ABC/ASC/CJK/空格/⏎），
-    所以檔位越高、底行也越鬆。正方形極限約 1.0，但鍵高被全局面板鎖在 97px，
-    6 欄佈局下能做到 1.3～1.5 已經接近「看起來方」。</div>
+  <div class="legend">正方形（1.0）不可達：鍵高被全局面板鎖在 97px，6 欄最窄 ~128px。
+    <code>horizontal_gap</code> 是整頁參數，底行 ABC/ASC/CJK/空格/⏎ 會一起變鬆。</div>
 </div>
 
 <script>
+const U = 10.8;          // 每單位像素
+const KEY_H = 97;        // 鍵高
+const CELL_H = 131;      // 行格高（鍵高 + 行距 34）
+const TOP = 14;          // 頂部留白
+const SCALE = 0.44;
+
 const VARIANTS = [
-  {id:'a', title:'A · 現狀（gap 5，無 spacer）', pick:false, gap:5, spacer:0, ratio:'1.72', size:'167×97'},
-  {id:'b', title:'B · gap 14 ＋ spacer 3（推薦）', pick:true, gap:14, spacer:3, ratio:'1.49', size:'144×97'},
-  {id:'c', title:'C · gap 18 ＋ spacer 3', pick:false, gap:18, spacer:3, ratio:'1.38', size:'134×97'},
-  {id:'d', title:'D · gap 18 ＋ spacer 5', pick:false, gap:18, spacer:5, ratio:'1.32', size:'128×97'}
+  {id:'a', title:'A · 現狀（gap 5dp，無 spacer）', gap:5,  spacer:0, pick:false},
+  {id:'b', title:'B · gap 14dp ＋ spacer 3u（推薦）', gap:14, spacer:3, pick:true},
+  {id:'c', title:'C · gap 18dp ＋ spacer 3u',        gap:18, spacer:3, pick:false},
+  {id:'d', title:'D · gap 18dp ＋ spacer 5u',        gap:18, spacer:5, pick:false}
 ];
 
-let showGap = true;
+let markGap = true;
 
-// 六欄寬度：數學列 / 括號列 / spacer / 四欄數字
-function cols(spacer){
-  const rest = 100 - spacer;
-  const side = 15;
-  const n = (rest - side * 2) / 4;
-  return { side, n, spacer };
+// 六欄等寬：spacer 由六欄均攤（spacer=0 時就是主題現行的 16.7）
+function columns(spacer){
+  const col = (100 - spacer) / 6;
+  return [col, col, spacer, col, col, col, col];
+}
+// 底行：ABC 15 / ASC 15 / CJK 15 / 空格 40 / ⏎ 15
+const BOTTOM = [15, 15, 15, 40, 15];
+
+const NUM_ROWS = [
+  [['fn',',','，'], ['fn','( )','<'], ['key','7',''], ['key','8','▲'], ['key','9',''], ['fn','/','÷']],
+  [['fn','%','‰'], ['fn','[ ]','>'], ['key','4','◀'], ['key','5',''], ['key','6','▶'], ['fn','*','#']],
+  [['fn','√','π'], ['fn','{ }','≈'], ['key','1','≤'], ['key','2','▼'], ['key','3','≥'], ['fn','+','@']],
+  [['fn','°','℃'], ['fn','=','≠'], ['key','0',''], ['key','.',' ,'.trim()], ['fn','-','±'], ['fn','⌫','']]
+];
+const BOTTOM_KEYS = [['nav','ABC','◀◀'], ['fn','ASC',''], ['fn','CJK',''], ['space','空格',''], ['accent','⏎','']];
+
+function keyEl(x, y, w, label, cls, hint, kind){
+  const gapHalf = kind === 'spacer' ? 0 : 0;
+  const d = document.createElement('div');
+  d.className = 'k ' + cls + (kind === 'spacer' && markGap ? ' gapvis' : '');
+  d.style.left = (x + gapHalf) + 'px';
+  d.style.width = (w - gapHalf*2) + 'px';
+  d.style.top = y + 'px';
+  d.style.height = KEY_H + 'px';
+  if (label) d.textContent = label;
+  if (hint) {
+    const s = document.createElement('span');
+    s.className = (cls === 'nav') ? 'mark' : 'hint';
+    s.textContent = hint;
+    d.appendChild(s);
+  }
+  return d;
 }
 
-function rows(v){
-  const { side, n, spacer } = cols(v.spacer);
-  const g = v.gap / 2;                       // 左右各半個 gap
-  const pad = d => `style="flex:${d} 1 0;margin-left:${g}px;margin-right:${g}px"`;
-  const row = (cells) => `<div class="row" style="padding:0 ${g}px">${cells}</div>`;
-  const k = (cls, label, units, hint) => `<div class="key ${cls}" ${pad(units)}>
-      ${hint?`<span class="hint">${hint}</span>`:''}${label}</div>`;
-  const sp = v.spacer
-    ? `<div class="key ${showGap?'gapmark':''}" ${pad(v.spacer)}></div>`
-    : '';
-  const R = (a,b,c,d,e,f, spPos=true) =>
-    row(k('fn',a,side) + k('fn',b,side) + sp + k('key',c,n) + k('key',d,n) + k('key',e,n) + k('fn',f,n));
+function renderBoard(v){
+  const gapPx = v.gap * 2.625;
+  const cols = columns(v.spacer);
+  const stage = document.createElement('div');
+  stage.className = 'stage';
+  stage.style.height = TOP + CELL_H * 5 + 14 + 'px';
 
-  return `
-    ${R(',', '( )', '7', '8', '9', '/')}
-    ${R('%', '[ ]', '4', '5', '6', '*')}
-    ${R('√', '{ }', '1', '2', '3', '+')}
-    ${R('°', '=', '0', '.', '-', '⌫')}
-    ${row(`<div class="key nav" ${pad(15)}>ABC</div>
-           <div class="key fn" ${pad(15)}>ASC</div>
-           <div class="key fn" ${pad(15)}>CJK</div>
-           <div class="key space" ${pad(40)}>空格</div>
-           <div class="key accent" ${pad(15)}>⏎</div>`)}`;
+  const drawRow = (rowIdx, cells, labels) => {
+    let x = 0;
+    const y = TOP + rowIdx * CELL_H;
+    cells.forEach((units, i) => {
+      const [cls, label, hint] = labels[i];
+      const isSpacer = (cls === 'spacer');
+      // 每個鍵左右各留半個 gap（spacer 本身不畫鍵）
+      const left = x + (isSpacer ? 0 : gapPx / 2);
+      const width = units * U - (isSpacer ? 0 : gapPx);
+      const el = keyEl(left, y, width, isSpacer ? '' : label, isSpacer ? '' : cls, hint, isSpacer ? 'spacer' : 'key');
+      if (isSpacer && markGap) el.style.width = (units * U) + 'px';
+      stage.appendChild(el);
+      x += units * U;
+    });
+  };
+
+  NUM_ROWS.forEach((row, i) => {
+    const cells = columns(v.spacer);
+    const labels = row.map(r => [r[0], r[1], r[2]]);
+    // 把 spacer 插在第三欄位置
+    const cellsWithSpacer = [cells[0], cells[1], v.spacer, cells[3], cells[4], cells[5], cells[6]];
+    const labelsWithSpacer = [labels[0], labels[1], ['spacer','',''], labels[2], labels[3], labels[4], labels[5]];
+    drawRow(i, cellsWithSpacer, labelsWithSpacer);
+  });
+  drawRow(4, BOTTOM, BOTTOM_KEYS);
+
+  return stage;
 }
 
 function render(){
-  document.getElementById('grid').innerHTML = VARIANTS.map(v => `
-    <div class="card ${v.pick?'pick':''}">
+  document.getElementById('grid').innerHTML = VARIANTS.map(v => {
+    const col = (100 - v.spacer) / 6;
+    const w = col * U - v.gap * 2.625;
+    return `<div class="card ${v.pick?'pick':''}">
       <h2>${v.title}${v.pick?'<span class="badge">推薦</span>':''}
-        <span class="meta">${v.size} · ${v.ratio}</span></h2>
-      <div class="kb" style="gap:${v.gap*0.62}px;display:flex;flex-direction:column">${rows(v)}</div>
-    </div>`).join('');
+        <span class="meta">數字鍵 ${w.toFixed(0)}×97 · 比例 ${(w/97).toFixed(2)}</span></h2>
+      <div class="viewport" data-v="${v.id}"></div>
+    </div>`;
+  }).join('');
+
+  VARIANTS.forEach(v => {
+    const vp = document.querySelector(`.viewport[data-v="${v.id}"]`);
+    const stage = renderBoard(v);
+    stage.style.transform = `scale(${SCALE})`;
+    vp.appendChild(stage);
+    vp.style.height = (parseFloat(stage.style.height) * SCALE) + 'px';
+  });
 }
 
 document.getElementById('segTheme').addEventListener('click', e => {
@@ -161,10 +213,10 @@ document.getElementById('segTheme').addEventListener('click', e => {
   [...e.currentTarget.children].forEach(x => x.setAttribute('aria-pressed', x === b));
   document.body.className = b.dataset.v;
 });
-document.getElementById('segSpacer').addEventListener('click', e => {
+document.getElementById('segGap').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   [...e.currentTarget.children].forEach(x => x.setAttribute('aria-pressed', x === b));
-  showGap = b.dataset.v === '1'; render();
+  markGap = b.dataset.v === '1'; render();
 });
 render();
 </script>
