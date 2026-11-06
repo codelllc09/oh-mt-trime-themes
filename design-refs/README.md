@@ -125,3 +125,13 @@ V3 建議在 `preset_color_schemes` 各加 `nav_back_color`／`nav_text_color` �
 
 落地建議：在 `preset_keys` 另立一顆 `back_to_kb`（`label_symbol: '◀'` ＋
 `key_symbol_offset_x: -21` ＋ nav 配色），**三頁共用**，免得日後只改到一頁。
+
+### ABC 鍵改用雙三角（`abc-double-triangle-mock.html`）
+
+用戶決定：**角標保持居中**，但改成**兩個連續左三角 `◀◀`**，
+以便與數字鍵的單三角提示（`▲▼◀▶`）區分——單三角讀作「長按出方向鍵」，雙三角讀作「回上一頁」。
+
+候選與結論：`◀◀`（U+25C0 ×2，緊挨）> `◀ ␉ ◀`（細空格分隔，跨字體寬度不穩）> `«`（線框，非同一家族）> `◀`（現狀，與數字鍵混淆）。
+`◀` 已在字體子集裏，雙三角只是同一字形重複，**無需再補字形**。
+
+落地：`preset_keys` 立 `back_to_kb`（`label_symbol: '◀◀'` ＋ nav 配色），三頁共用。
