@@ -25,9 +25,9 @@
 
 ```sh
 # 方式一：USB（adb）
-android/deploy.sh push          # 推送 35 件到 /storage/emulated/0/rime
+./deploy.sh push          # 推送 35 件到 /storage/emulated/0/rime
 # 方式二：打包後手動拷貝（檔案管理器／網盤）
-android/deploy.sh pkg           # → tmp/tongwen-pkg-<時間>.zip，解壓到 rime 目錄
+./deploy.sh pkg           # → tmp/tongwen-pkg-<時間>.zip，解壓到 rime 目錄
 ```
 
 手機端（Trime App）：
@@ -65,7 +65,7 @@ stroke／luna_pinyin／essay 用 Trime 內建共享數據，無需自帶。
 （`deploy.sh pkg/push` 已建好目錄）。回桌面後：
 
 ```sh
-android/deploy.sh pull-spool    # 去重合併進桌面主工作樹 spool_pending.txt
+./deploy.sh pull-spool    # 去重合併進桌面主工作樹 spool_pending.txt
 # 然後桌面 /add 菜單「入庫重跑」，或 wishd.py apply --yes
 ```
 
@@ -94,7 +94,7 @@ Trime 前端（渲染、鍵值轉換、點擊行爲）與整機穩定性。
 ## 本機安卓模擬測試（真機前的前置驗證）
 
 ```sh
-python3 android/tools/sim_test.py        # 全綠即引擎側就緒（約 1 分鐘，含部署）
+python3 tools/sim_test.py        # 全綠即引擎側就緒（約 1 分鐘，含部署）
 ```
 
 原理：Trime 引擎＝librime＋librime-lua（Fedora ibus-rime 同源同版本族），

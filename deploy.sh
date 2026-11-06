@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# android/deploy.sh —— 徐碼·L 同文（Trime）端部署與回採
+# deploy.sh —— 同文（Trime）端部署與回採（本倉＝安卓資產倉，路徑不含 android/ 前綴）
 #
 # 用法：
-#   android/deploy.sh pkg          # 打包部署 zip → tmp/tongwen-pkg-<時間>.zip
-#   android/deploy.sh push         # adb 逐檔推送到 /storage/emulated/0/rime
-#   android/deploy.sh pull-spool   # 回收手機 /add 攢詞 spool → 桌面主工作樹（去重合併）
+#   ./deploy.sh pkg          # 打包部署 zip → tmp/tongwen-pkg-<時間>.zip
+#   ./deploy.sh push         # adb 逐檔推送到 /storage/emulated/0/rime
+#   ./deploy.sh pull-spool   # 回收手機 /add 攢詞 spool → 桌面主工作樹（去重合併）
 #
 # 設計：
-#   · 清單唯一來源＝android/tools/check_trime.py manifest（改清單只改一處）；
+#   · 清單唯一來源＝tools/check_trime.py manifest（改清單只改一處）；
 #   · 寫盤動作（zip 產物、spool 合併）一律經 _ledger 留痕（AGENTS 留痕規定）；
 #   · 推送不刪手機端其他檔案（userdb、其他方案不受影響）。
 set -euo pipefail
@@ -23,7 +23,7 @@ src_of() {  # 清單源雙根解析：先本倉（資產），後主倉（共享
 }
 # 多目標支持（2026-11-05）：USB 真機默認；設 TRIME_ADB_SERIAL 指向 Waydroid 容器
 # （如 localhost:5555）或網絡 adb 設備，例：
-#   TRIME_ADB_SERIAL=localhost:5555 android/deploy.sh push
+#   TRIME_ADB_SERIAL=localhost:5555 ./deploy.sh push
 SER="${TRIME_ADB_SERIAL:-}"
 adbx() { if [ -n "$SER" ]; then adb -s "$SER" "$@"; else adb "$@"; fi; }
 
@@ -66,7 +66,7 @@ push)
     adbx push "$(src_of "$src")" "$PHONE_DIR/$dst" >/dev/null
     echo "  pushed $dst"
   done
-  echo '✓ 推送完成。手機端操作：同文 → 部署 → 主題選「徐碼」→ 配色選「徐碼·宣紙/夜墨」'
+  echo '✓ 推送完成。手機端操作：同文 → 部署 → 主題選「V1」→ 配色選「徐碼·雲白 / 徐碼·墨空」（首裝需手動切主題）'
   # 內部副本即時同步（2026-11-05 Waydroid 實測：外部存儲模式的 import 不會主動
   # 拉取主題/補丁改動，直接覆寫內部副本可免手動同步；失敗不阻塞，
   # 部署時 Trime 仍會走正常 import 鏈）
@@ -78,7 +78,7 @@ push)
   # 鍵盤字體（key_font 從內部 userDataDir/fonts 讀；與 themes 同批推送）
   adbx shell "mkdir -p $INTERNAL_DIR/fonts" >/dev/null 2>&1
   if [ -d "$ROOT/fonts" ]; then
-    for f in "$ROOT"/android/fonts/*; do
+    for f in "$ROOT"/fonts/*.otf "$ROOT"/fonts/*.ttf; do
       [ -f "$f" ] || continue
       adbx push "$f" "$INTERNAL_DIR/fonts/$(basename "$f")" >/dev/null 2>&1 \
         && echo "  synced → 內部副本 fonts/$(basename "$f")" || true
@@ -86,7 +86,7 @@ push)
   fi
   # 鍵位圖標（Trime 的 image-valued color 通道從內部 userDataDir 讀 backgrounds/）
   adbx shell "mkdir -p $INTERNAL_DIR/backgrounds" >/dev/null 2>&1
-  for f in "$ROOT"/android/backgrounds/*.png; do
+  for f in "$ROOT"/backgrounds/*.png; do
     adbx push "$f" "$INTERNAL_DIR/backgrounds/$(basename "$f")" >/dev/null 2>&1 \
       && echo "  synced → 內部副本 backgrounds/$(basename "$f")" || true
   done

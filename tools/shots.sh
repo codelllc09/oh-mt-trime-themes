@@ -60,7 +60,7 @@ hold() { "${ADB[@]}" shell input swipe "$1" "$2" "$1" "$2" 1300; sleep "${3:-3}"
 bs()   { for _ in $(seq "$1"); do "${ADB[@]}" shell input keyevent 67; done; sleep 1; }
 
 mkdir -p "$OUT"; rm -f "$OUT"/*.png
-kind_of() { python3 "$ROOT/android/tools/page_kind.py" "$1" | awk '{print $1}'; }
+kind_of() { python3 "$ROOT/tools/page_kind.py" "$1" | awk '{print $1}'; }
 shot() {      # shot <檔名>
   ensure_kb
   "${ADB[@]}" exec-out screencap -p > "$OUT/$1.png"

@@ -1,7 +1,7 @@
 # KEYBOARD_MAP —— 同文（Trime）鍵盤版式與規則（2026-11-06 定稿）
 
 > 這份文檔是**規則的唯一定義處**。改版式前先讀；改完必須同步本文件與
-> `android/tools/shots.sh` 的座標常量。歷史上因為規則散落在對話裏，
+> `tools/shots.sh` 的座標常量。歷史上因為規則散落在對話裏，
 > 同一件事反覆改錯（六行鍵盤、全角混排、符號頁被引擎翻譯）。
 
 ## 一、四條鐵律
@@ -168,8 +168,8 @@ Roboto 提供，於是 `“”` 畫成拉丁字形——這就是「引號不像
 
 | 項 | 值 | 說明 |
 |---|---|---|
-| 源檔 | `android/xuma_L.trime.yaml` | 供人編輯，節點級 `__include: trime:/…` |
-| 生成物 | `android/v1.trime.yaml` | `check_trime.py gen-theme` 深合併 vendor 後的自包含版；手機加載的是它 |
+| 源檔 | `xuma_L.trime.yaml` | 供人編輯，節點級 `__include: trime:/…` |
+| 生成物 | `v1.trime.yaml` | `check_trime.py gen-theme` 深合併 vendor 後的自包含版；手機加載的是它 |
 | 顯示名 | `V1` | 主題選單顯示此名 |
 | configId | `v1` | ＝檔名去掉 `.trime.yaml` |
 

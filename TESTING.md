@@ -32,7 +32,7 @@ Android/data 三條路已夠）。
 # 1. 連容器（會話啓動後 IP 固定 localhost；真機插 USB 免此步）
 adb connect localhost:5555
 # 2. 推部署清單（主題/補丁同步內部副本——外部存儲模式的 import 不主動拉改動）
-TRIME_ADB_SERIAL=localhost:5555 android/deploy.sh push
+TRIME_ADB_SERIAL=localhost:5555 ./deploy.sh push
 # 3. app 內部署（MainActivity 工具欄 Deploy；座標用 uiautomator dump 抓）
 adb -s <SER> shell am start -n com.osfans.trime/.ui.main.MainActivity
 # 4. 等「N tasks ran: N success」（logcat rime.trime）；改詞典時全量編譯數分鐘
@@ -48,11 +48,11 @@ adb -s <SER> shell am start -n com.osfans.trime/.ui.main.MainActivity
 實測教訓：憑記憶點座標連錯四次（rmmir/umip/tyti/tsye），腳本化後零失誤。
 
 ```sh
-python3 android/tools/kbmap.py --serial <SER> --keys            # 列全部映射
-python3 android/tools/kbmap.py --serial <SER> --backspace 6     # 清稿（連點退格）
-python3 android/tools/kbmap.py --serial <SER> --type tigu       # 打碼
-python3 android/tools/kbmap.py --serial <SER> --tap slash       # 功能鍵
-python3 android/tools/kbmap.py --serial <SER> --longpress z     # 長按（≥1200ms 才穩）
+python3 tools/kbmap.py --serial <SER> --keys            # 列全部映射
+python3 tools/kbmap.py --serial <SER> --backspace 6     # 清稿（連點退格）
+python3 tools/kbmap.py --serial <SER> --type tigu       # 打碼
+python3 tools/kbmap.py --serial <SER> --tap slash       # 功能鍵
+python3 tools/kbmap.py --serial <SER> --longpress z     # 長按（≥1200ms 才穩）
 ```
 
 驗證一律 `adb exec-out screencap -p > x.png` 截圖後讀圖；uiautomator 對
@@ -158,14 +158,14 @@ Trime 鍵盤（自繪 View）無效，只對 app 設置頁有效。
 
 | # | 現象 | 根因 | 對策 |
 | --- | --- | --- | --- |
-| A1 | 鍵盤彈出即崩 `IllegalArgumentException: 'text_color' is not a color`（PreeditDelegate <init>） | `ThemeColors.color(key)` 要求 ColorTable.Value.Color；顏色值以 **YAML 不帶引號 int 形態**存在時（0xFF...／十進制，**含官方默認主題自身全部顏色**）被 schemeColors 字符串 map 構建過濾 → parseColor（僅認 #/0x 前綴）失敗 → Value.None → 崩 | **全部顏色值寫帶引號字符串 `'#RRGGBB'/'#AARRGGBB'`**；自包含主題已全量字符串化（394 值）並入部署清單（現為 `android/v1.trime.yaml`） |
+| A1 | 鍵盤彈出即崩 `IllegalArgumentException: 'text_color' is not a color`（PreeditDelegate <init>） | `ThemeColors.color(key)` 要求 ColorTable.Value.Color；顏色值以 **YAML 不帶引號 int 形態**存在時（0xFF...／十進制，**含官方默認主題自身全部顏色**）被 schemeColors 字符串 map 構建過濾 → parseColor（僅認 #/0x 前綴）失敗 → Value.None → 崩 | **全部顏色值寫帶引號字符串 `'#RRGGBB'/'#AARRGGBB'`**；自包含主題已全量字符串化（394 值）並入部署清單（現為 `v1.trime.yaml`） |
 | A2 | 配色缺 `text_color` 鍵也觸發 A1 | PreeditDelegate 讀 TEXT_COLOR 是**必須鍵**；fallback 鏈覆蓋不到它 | 兩套配色均已補 text_color/text_back_color；check_trime.py 已加必須鍵檢查 |
 | A3 | `pm clear` 後連鎖清空：SAF 目錄授權、launcher alias 開關、Setup 完成標記、內部 rime 目錄、IME 選擇全滅 | Android pm clear 語義（含 prefs/授權/內部數據） | clear 後必須重走：Setup 嚮導（SKIP 可）→ 存儲模式＋SAF（或改 app-specific 模式繞開 SAF）→ deploy push（重建內部目錄）→ ime set；**或改用 app-specific 模式（內部路徑 adb 可直寫，無 SAF 依賴——推薦測試環境）** |
 | A4 | `Rime.startRime: Permission denied` → `System.exit called, status: 10` 循環 | SAF 授權丟失後 Trime 讀 /rime 失敗，daemon 啓動失敗主動 exit(10) 要求重啓 | 重授 SAF；或按 A3 改 app-specific 模式 |
 | A5 | launcher 圖標消失、monkey LAUNCHER 無法啓動 app | pm clear 重置「Show app icon in launcher」開關 | `am start -n com.osfans.trime/.ui.main.MainActivity` 直啓不受影響 |
 | A6 | `ime set` 報成功但鍵盤不彈 | 服務處於崩潰退避期（E3）或 showSoftInput 未觸發 | 先重啓容器清退避；再點輸入框觸發 showSoftInput |
 | A7 | 系統 night 模式開、App UI 也變暗，**鍵盤始終不切深色** | 兩個條件缺一：①Keyboard Style →「Follow system day/night color」須開（預設關）；② Colors 須選**徐碼·雲白**（新建/clear 後預設是「預設／default」，與本主題無關，自然不聯動） | 兩者都設好即生效，且已驗證**再彈鍵盤即切**（不需重啓）。選配色：Keyboard Style → Colors → 列表底部「徐碼·雲白」 |
-| A8 | 改了 `xuma_L.trime.yaml`、部署也成功，但鍵盤毫無變化 | 真機激活的是**自包含生成物**（現為 `v1.trime.yaml`）；它曾是手工生成的，不會跟隨 xuma_L 更新 | 已收斂：`python3 android/tools/check_trime.py gen-theme` 生成；校驗器已加漂移檢查（改主題不重生成即敗） |
+| A8 | 改了 `xuma_L.trime.yaml`、部署也成功，但鍵盤毫無變化 | 真機激活的是**自包含生成物**（現為 `v1.trime.yaml`）；它曾是手工生成的，不會跟隨 xuma_L 更新 | 已收斂：`python3 tools/check_trime.py gen-theme` 生成；校驗器已加漂移檢查（改主題不重生成即敗） |
 | A9 | 鍵位顏色寫死 → 切配色時底行仍舊淺（墨空下空格白底、「徐碼·L」看不清） | 鍵盤定義裏 `key_back_color: '#FFF1F3F6'` 這類**硬編碼色值不隨配色變** | 鍵位顏色引用**配色語義色名**（`space_back_color`/`fn_back_color`/`lang_back_color`/`accent_fill`），兩套配色各自定義；驗證方法：截圖取像素點比對配色定義值 |
 | A10 | `gen-theme` 生成的自包含主題一用就崩（尺寸全錯） | 顏色字符串化步驟誤對**全文**整數生效（`key_height: 38` → `'#000026'`） | 只對 `preset_color_schemes` 子樹做字符串化；生成後宜用舊檔做語義 diff，確認差異僅限預期項 |
 
@@ -325,7 +325,7 @@ Trime 鍵盤（自繪 View）無效，只對 app 設置頁有效。
 vendor 默認 `key_font: symbol.ttf`。它把 `“”‘’` 畫成**拉丁字形**（小、貼字身上緣），
 中文使用者會認爲「這不是引號」或「看不到引號」——這正是本輪反覆的根源。
 
-處置：改用自帶 CJK 子集字體 `android/fonts/xuma_key.otf`
+處置：改用自帶 CJK 子集字體 `fonts/xuma_key.otf`
 （Noto Sans CJK SC 抽取 182 個鍵盤用字，111KB；缺的 8 個功能符號由系統回退）。
 部署路徑：`rime/fonts/xuma_key.otf`（Trime 的 `ThemeFonts.fontDir` 讀 `userDataDir/fonts`）。
 
@@ -337,7 +337,7 @@ vendor 默認 `key_font: symbol.ttf`。它把 `“”‘’` 畫成**拉丁字�
 第一版子集取自 `NotoSansCJK-VF.ttc`（可變字體），整把鍵盤卻是**細體**——
 可變字體的默認實例是 `wght=100`（Thin）。一條命令自查：
 
-    uv run --with fonttools python -c "from fontTools.ttLib import TTFont; print(TTFont('android/fonts/xuma_key.otf')['OS/2'].usWeightClass)"
+    uv run --with fonttools python -c "from fontTools.ttLib import TTFont; print(TTFont('fonts/xuma_key.otf')['OS/2'].usWeightClass)"
 
 改取靜態 `NotoSansCJKsc-Regular.otf`（400）後恢復正常，體積由 111KB 降到 70KB。
 中文一致性：與換字體前的截圖逐像素比對，CJK 標點區域亮度差 ≤12 的像素佔 95.7%
@@ -370,7 +370,7 @@ Trime 把 `long_click` 指向的 preset 的 `label` 畫成鍵面提示。要「�
 ## 全流程自動驗證：`tools/verify.sh`
 
 ```sh
-TRIME_ADB_SERIAL=localhost:5555 ./android/tools/verify.sh
+TRIME_ADB_SERIAL=localhost:5555 ./tools/verify.sh
 ```
 
 逐項打勾、失敗即非零退出。覆蓋：
@@ -416,7 +416,7 @@ PASS 55 ／ FAIL 2
 |---|---|---|
 | 标准 | tongwenfeng | APK 內建 |
 | 預設 | trime | APK 內建（默認） |
-| V1 | v1 | 本倉 `android/v1.trime.yaml` |
+| V1 | v1 | 本倉 `v1.trime.yaml` |
 
 **代價**：`pm clear`／首裝後默認是「預設」，需手動「地球長按 → 主題選單 → V1」切一次。
 `shots.sh` 已加前置檢查：裝置上沒有 `v1.trime.yaml` 就拒拍，避免整批截圖拍成內建主題。

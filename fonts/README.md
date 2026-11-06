@@ -1,4 +1,4 @@
-# android/fonts —— 鍵盤字體（開源授權）
+# fonts —— 鍵盤字體（開源授權）
 
 本目錄只有兩個**子集字體**，都是免費、可商用、可再分發的開源授權；
 本倉庫以開源方式發布，這兩個字體的授權允許這樣做，但**必須**隨字體保留授權文本
@@ -43,7 +43,7 @@ chars = open('/tmp/kbchars.txt', encoding='utf-8').read()
 cjk  = ''.join(c for c in chars if not 0x20 < ord(c) < 0x7f)
 o = subset.Options(); o.layout_features = ['*']; o.name_IDs = ['*']
 f = subset.load_font(src, o); s = subset.Subsetter(options=o)
-s.populate(text=cjk); s.subset(f); subset.save_font(f, 'android/fonts/xuma_key.otf', o)
+s.populate(text=cjk); s.subset(f); subset.save_font(f, 'fonts/xuma_key.otf', o)
 PY
 
 # 3) 拉丁子集（ASCII；**刻意剔除 “”‘’**，讓引號落到 CJK 字體）
@@ -54,7 +54,7 @@ chars = open('/tmp/kbchars.txt', encoding='utf-8').read()
 lat  = ''.join(c for c in chars if 0x20 < ord(c) < 0x7f and c not in '‘’“”')
 o = subset.Options(); o.layout_features = ['*']; o.name_IDs = ['*']
 f = subset.load_font(src, o); s = subset.Subsetter(options=o)
-s.populate(text=lat); s.subset(f); subset.save_font(f, 'android/fonts/xuma_latin.ttf', o)
+s.populate(text=lat); s.subset(f); subset.save_font(f, 'fonts/xuma_latin.ttf', o)
 PY
 
 # 4) 改家族名（見上「商標與改名」）

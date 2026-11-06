@@ -2,18 +2,18 @@
 # check_trime.py —— 同文（Trime）端適配資產校驗器（只讀，不寫盤）
 #
 # 職責：
-#   1. android/*.yaml 語法與結構校驗（主題鍵盤/配色/補丁路徑/方案表）；
+#   1. 本倉 *.yaml 語法與結構校驗（主題鍵盤/配色/補丁路徑/方案表）；
 #   2. 主題字根 hint 與方案 speller/preedit_format 的 xlit 映射逐鍵對賬；
 #   3. 輸出部署清單（manifest 子命令，deploy.sh 的唯一來源）。
 #   4. 生成自包含主題 v1.trime.yaml（gen-theme 子命令；源＝vendor/trime-3.3.13.yaml
 #      ＋ xuma_L.trime.yaml 深合併，__include 全部展開——避免手工產物過期）。
 #
 # 設計：零依賴（標準庫 yaml 除外——本倉 pyproject 已依賴 PyYAML）；
-#       gen-theme 寫盤僅寫 android/v1.trime.yaml（生成物，不須人讀台賬）。
+#       gen-theme 寫盤僅寫 v1.trime.yaml（生成物，不須人讀台賬）。
 # 用法：
-#   python3 android/tools/check_trime.py            # 全部校驗，非零退出即敗
-#   python3 android/tools/check_trime.py manifest   # 輸出 TSV：源路徑<TAB>手機目標路徑
-#   python3 android/tools/check_trime.py gen-theme  # 重生成 android/v1.trime.yaml
+#   python3 tools/check_trime.py            # 全部校驗，非零退出即敗
+#   python3 tools/check_trime.py manifest   # 輸出 TSV：源路徑<TAB>手機目標路徑
+#   python3 tools/check_trime.py gen-theme  # 重生成 android/v1.trime.yaml
 #                                                   # （--check 只比對漂移，不寫盤）
 
 import re
