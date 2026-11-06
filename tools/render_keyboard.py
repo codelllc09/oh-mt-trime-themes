@@ -120,6 +120,16 @@ def build(theme, kb_name, patch, scheme_id=None):
     if cur:
         rows.append(cur)
 
+    # Variant：自訂每欄寬度（cols = 每列第 i 個鍵的單位寬；只套用到鍵數相同的前幾列）
+    cols = patch.get('cols')
+    if cols:
+        new_rows = []
+        for r in rows:
+            if len(r) == len(cols):
+                r = [(k, cols[i]) for i, (k, _w) in enumerate(r)]
+            new_rows.append(r)
+        rows = new_rows
+
     # Variant：在「第 2 欄之後」插入 spacer，並把所有其他鍵按比例縮小，
     # 使總寬仍為 100（等同主題裏把六欄從 16.7 改成 (100-spacer)/6）。
     if spacer_units:
