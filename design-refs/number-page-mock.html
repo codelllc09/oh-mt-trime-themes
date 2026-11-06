@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<title>數字頁改版 v2 — 徐碼·L 同文主題</title>
+<title>數字頁改版 v3 — 徐碼·L 同文主題</title>
 <style>
   :root{
     --bg:#101113; --key:#2C2F33; --text:#E6E8EB; --fn:#454A51; --fntext:#E6E8EB;
@@ -32,20 +32,18 @@
     padding:16px 0 18px;display:flex;flex-direction:column;gap:34px;
     box-shadow:0 18px 50px rgba(0,0,0,.28)}
   .row{display:flex;gap:13px;padding:0 13px}
-  /* 鍵面走拉丁字體（模擬實機的 Roboto 鏈），中文標籤自動回退到 CJK 字體 */
   .key{position:relative;height:97px;border-radius:22px;background:var(--key);color:var(--text);
     display:flex;align-items:center;justify-content:center;font-size:44px;user-select:none;
     font-family:"Liberation Sans",Roboto,"DejaVu Sans",system-ui,"Noto Sans CJK SC",sans-serif;
     cursor:pointer;transition:transform .06s,background .12s}
-  .key .hint{font-family:system-ui,"Noto Sans CJK SC",sans-serif}
   .key.fn{background:var(--fn);color:var(--fntext)}
   .key.space{background:var(--space);color:var(--space-text);font-size:17px;letter-spacing:.18em}
   .key.accent{background:var(--accent);color:var(--accent-text);font-size:22px}
   .key.new::after{content:"NEW";position:absolute;right:8px;bottom:6px;font-size:9px;
     letter-spacing:.08em;color:var(--accent);font-weight:700}
   .key .hint{position:absolute;top:5px;left:0;right:0;text-align:center;font-size:13px;
-    color:var(--comment);line-height:1.1}
-  .key.changed .hint{color:var(--accent)}
+    color:var(--comment);line-height:1.1;font-family:system-ui,"Noto Sans CJK SC",sans-serif}
+  .key .hint.added{color:var(--accent);font-weight:600}
   .key:active,.key.hit{transform:scale(.965)}
   .key.hit{background:var(--accent);color:var(--accent-text)}
   .key .ring{position:absolute;inset:0;border-radius:22px;border:2px solid var(--accent);opacity:0}
@@ -65,25 +63,22 @@
   .keep li{margin:2px 0}
   .legend{font-size:12.5px;color:var(--comment);margin-top:8px}
   .legend a{color:var(--accent);text-decoration:none}
-  .opt{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
-  .opt button{border:1px solid var(--line);background:transparent;color:var(--text);
-    border-radius:9px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
-  .opt button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
   .note{font-size:12.5px;color:var(--comment);margin-top:8px;line-height:1.6}
+  .tag{color:var(--accent);font-weight:600}
 </style>
 </head>
 <body class="dark">
-<h1>數字鍵盤改版 v2<span>徐碼·L / 同文 · 2026-11-07</span></h1>
+<h1>數字鍵盤改版 v3<span>徐碼·L / 同文 · 2026-11-07</span></h1>
 <div class="sub">
   1 單位 = 10.8px（1080p@420）· 鍵高 97px · 橫縫 13px · 行縫 34px ·
-  <b>鍵上小字＝長按</b>；按住 0.45 秒觸發，右側輸入框記錄。
+  <b>鍵上小字＝長按</b>，<span class="tag">藍色小字＝本次新增的長按</span>；按住 0.45 秒觸發。
 </div>
 
 <div class="toolbar">
   <span class="tb-label">佈局</span>
   <div class="seg" id="segScheme">
-    <button data-v="now">現狀</button>
-    <button data-v="a" aria-pressed="true">方案 A（等寬 16.7）</button>
+    <button data-v="a" aria-pressed="true">方案 A（數字四列六等寬）</button>
+    <button data-v="now">現狀對照</button>
   </div>
   <span class="tb-label">配色</span>
   <div class="seg" id="segTheme">
@@ -107,32 +102,23 @@
     <div class="card">
       <h2>輸入框（點鍵試打；按住不放＝長按）</h2>
       <div class="out" id="out"><span style="color:var(--comment);font-weight:400">——</span></div>
-      <div class="legend">試打 <b>1 9 0 8 , 0 9 8</b>；或按住 <b>√</b> 出 π。<a href="#" id="clr">清空</a></div>
+      <div class="legend">試打 <b>1 9 0 8 , 0 9 8</b>；或按住 <b>√</b> 出 π、按住 <b>{ }</b> 出 ≈。<a href="#" id="clr">清空</a></div>
     </div>
 
     <div class="card">
-      <h2>底行：給空格讓位</h2>
+      <h2>本次新增的長按（原本空着的槽位）</h2>
       <table>
-        <thead><tr><th>鍵</th><th>寬度</th><th>說明</th></tr></thead>
+        <thead><tr><th>鍵</th><th>長按</th><th>理由</th></tr></thead>
         <tbody>
-          <tr><td>ABC / ASC / CJK</td><td class="mono">15 × 3</td><td>原是 20，各讓出 5</td></tr>
-          <tr><td>空格</td><td class="mono">40</td><td>原 20（太窄）→ 現在一眼就是空格</td></tr>
-          <tr><td>⏎ Enter</td><td class="mono">15</td><td>原是 20，略收</td></tr>
+          <tr><td class="mono"><b>{ }</b></td><td class="mono">≈</td><td>約等號，日常高頻；且是唯一與括號同屬「非數字」的鍵</td></tr>
+          <tr><td class="mono"><b>1</b></td><td class="mono">≤</td><td rowspan="2">成對放在數字區左下／右下角，左右對應「小／大」，兩拇指都好按</td></tr>
+          <tr><td class="mono"><b>3</b></td><td class="mono">≥</td></tr>
+          <tr><td class="mono"><b>/</b></td><td class="mono">÷</td><td>除法符號的排版形式</td></tr>
+          <tr><td class="mono"><b>-</b></td><td class="mono">±</td><td>誤差、增減</td></tr>
         </tbody>
       </table>
-      <div class="note">鍵面文字由「數字」改為「<b>空格</b>」——「數字」會被誤讀成「切到數字」，
-        而這頁本來就是數字頁；直接寫功能名才不含糊。</div>
-    </div>
-
-    <div class="card">
-      <h2>{ } 鍵的長按（原本空着）</h2>
-      <div class="opt" id="segBrace">
-        <button data-v="angle" aria-pressed="true">〈 〉 角括號</button>
-        <button data-v="lenticular">【 】 方頭</button>
-        <button data-v="approx">≈ 約等號</button>
-        <button data-v="cmp">≤ ≥ 不等</button>
-      </div>
-      <div class="note" id="braceNote"></div>
+      <div class="note">不用 <b>〈 〉</b>：中文排版幾乎不用，且與 () [] {} 混在一起反而難辨。
+        <b>≤ ≥</b> 也可以改放 7／9（靠近 `=`），一行就能改。</div>
     </div>
 
     <div class="card">
@@ -146,7 +132,19 @@
           <tr><td class="mono"><b>°</b></td><td class="mono">°</td><td class="mono">℃</td><td>角度／溫度</td></tr>
         </tbody>
       </table>
-      <div class="legend">另補兩個原本空着的長按：<b>/</b> → ÷、<b>-</b> → ±</div>
+    </div>
+
+    <div class="card">
+      <h2>底行：給空格讓位</h2>
+      <table>
+        <thead><tr><th>鍵</th><th>寬度</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>ABC / ASC / CJK</td><td class="mono">15 × 3</td><td>原是 20，各讓出 5</td></tr>
+          <tr><td>空格</td><td class="mono">40</td><td>原 20（太窄）→ 現在一眼就是空格</td></tr>
+          <tr><td>⏎ Enter</td><td class="mono">15</td><td>原是 20，略收</td></tr>
+        </tbody>
+      </table>
+      <div class="note">鍵面文字由「數字」改為「<b>空格</b>」——「數字」會被誤讀成「切到數字」，而這頁本來就是數字頁。</div>
     </div>
 
     <div class="card">
@@ -162,116 +160,148 @@
 </div>
 
 <script>
-const BRACE = {
-  angle:{hint:'〈 〉', note:'延續括號族：() → [ ] → { } → 〈 〉，都是「點一次出整對、光標停中間」，肌肉記憶一致。'},
-  lenticular:{hint:'【 】', note:'中文標題／提示框常用；但中文標點頁已有【 】，數字頁再放一次略重複。'},
-  approx:{hint:'≈', note:'日常數學很常用（估算、四捨五入）。缺點是與括號族不同類，鍵位語義會鬆散。'},
-  cmp:{hint:'≤ ≥', note:'一次出「≤ ≥」兩個符號不自然；若要 ≤ 與 ≥ 分開得各佔一鍵，本頁沒有餘裕。'}
-};
-let scheme='now', theme='dark', bottom='wide', brace='angle';
-let buffer='';
+/* 數字四列：每列 6 鍵，全部 16.7 單位（用戶選定的「協調」版）。
+   底行是導航列，另按 15/15/15/40/15 分配 —— 不參與「等寬」。 */
+const U = 16.7;
 
-const ROW_NUM = [
-  [[' ,'.trim(),',','，','fn',true],['( )','( )','<','fn'],['7'],['8','8','↑','key'],['9'],['/','/','÷','fn']],
-  [['%','%','‰','fn',true],['[ ]','[ ]','>','fn'],['4','4','←','key'],['5'],['6','6','→','key'],['*',null,'#','fn']],
-  [['√','√','π','fn',true],['{ }','{ }','','fn'],['1'],['2','2','↓','key'],['3'],['+',null,'@','fn']],
-  [['°','°','℃','fn',true],['=','=','≠','fn'],['0'],['.','.',',','key'],['-',null,'±','fn'],['⌫',null,'','fn']]
-];
-const ROW_NUM_NOW = [
-  [['( )','( )','<','fn'],['7'],['8','8','↑','key'],['9'],['/']],
-  [['[ ]','[ ]','>','fn'],['4','4','←','key'],['5'],['6','6','→','key'],['*',null,'#','fn']],
-  [['{ }','{ }','','fn'],['1'],['2','2','↓','key'],['3'],['+',null,'@','fn']],
-  [['=','=','≠','fn'],['0'],['.','.',',','key'],['-',null,'','fn'],['⌫',null,'','fn']]
+// [標籤, 點擊值, 長按值, 類別, 是否新增鍵, 長按是否本次新增]
+const ROWS_A = [
+  [[' ,'.trim(), ',', '，', 'fn', true, false],
+   ['( )', '( )', '<', 'fn', false, false],
+   ['7', '7', '', 'key', false, false],
+   ['8', '8', '↑', 'key', false, false],
+   ['9', '9', '', 'key', false, false],
+   ['/', '/', '÷', 'fn', false, true]],
+
+  [['%', '%', '‰', 'fn', true, false],
+   ['[ ]', '[ ]', '>', 'fn', false, false],
+   ['4', '4', '←', 'key', false, false],
+   ['5', '5', '', 'key', false, false],
+   ['6', '6', '→', 'key', false, false],
+   ['*', '*', '#', 'fn', false, false]],
+
+  [['√', '√', 'π', 'fn', true, false],
+   ['{ }', '{ }', '≈', 'fn', false, true],
+   ['1', '1', '≤', 'key', false, true],
+   ['2', '2', '↓', 'key', false, false],
+   ['3', '3', '≥', 'key', false, true],
+   ['+', '+', '@', 'fn', false, false]],
+
+  [['°', '°', '℃', 'fn', true, false],
+   ['=', '=', '≠', 'fn', false, false],
+   ['0', '0', '', 'key', false, false],
+   ['.', '.', ',', 'key', false, false],
+   ['-', '-', '±', 'fn', false, true],
+   ['⌫', '⌫', '', 'fn', false, false]]
 ];
 
-const kb=document.getElementById('kb'), legend=document.getElementById('legend');
-const out=document.getElementById('out'), braceNote=document.getElementById('braceNote');
+const ROWS_NOW = [
+  [['( )', '( )', '<', 'fn'], ['7'], ['8','8','↑','key'], ['9'], ['/']],
+  [['[ ]', '[ ]', '>', 'fn'], ['4','4','←','key'], ['5'], ['6','6','→','key'], ['*', null, '#', 'fn']],
+  [['{ }', '{ }', '', 'fn'], ['1'], ['2','2','↓','key'], ['3'], ['+', null, '@', 'fn']],
+  [['=', '=', '≠', 'fn'], ['0'], ['.', '.', ',', 'key'], ['-'], ['⌫']]
+];
+
+let scheme = 'a', theme = 'dark', bottom = 'wide', buffer = '';
+
+const kb = document.getElementById('kb');
+const legend = document.getElementById('legend');
+const out = document.getElementById('out');
 
 function units(ri){
-  if(scheme==='now') return Array(5).fill(20);
-  if(ri<4) return Array(6).fill(16.7);
-  return bottom==='wide' ? [15,15,15,40,15] : [20,20,20,20,20];
+  if(scheme === 'now') return Array(5).fill(20);
+  if(ri < 4) return Array(6).fill(U);
+  return bottom === 'wide' ? [15,15,15,40,15] : [20,20,20,20,20];
+}
+
+function makeKey(spec, w){
+  const [label, clickVal, lng, kind='key', isNew=false, longNew=false] = spec;
+  const box = document.createElement('div');
+  box.className = 'key' + (kind === 'key' ? '' : ' ' + kind) + (isNew ? ' new' : '');
+  box.style.flex = `${w} 1 0`;
+  box.dataset.click = clickVal == null ? label : clickVal;
+  box.dataset.long = lng || '';
+  box.innerHTML = '<div class="ring"></div>'
+    + (lng ? `<div class="hint${longNew ? ' added' : ''}">${lng}</div>` : '')
+    + `<span>${label}</span>`;
+  wire(box);
+  return box;
 }
 
 function render(){
-  kb.innerHTML='';
-  const rows = scheme==='now' ? ROW_NUM_NOW : ROW_NUM;
-  rows.forEach((row,ri)=>{
-    const el=document.createElement('div'); el.className='row';
-    const u=units(ri);
-    row.forEach((k,ki)=>{
-      let [label, clickRaw, lng, kind='key', isNew=false] = k;
-      const isBrace = (ri===2 && ki===1);
-      if(isBrace) lng = BRACE[brace].hint;
-      const box=document.createElement('div');
-      box.className='key'+(kind==='key'?'':' '+kind)+(isNew?' new':'')+((isNew||isBrace)&&lng?' changed':'');
-      box.style.flex=`${u[ki]} 1 0`;
-      box.dataset.click = clickRaw ?? label;
-      box.dataset.long = lng || '';
-      box.innerHTML=`<div class="ring"></div>${lng?`<div class="hint">${lng}</div>`:''}<span>${label}</span>`;
-      wire(box); el.appendChild(box);
-    });
+  kb.innerHTML = '';
+  const rows = scheme === 'now' ? ROWS_NOW : ROWS_A;
+  rows.forEach((row, ri) => {
+    const el = document.createElement('div'); el.className = 'row';
+    const u = units(ri);
+    row.forEach((k, ki) => el.appendChild(makeKey(k, u[ki])));
     kb.appendChild(el);
   });
-  const el=document.createElement('div'); el.className='row';
-  const ub=units(4);
-  [['ABC','fn'],['ASC','fn'],['CJK','fn'],[' ','space'],['⏎','accent']].forEach(([lab,kind],i)=>{
-    const box=document.createElement('div');
-    box.className='key'+(kind==='fn'?' fn':kind==='space'?' space':' accent');
-    box.style.flex=`${ub[i]} 1 0`;
-    box.dataset.click = lab;
-    box.dataset.long='';
-    box.innerHTML=`<div class="ring"></div><span>${lab===' '?'空格':lab}</span>`;
-    wire(box); el.appendChild(box);
+
+  const el = document.createElement('div'); el.className = 'row';
+  const ub = units(4);
+  [['ABC','fn'],['ASC','fn'],['CJK','fn'],['空格','space'],['⏎','accent']].forEach(([lab, kind], i) => {
+    const box = document.createElement('div');
+    box.className = 'key' + (kind === 'fn' ? ' fn' : kind === 'space' ? ' space' : ' accent');
+    box.style.flex = `${ub[i]} 1 0`;
+    box.dataset.click = lab === '空格' ? ' ' : lab;
+    box.dataset.long = '';
+    box.innerHTML = `<div class="ring"></div><span>${lab}</span>`;
+    wire(box);
+    el.appendChild(box);
   });
   kb.appendChild(el);
 
-  const widths = scheme==='now' ? '每鍵 20 單位 → 216×97px（2.2:1）· 25 鍵 / 35 輸出'
-    : '每鍵 16.7 單位 → 167×97px（1.72:1）· 29 鍵 / 45 輸出（原 10 個長按全保留）';
-  legend.textContent = widths + (scheme==='now' ? '' : ` · 底行空格 ${bottom==='wide'?'40':'20'} 單位`);
-  braceNote.innerHTML = '上表選擇會即時套用到 <b>{ }</b> 鍵的長按提示。' + BRACE[brace].note;
+  legend.textContent = scheme === 'now'
+    ? '對照：5 列 × 20 單位 → 每鍵 216×97px（2.2:1）· 25 鍵 / 35 個輸出'
+    : `方案 A：數字四列六等寬 ${U} 單位 → 每鍵 167×97px（1.72:1）· 29 鍵 / 50 個輸出`
+      + `（原有 11 個長按全保留）· 底行空格 ${bottom === 'wide' ? 40 : 20} 單位（導航列另計）`;
 }
 
-function emit(box,isLong){
+function emit(box, isLong){
   const val = isLong ? box.dataset.long : box.dataset.click;
   if(!val) return;
-  if(val==='⌫') buffer=buffer.slice(0,-1);
-  else if(val==='⏎') buffer+='\n';
+  if(val === '⌫') buffer = buffer.slice(0, -1);
+  else if(val === '⏎') buffer += '\n';
   else if(['↑','↓','←','→'].includes(val)){ /* 方向鍵事件，不上屏 */ }
-  else buffer+=val;
-  out.innerHTML = (buffer ? `<span>${buffer.replace(/\n/g,'⏎')}</span>`
+  else buffer += val;
+  out.innerHTML = (buffer
+      ? `<span>${buffer.replace(/\n/g,'⏎')}</span>`
       : '<span style="color:var(--comment);font-weight:400">——</span>')
-    + `<small>${isLong?'長按':'點擊'} → ${val}</small>`;
+    + `<small>${isLong ? '長按' : '點擊'} → ${val}</small>`;
 }
 
-function flash(b){ b.classList.add('hit'); setTimeout(()=>b.classList.remove('hit'),110); }
+function flash(b){ b.classList.add('hit'); setTimeout(() => b.classList.remove('hit'), 110); }
 
 function wire(box){
-  let t=null, long=false;
-  box.addEventListener('pointerdown',e=>{
-    e.preventDefault(); long=false; box.classList.add('holding');
-    t=setTimeout(()=>{ long=true; box.classList.remove('holding'); if(box.dataset.long){ flash(box); emit(box,true);} },450);
+  let t = null, long = false;
+  box.addEventListener('pointerdown', e => {
+    e.preventDefault(); long = false; box.classList.add('holding');
+    t = setTimeout(() => {
+      long = true; box.classList.remove('holding');
+      if(box.dataset.long){ flash(box); emit(box, true); }
+    }, 450);
   });
-  box.addEventListener('pointerup',()=>{
-    box.classList.remove('holding'); clearTimeout(t); if(!long){ flash(box); emit(box,false); }
+  box.addEventListener('pointerup', () => {
+    box.classList.remove('holding'); clearTimeout(t);
+    if(!long){ flash(box); emit(box, false); }
   });
-  box.addEventListener('pointerleave',()=>{ box.classList.remove('holding'); clearTimeout(t); });
+  box.addEventListener('pointerleave', () => { box.classList.remove('holding'); clearTimeout(t); });
 }
 
 function seg(id, cb){
-  document.getElementById(id).addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b) return;
-    [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));
+  document.getElementById(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if(!b) return;
+    [...e.currentTarget.children].forEach(x => x.setAttribute('aria-pressed', x === b));
     cb(b.dataset.v);
   });
 }
-seg('segScheme', v=>{ scheme=v; render(); });
-seg('segTheme', v=>{ theme=v; document.body.className=v; });
-seg('segBottom', v=>{ bottom=v; render(); });
-seg('segBrace', v=>{ brace=v; render(); });
-document.getElementById('clr').addEventListener('click',e=>{
-  e.preventDefault(); buffer='';
-  out.innerHTML='<span style="color:var(--comment);font-weight:400">——</span>';
+seg('segScheme', v => { scheme = v; render(); });
+seg('segTheme',  v => { theme = v; document.body.className = v; });
+seg('segBottom', v => { bottom = v; render(); });
+document.getElementById('clr').addEventListener('click', e => {
+  e.preventDefault(); buffer = '';
+  out.innerHTML = '<span style="color:var(--comment);font-weight:400">——</span>';
 });
 
 render();
