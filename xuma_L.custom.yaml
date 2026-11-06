@@ -1,0 +1,24 @@
+# xuma_L.custom.yaml —— 徐碼·L 手機端（同文/Trime）補丁
+# encoding: utf-8
+#
+# ⚠ 僅部署到安卓同文用戶目錄（/storage/emulated/0/rime/）根部；
+#   桌面 ibus 用戶目錄**不放此文件**（放了的話桌面行爲會被一起改掉）。
+#   部署方式見 android/deploy.sh 與 android/README.md。
+#
+# 補丁項逐一說明：
+#   · ascii_mode 進方案默認中文：手機虛擬鍵盤中西切換有專鍵（Shift_L/Mode_switch），
+#     桌面「進方案默認西文」是實體鍵盤 CapsLock 場景的裁定，手機不適用；
+#   · `P/`B 反查引導放行小寫 `p/`b：虛擬鍵盤無大寫鎖定保證，`p `b 前綴對拼音/
+#     筆畫字母無歧義（反查段內 p/b 是拼音字母，作引導符僅首位生效）；
+#   · 碼位反查放行「u+數字」引導：徐碼碼全字母且最長 4 碼，u 後接數字必非徐碼
+#     輸入路徑，過程零衝突（u 單字照常出徐碼候選；u6 起轉入碼位反查段）。
+#     限制：a–f 開頭的碼位（U+A000…U+FFFF 段）手機不可查——需查時用主題「碼」鍵
+#     （長按 u，發 Shift+u 走桌面同款大寫 U 通道，真機驗證清單第 8 項）。
+
+patch:
+  switches/@0/reset: 0                              # ascii_mode：進方案默認中文
+  luna_pinyin_lookup/prefix: "`p"
+  stroke_lookup/prefix: "`b"
+  recognizer/patterns/luna_pinyin_lookup: "^`p([a-z]+'?)*$"
+  recognizer/patterns/stroke_lookup: "^`b([a-z]+'?)*$"
+  recognizer/patterns/unicode: "^u[0-9][0-9a-fA-F]{0,7}$|^U[0-9a-fA-F]{4,8}$"

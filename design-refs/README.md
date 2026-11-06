@@ -1,0 +1,24 @@
+# 設計參考（第三方輸入法截圖）
+
+用戶手機實拍的四款主流輸入法鍵盤，作爲徐碼·L 安卓皮膚的**參照樣本**。
+只讀參考，不參與構建；不放進部署清單。
+
+| 檔案 | 來源 | 值得借鑑的點 |
+| --- | --- | --- |
+| `ref-gboard-拼音-light.jpg` | Gboard（拼音） | 字母**小寫**＋數字角標；Shift 實心箭頭（本機字庫無此字形）；地球圖標切語言；`?123` 圓形；Enter 用回車箭頭；淺紫強調色只染功能鍵 |
+| `ref-trime風格-Shift文字藍Enter-light.jpg` | 同文系主題（Shift 文字版） | **Shift 用文字**、`123` 帶 ≡ 角標、Enter 實心藍＋Enter 文字、方案鍵在**工具欄**（不在鍵盤內） |
+| `ref-中英雙字鍵-大寫字母-light.jpg` | 國內主流輸入法 | 底行 `中⌐ / ⌐英` 雙字鍵（角標指示當前態）；字母大寫；`符` 與 `123` 分列；Enter 用回車箭頭 |
+
+## 本倉已採納 / 已否決
+
+| 設計點 | 取捨 | 落點 |
+| --- | --- | --- |
+| Shift 文字 | **採納**（`⇧`/`⬆` 在本機字庫均渲染成細線空心箭頭，實測 3 輪） | `preset_keys.Shift_L` |
+| Enter 實心藍＋Enter 文字 | **採納** | `preset_keys.Return` |
+| `123` 鍵 | **採納**（數字層用文字是業界慣例） | `preset_keys.Keyboard_symbols` |
+| 字母小寫、Shift 纔大寫 | **採納**（原 `label_transform: uppercase` 導致恆大寫） | `preset_keyboards.xuma_L.label_transform: none` |
+| 中英鍵顯示 `中 / En` | **否決**（Trime 限制：每個狀態只能渲染一個字符串、單一字號與顏色；`on_key_*` 僅對 sticky 鍵生效，toggle 鍵不會點亮），改採地球圖標 | `preset_keys.Mode_switch` |
+| 地球圖標切語言 | **採納**（🌐，24sp）；當前語言改由**空格鍵**顯示 | `preset_keys.Mode_switch` |
+| 空格鍵顯示語言與方案 | **採納**：`中文 · 徐碼·L` / `英文 · 徐碼·L`，按模式換 preset（`space_zh` / `space_en` + 鍵位 `ascii:` 分支） | `preset_keys.space_*` |
+| 地球圖標切語言 | 否決（不顯示中英態，且小號發虛、大號與角標重疊） | — |
+| 角標/符號角標（CUT/COPY…） | 已採納（長按提示符號化） | `preset_keys` |

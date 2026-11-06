@@ -1,0 +1,5 @@
+# 本機產物
+tmp/
+.venv/
+__pycache__/
+*.pyc
