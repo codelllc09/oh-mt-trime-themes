@@ -35,7 +35,12 @@ SRC_CANDIDATES = [
     '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc',
 ]
 
-EXTRA_CHARS = 'ㄓ'        # 2026-11-07：空格鍵的 RIME 標記（注音 ㄓ）；系統字體不會有此子集
+# 2026-11-07：
+#   ㄓ —— 曾用作空格鍵的 RIME 標記（後來改成 SUIGEM，字形留着備用）；
+#   ◀ ▶ ▲ ▼ —— **實心三角**。原本方向鍵提示用 ← ↑ → ↓，在 11sp（29px）下細到看不見，
+#   且主題裏那幾個 preset 的 label 還寫成空白（等於沒有提示）。實心三角同字號可讀，
+#   用戶選定用三角而非實心箭頭（見 design-refs/arrow-glyph-mock.html）。
+EXTRA_CHARS = 'ㄓ◀▶▲▼'
 FAMILY = 'Xuma Key CJK'
 
 

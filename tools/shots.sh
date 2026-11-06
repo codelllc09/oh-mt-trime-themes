@@ -27,7 +27,7 @@ SEARCH_X=376; SEARCH_Y=605
 ROW1_Y=1577; ROW2_Y=1742; ROW3_Y=1907; BOTTOM_Y=2072; SYM_BOTTOM_Y=2088
 GLOBE_X=162; KEY12_X=54; SHIFT_X=81; B_X=648    # 底行：12#(0-10) 地球(10-20)，各 10 單位等寬
 # 各頁底行座標
-NUM_ABC_X=108; NUM_ASC_X=324; NUM_CJK_X=540
+NUM_ABC_X=81; NUM_ASC_X=243; NUM_CJK_X=405    # 數字頁底行 15/15/15/40/15
 SYM_123_X=81
 
 ime_up() { "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mInputShown=true'; }

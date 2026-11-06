@@ -112,10 +112,20 @@ PY
   return 1
 }
 
+go_num() {   # 確保停在數字頁（符號頁的中轉站；各段可單獨跑）
+  case "$(kind)" in
+    num*) return 0 ;;
+    main*|"") tap 54 $MBOT ;;
+    *) tap 81 $BOT ;;
+  esac
+  sleep 0.4
+  case "$(kind)" in num*) return 0 ;; *) return 1 ;; esac
+}
+
 go_main() {   # 確保回到主鍵盤（依 page_kind 判斷，不靠猜）
   case "$(kind)" in
     main*) return 0 ;;
-    num*)  tap 108 $BOT ;;
+    num*)  tap 81 $BOT ;;
     *)     tap 108 1960 ;;
   esac
   sleep 0.4
@@ -132,10 +142,10 @@ if want 1; then
 say "═══ 1. 頁面導航（12# → 數字 → ASC/CJK → 123/ABC）═══"
 expect "起點主鍵盤" "$(kind)" main
 tap 54 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
-tap 324 $BOT;   expect "ASC → ASCII 符號頁" "$(kind)" ascii
+tap 243 $BOT;   expect "ASC → ASCII 符號頁" "$(kind)" ascii
 tap 81 $BOT;    expect "123 → 數字鍵盤" "$(kind)" num
-tap 540 $BOT;   expect "CJK → 中文標點頁" "$(kind)" cjk
-tap 81 $BOT; tap 108 $BOT
+tap 405 $BOT;   expect "CJK → 中文標點頁" "$(kind)" cjk
+tap 81 $BOT; tap 81 $BOT
 expect "ABC → 主鍵盤" "$(kind)" main
 fi
 
@@ -169,35 +179,56 @@ done
 fi
 
 if want 5; then
-say "═══ 5. 數字鍵盤 ═══"
-tap 54 $MBOT
-wipe; tap 324 1539; tap 540 1674
+say "═══ 5. 數字鍵盤（6 列 × 16.7 單位）═══"
+# 座標：列中心 x = 90 / 270 / 451 / 631 / 811 / 992；行中心 y = 1563 / 1694 / 1825 / 1956 / 2087（底行）
+go_num || bad "無法進入數字頁"
+
+# 新數學列：點 , ；長按 ‰ π ℃
+wipe; tap 90 1563; hold 90 1694; hold 90 1825; hold 90 1956
+batch "新列：, ‰ π ℃" ",‰π℃" 4
+# { } 長按 → ≈
+wipe; hold 270 1825
+batch "{ } 長按 → ≈" "≈" 1
+# 1 ≤ ／ 3 ≥
+wipe; hold 451 1825; hold 811 1825
+batch "1 ≤ ／ 3 ≥" "≤≥" 2
+# / ÷ ／ - ±
+wipe; hold 992 1563; hold 811 1956
+batch "/ ÷ ／ - ±" "÷±" 2
+# 原有行爲：數字、括號成對、長按 < > # ≠
+wipe; tap 451 1563; tap 631 1694
 batch "數字鍵盤 7、5" "75" 2
-wipe; tap 108 1539
+wipe; tap 270 1563
 batch "() 一次成對" "()" 1
-wipe; tap 108 1539; tap 324 1539
+wipe; tap 270 1563; tap 451 1563
 batch "光標在括號內 (7)" "(7)" 1
-wipe; hold 108 1539; hold 108 1674; hold 972 1674; hold 108 1944
+wipe; hold 270 1563; hold 270 1694; hold 992 1694; hold 270 1956
 batch "( [ * = 長按" "<>#≠" 4
+# 空格鍵（鍵面寫「空格」，寬 40）
+wipe; tap 702 2087
+batch "空格鍵 → 空格" " " 1
 fi
 
 if want 6; then
 say "═══ 6. ASCII 符號頁（不翻譯）═══"
-tap 324 $BOT
+go_num || bad "無法進入數字頁"
+tap 243 $BOT                                   # 數字頁的 ASC
 wipe; tap 216 1960; hold 216 1960; tap 216 2088
 batch "ASCII 頁 \" 點／長按、, 點擊" '"＂,' 3
 fi
 
 if want 7; then
 say "═══ 7. 中文標點頁（不翻譯）═══"
-tap 81 $BOT; tap 540 $BOT
+# 自足路徑：數字頁 →(ASC) ASCII 頁 →(123) 數字頁 →(CJK) 中文標點頁
+go_num || bad "無法進入數字頁"
+tap 243 $BOT; tap 81 $BOT; tap 405 $BOT
 wipe; tap 54 1539; tap 918 1539
 batch "中文頁 ，與 ”" "，”" 2
 fi
 
 if [ "$CLIP" = 1 ] && want 8; then
 say "═══ 8. 剪貼板面板 ═══"
-tap 81 $BOT; tap 108 $BOT
+go_main || bad "無法回到主鍵盤"
 hold 648 $R3
 "${ADB[@]}" exec-out screencap -p > /tmp/verify_clip.png
 python3 - <<'PY'
