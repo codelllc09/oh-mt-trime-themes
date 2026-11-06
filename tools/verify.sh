@@ -1,7 +1,12 @@
 #!/bin/bash
 # verify.sh —— 容器/真機全流程驗證（逐項打勾，失敗即非零退出）
 #
-# 用法：TRIME_ADB_SERIAL=… ./tools/verify.sh [--section N] [--no-clip]
+# 用法：TRIME_ADB_SERIAL=… ./tools/verify.sh [--section N] [--quick] [--no-clip]
+#
+# 跑多少由改動風險決定（見 TESTING.md「按改動風險選驗證」）：
+#   只改配色／文案／單鍵數值 → --quick（約 50s，跳過長按全表與功能鍵）
+#   改版式／鍵位／行高     → 全量（約 2 分鐘）
+#   改 lua／schema        → 不歸本腳本，回主倉跑四道門禁
 # 前提：同文為當前輸入法、已部署最新主題、1080×2280@420。
 # 判據一律讀**碼位**（uiautomator 取字段文本），不看字形。
 #
@@ -17,10 +22,11 @@
 set -u
 S="${TRIME_ADB_SERIAL:-localhost:5555}"
 ADB=(adb -s "$S")
-ONLY=""; CLIP=1
+ONLY=""; CLIP=1; QUICK=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --section) ONLY="$2"; shift 2 ;;
+    --quick) QUICK=1; CLIP=0; shift ;;   # 跳過第 3／4／8 段（長按全表、功能鍵、剪貼板）
     --no-clip) CLIP=0; shift ;;
     *) echo "未知參數：$1" >&2; exit 2 ;;
   esac
@@ -30,6 +36,7 @@ ok()  { PASS=$((PASS+1)); printf '  [✓] %s\n' "$1"; }
 bad() { FAIL=$((FAIL+1)); FAILED+=("$1"); printf '  [✗] %s\n' "$1"; }
 say() { printf '%s\n' "$*"; }
 want() { [ -z "$ONLY" ] || [ "$ONLY" = "$1" ]; }
+skip_quick() { [ "$QUICK" = 1 ] && [ "$1" = "$2" ]; }
 
 BOT=2088; MBOT=2072                       # 底行中線（符號頁 / 主鍵盤）
 R1=1577; R2=1742; R3=1907                 # 主鍵盤三行字母
@@ -140,7 +147,7 @@ wipe; tap 270 $MBOT; tap 756 $MBOT; tap 864 $MBOT; tap 540 $MBOT
 batch "中文態 , . /＋空格選首選" "，。、" 3
 fi
 
-if want 3; then
+if want 3 && ! skip_quick 3 3; then
 say "═══ 3. 長按全表（中文態，連打後讀一次）═══"
 wipe
 for x in 54 162 270 378 486 594 702 810 918 1026; do hold $x $R1; done
@@ -152,7 +159,7 @@ for x in 270 756 864; do hold $x $MBOT; done            # , . /
 batch "長按符號 g h j k l n m , . /" "（）……——‘：“；！？" 10
 fi
 
-if want 4; then
+if want 4 && ! skip_quick 4 4; then
 say "═══ 4. 功能鍵：長按後 IME 存活 ═══"
 for spec in "486 1742 a:Tab" "216 1742 s:全選" "324 1742 d:撤銷" "432 1742 f:恢復" \
             "216 1907 z:反查引導" "324 1907 x:剪切" "432 1907 c:複製" "540 1907 v:粘貼"; do

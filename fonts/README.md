@@ -31,9 +31,21 @@ OFL/Apache 對修改版的硬性要求。
 
 ## 重建方式
 
+**已腳本化**（推薦）：
+
 ```sh
-# 1) 字符集：主題裏所有 click/long_click/label ＋ ASCII 全表（見 tools/gen_icons.py 同款做法）
-#    本倉用 /tmp/kbchars.txt 臨時存放，腳本化時應改為由主題自動收集。
+uv run --with fonttools python3 tools/rebuild_key_font.py
+```
+
+它做三件事：讀現有 `xuma_key.otf` 的 cmap（保證不丟字）∪ `EXTRA_CHARS`（現為 `ㄓ`）
+→ 從系統 `NotoSansCJK-VF.ttc` 用 `varLib.instancer` 固定 `wght=400`（**不能直接子集
+可變字體**，默認實例是 Thin）→ 子集、改家族名、寫回。現有 175 字形、62 KB。
+
+手工版（保留作原理參考）：
+
+```sh
+# 1) 字符集：現有字體的 cmap ∪ 新增字符（早期用 /tmp/kbchars.txt 臨時存放，已由
+#    tools/rebuild_key_font.py 取代）。
 
 # 2) CJK 子集（去掉 ASCII，讓拉丁走 xuma_latin.ttf）
 uv run --with fonttools python - <<'PY'

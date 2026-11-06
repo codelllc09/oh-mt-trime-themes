@@ -15,9 +15,10 @@ FILL=0 描邊版——與 Gboard 的地球同源同風格。字體按需下載�
       否則圓形會被拉成橢圓（實測：ASPECT 設 1.27 時地球顯示為 86% 寬的扁圓）。
       1080p@420 逐像素量得鍵位 150×146px → 長寬比 ≈1.03（並非按 15 單位×108 推算的 162）。
 
-      ⚠ **改地球鍵寬度就要同步改 ASPECT**（2026-11-07：底部地球鍵 15→10 單位，
-      逐像素量得 96×150px → ASPECT=0.64；同時圖標佔比從 0.56 降到 0.36，
-      因為圖標是按鍵高算的，鍵變窄後同樣比例會在橫向頂滿鍵面）。
+      ⚠ **改地球鍵寬度或 vertical_gap 就要同步改 ASPECT**（圖檔是被拉伸填滿鍵位的）：
+        · 2026-11-07 第一次：底部地球鍵 15→10 單位 → 96×150px → ASPECT=0.64
+        · 2026-11-07 第二次：vertical_gap 6→13 使鍵變矮 → 96×130px → ASPECT=0.74
+        圖標佔比同樣跟着調（由鍵高算，鍵一矮就要略減），否則會頂滿或顯小。
 """
 import hashlib
 import os
@@ -39,10 +40,10 @@ FONT_CACHE = Path(os.environ.get('XDG_CACHE_HOME', Path.home() / '.cache')) / 'x
 FONT_FILE = FONT_CACHE / 'MaterialSymbolsOutlined.ttf'
 GLYPH_LANGUAGE = 0xE894          # Material Symbols: language
 
-ASPECT = 0.64                    # 鍵位長寬比（逐像素實測 96×150，1080p@420，10 單位寬地球鍵）
+ASPECT = 0.74                    # 鍵位長寬比（逐像素實測 96×130，1080p@420，10 單位寬＋vgap 13）
 H = 300                          # 圖檔高（留 3x 餘量，2K 屏也不虛）
 W = int(H * ASPECT)
-ICON_RATIO = 0.36                # 圖標字號 / 鍵高：鍵窄時要調小，否則橫向頂滿鍵面
+ICON_RATIO = 0.40                # 圖標字號 / 鍵高：鍵窄且矮時要跟着調，否則橫向頂滿鍵面
 SUPERSAMPLE = 4                  # 超採樣，邊緣抗鋸齒
 
 

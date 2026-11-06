@@ -454,7 +454,20 @@ PASS 55 ／ FAIL 2
 
 ```sh
 ./tools/verify.sh                # 全程（約 2 分鐘）
+./tools/verify.sh --quick        # 約 50 秒：跳過長按全表／功能鍵／剪貼板
 ./tools/verify.sh --section 3    # 只跑長按全表
 ./tools/verify.sh --no-clip      # 跳過剪貼板段
 ```
+
+## 按改動風險選驗證（別對小改動做全量）
+
+| 改動類型 | 要跑的 |
+|---|---|
+| 配色、文案、單鍵數值（如 `key_text_size`） | 部署 + 截圖目視；需要時 `--section 2` 或 `--quick` |
+| 鍵位／版式／行高／`vertical_gap`／鍵寬 | `check_trime.py`（含 gen-theme 漂移）＋ `aesthetics.py` ＋ **全量 verify** ＋ `shots.sh` |
+| 字體子集、地球圖檔 | 部署後目視該鍵，並跑 `--section 3`（長按全表會覆蓋鍵面字符） |
+| 工具腳本本身（verify/shots/page_kind） | 改哪支就跑哪支，並至少跑一次全量 |
+| lua／schema／詞典 | **不在本倉**：回桌面主倉跑四道門禁 |
+
+判準：**改了什麼就驗什麼**，全量是「版式或跨檔改動」的保險，不是每次改字的入場券。
 

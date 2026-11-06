@@ -47,7 +47,11 @@ style:
   key_height: 38
   round_corner: 9
   horizontal_gap: 5
-  vertical_gap: 6
+  # 2026-11-07：鍵位原本縱向細長（可視 95×148，比例 0.64）。Trime 的行是平鋪的，
+  # 行與行之間沒有真空隙，可視鍵高 = 格高 − vertical_gap。故把 vertical_gap 由 6 拉到 13：
+  # 鍵變矮（≈95×128）、縫加倍，而 keyboard_height 不動 → 鍵盤總高不變。
+  # ⚠ 改這個值要同步改 tools/gen_icons.py 的 ASPECT（地球圖檔按鍵位比例拉伸）。
+  vertical_gap: 13
 
 preedit:
   __include: trime:/preedit
@@ -196,9 +200,10 @@ preset_keys:
 
   # 空格鍵：顯示「語言 · 方案」。Trime 只在 label 為空時自動填方案名，
   # 故按模式給兩個 preset（中文/英文），鍵位用 ascii: 切換（Key.kt keyDef.ascii）。
-  # 空格鍵標籤：中文態留空 → Trime 自動填當前方案名（KeyAction.getSpaceKeySchemaName，
-  # 換方案自動跟隨，不必手改主題）；英文態 ascii_mode 下無方案在起作用，只顯示 En。
-  space_zh: {label: '', send: space, repeatable: false, functional: false}
+  # 空格鍵標籤：中文態顯示「ㄓ」——用注音符號近似 RIME 的 logo（用戶裁定 2026-11-07），
+  # 不再顯示方案名「徐碼·L」（方案名在候選欄／主題選單裏看得到，鍵上不必再擠一次）。
+  # 該字形不在系統 CJK 子集裏，已用 tools/rebuild_key_font.py 補進 fonts/xuma_key.otf。
+  space_zh: {label: 'ㄓ', send: space, repeatable: false, functional: false}
   space_en: {label: 'En', send: space, repeatable: false, functional: false}
   # 符號頁的空格顯示「頁面身份」而非輸入方案
   space_ascii: {label: 'ASCII', send: space, repeatable: false, functional: false}
@@ -482,7 +487,7 @@ preset_keyboards:
       - {click: sym, long_click: schema_menu,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       - {click: ',', long_click: ';'}    # 中文 ，；長按 → ；    # 中文：，／長按 ？
-      - {click: space_zh, ascii: space_en, width: 35,
+      - {click: space_zh, ascii: space_en, width: 35, key_text_size: 28,
          key_back_color: space_back_color, key_text_color: space_text_color}
       - {click: '.', long_click: '!'}    # 中文 。；長按 → ！    # 中文：。／長按 ！
       # 斜線：**送 ASCII `/`**（送給 Rime，由 punctuator 給 、/／÷ 候選）。

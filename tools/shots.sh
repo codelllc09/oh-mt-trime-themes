@@ -18,7 +18,7 @@
 # 反查一次頁別，檔名與畫面不符就報錯（歷史上錯過三次）。
 set -e
 SER="${TRIME_ADB_SERIAL:-localhost:5555}"
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/tmp/overview"
 ADB=(adb -s "$SER")
 

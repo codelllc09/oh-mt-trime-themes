@@ -3244,6 +3244,7 @@ preset_keyboards:
       click: space_zh
       key_back_color: space_back_color
       key_text_color: space_text_color
+      key_text_size: 28
       width: 35
     - click: .
       long_click: '!'
@@ -3717,7 +3718,7 @@ preset_keys:
     send: space
   space_zh:
     functional: false
-    label: ''
+    label: ㄓ
     repeatable: false
     send: space
   sym:
@@ -3793,7 +3794,7 @@ style:
   symbol_font: symbol.ttf
   symbol_text_size: 10
   text_font: latin.ttf
-  vertical_gap: 6
+  vertical_gap: 13
 window:
   foreground:
     comment_font_size: 16
