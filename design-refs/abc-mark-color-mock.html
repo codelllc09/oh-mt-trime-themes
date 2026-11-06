@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>ABC 鍵雙三角的「灰藍」候選</title>
+<style>
+  :root{
+    --bg:#101113; --key:#2C2F33; --text:#E6E8EB; --fn:#454A51; --fntext:#E6E8EB;
+    --accent:#8AB4F8; --accent-text:#1B1C1E; --space:#33363B; --space-text:#B4B9C0;
+    --comment:#8A9098; --page:#0B0C0E; --card:#17191C; --line:#26292D;
+    --nav-bg:#232B38; --nav-fg:#8AB4F8;
+  }
+  body.light{
+    --bg:#DEE1E6; --key:#FFFFFF; --text:#1F2124; --fn:#C6CBD2; --fntext:#2E3134;
+    --accent:#1A73E8; --accent-text:#FFFFFF; --space:#F1F3F6; --space-text:#5F6368;
+    --comment:#8A9098; --page:#F6F7F9; --card:#FFFFFF; --line:#E2E5EA;
+    --nav-bg:#C9D9F2; --nav-fg:#1A73E8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:26px 32px 60px;background:var(--page);color:var(--text);
+    font:15px/1.7 system-ui,"Noto Sans CJK SC",sans-serif}
+  h1{font-size:21px;margin:0 0 4px;font-weight:650}
+  h1 span{font-size:13px;color:var(--comment);font-weight:400;margin-left:10px}
+  .sub{color:var(--comment);font-size:13.5px;margin-bottom:16px}
+  .alert{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:8px;padding:10px 14px;font-size:13px;margin:12px 0 18px}
+  .toolbar{display:flex;gap:10px;align-items:center;margin:0 0 18px}
+  .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+  .seg button{border:0;background:transparent;color:var(--text);padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-text);font-weight:600}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px 16px}
+  .card.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .card h2{font-size:13.5px;margin:0 0 10px;font-weight:650;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--accent);color:var(--accent-text);font-weight:700}
+  .meta{font:12px/1.5 ui-monospace,"Roboto Mono",monospace;color:var(--comment);margin-left:auto}
+  .kb{background:var(--bg);border-radius:12px;padding:10px 0}
+  .row{display:flex;gap:7px;padding:0 7px}
+  .key{position:relative;height:56px;border-radius:12px;background:var(--key);color:var(--text);
+    display:flex;align-items:center;justify-content:center;font-size:17px;
+    font-family:"Liberation Sans",Roboto,system-ui,"Noto Sans CJK SC",sans-serif}
+  .key.fn{background:var(--fn);color:var(--fntext)}
+  .key.space{background:var(--space);color:var(--space-text);font-size:13px;letter-spacing:.16em}
+  .key.accent{background:var(--accent);color:var(--accent-text)}
+  .key.nav{background:var(--nav-bg);color:var(--nav-fg)}
+  .key .mark{position:absolute;top:1px;left:50%;transform:translateX(-50%);line-height:1;
+    font-size:10px;white-space:nowrap;font-family:system-ui,"Noto Sans CJK SC",sans-serif}
+  .legend{font-size:12.5px;color:var(--comment);margin-top:10px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line)}
+  th{color:var(--comment);font-weight:500;font-size:12px}
+  code{font-family:ui-monospace,"Roboto Mono",monospace;font-size:12px}
+</style>
+</head>
+<body class="dark">
+<h1>ABC 鍵雙三角的「灰藍」<span>◀◀ 保持居中，只改顏色 · 2026-11-07</span></h1>
+<div class="alert">
+  <b>先說清一件事：</b>實機上這兩個三角現在其實是<b>中性灰</b>（<code>key_symbol_color: #8A9098</code>，
+  和長按提示同色）；「明亮藍」出現在我的 HTML 示意圖裏（那是我把角標套了強調色）。
+  你的意思我理解爲：<b>要帶藍味、但明顯發灰</b>，比純灰多一點歸屬感、又不搶 ABC 文字。下面五檔可選。
+</div>
+
+<div class="toolbar">
+  <div class="seg" id="segTheme">
+    <button data-v="dark" aria-pressed="true">墨空</button>
+    <button data-v="light">雲白</button>
+  </div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="card" style="margin-top:18px">
+  <h2>對比度（對鍵底 nav_back_color）</h2>
+  <table>
+    <thead><tr><th>檔</th><th>墨空 #232B38</th><th>雲白 #C9D9F2</th><th>備註</th></tr></thead>
+    <tbody id="crTable"></tbody>
+  </table>
+  <div class="legend">符號屬小字，專案規則要求 ≥3.0；純灰在<b>雲白</b>下只有 2.25，本來就偏弱。</div>
+</div>
+
+<script>
+const SHADES = [
+  {id:'cur',  name:'現狀：中性灰', dark:'#8A9098', light:'#8A9098', pick:false},
+  {id:'a',    name:'灰藍 A（推薦）', dark:'#7F8FA6', light:'#5F6E84', pick:true},
+  {id:'b',    name:'灰藍 B（更深）', dark:'#6F7F96', light:'#54627A', pick:false},
+  {id:'c',    name:'灰藍 C（更亮）', dark:'#96A7BE', light:'#7C8CA3', pick:false},
+  {id:'d',    name:'偏紫灰',         dark:'#8585A6', light:'#6A6A8C', pick:false}
+];
+
+function lin(c){ c/=255; return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+function L(h){ h=h.replace('#',''); const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+  return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b); }
+function cr(a,b){ const la=L(a), lb=L(b); const hi=Math.max(la,lb), lo=Math.min(la,lb); return (hi+0.05)/(lo+0.05); }
+
+const isLight = () => document.body.className === 'light';
+
+function card(s){
+  const col = isLight() ? s.light : s.dark;
+  const bg  = isLight() ? '#C9D9F2' : '#232B38';
+  return `<div class="card ${s.pick?'pick':''}">
+    <h2>${s.name}${s.pick?'<span class="badge">推薦</span>':''}
+      <span class="meta">${col} · 對比 ${cr(col,bg).toFixed(2)}</span></h2>
+    <div class="kb"><div class="row">
+      <div class="key nav" style="flex:15 1 0">
+        <span class="mark" style="color:${col}">◀◀</span>ABC</div>
+      <div class="key fn" style="flex:15 1 0">ASC</div>
+      <div class="key fn" style="flex:15 1 0">CJK</div>
+      <div class="key space" style="flex:40 1 0">空格</div>
+      <div class="key accent" style="flex:15 1 0">⏎</div>
+    </div></div>
+  </div>`;
+}
+
+function table(){
+  document.getElementById('crTable').innerHTML = SHADES.map(s => `
+    <tr><td>${s.name}</td>
+        <td><code>${s.dark}</code> · ${cr(s.dark,'#232B38').toFixed(2)}</td>
+        <td><code>${s.light}</code> · ${cr(s.light,'#C9D9F2').toFixed(2)}</td>
+        <td>${s.pick?'兩套配色都 ≥3.0，且明顯帶藍但不搶眼':''}</td></tr>`).join('');
+}
+
+function render(){
+  document.getElementById('grid').innerHTML = SHADES.map(card).join('');
+  table();
+}
+
+document.getElementById('segTheme').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  [...e.currentTarget.children].forEach(x => x.setAttribute('aria-pressed', x === b));
+  document.body.className = b.dataset.v;
+  render();
+});
+render();
+</script>
+</body>
+</html>
