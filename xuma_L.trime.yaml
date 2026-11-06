@@ -484,7 +484,7 @@ preset_keyboards:
          label_symbol: ' ',
          key_back_color: globe_img, hilited_key_back_color: globe_hl_back_color}
       - {click: ',', long_click: ';'}    # 中文 ，；長按 → ；    # 中文：，／長按 ？
-      - {click: space_zh, ascii: space_en, width: 35, key_text_size: 20,
+      - {click: space_zh, ascii: space_en, width: 35, key_text_size: 13,
          key_back_color: space_back_color, key_text_color: space_text_color}
       - {click: '.', long_click: '!'}    # 中文 。；長按 → ！    # 中文：。／長按 ！
       # 斜線：**送 ASCII `/`**（送給 Rime，由 punctuator 給 、/／÷ 候選）。

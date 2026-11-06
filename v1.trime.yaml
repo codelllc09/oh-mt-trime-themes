@@ -3243,7 +3243,7 @@ preset_keyboards:
       click: space_zh
       key_back_color: space_back_color
       key_text_color: space_text_color
-      key_text_size: 20
+      key_text_size: 13
       width: 35
     - click: .
       long_click: '!'
