@@ -120,3 +120,24 @@ luna_pinyin.custom.yaml 解）；`u` 單字與碼位反查引導衝突（u+數�
   待清單第 8 項實測；失敗不影響其他功能。
 - 詞頻管道、`wishd`、鏡像備份等倉庫工具鏈不部署到手機；
   手機端僅消費詞典產物與採集 spool。
+
+## 本倉邊界（雙根架構）
+
+本倉**只負責同文（Trime）主題與 UI 資產**；方案、詞典、lua 全部跟隨桌面主倉：
+
+| 根 | 內容 | 位置 |
+|---|---|---|
+| 本倉 | trime 主題（`xuma_L.trime.yaml` 源檔 / `v1.trime.yaml` 生成物）、補丁、字體、背景、工具、文檔 | `~/Work/rime-tongwen` |
+| 桌面主倉 | `xuma_L.schema.yaml`、`xuma_L.dict.yaml`、`lua/**`、台賬、spool 管道 | `RIME_DESKTOP_DIR`（默認 `~/.config/ibus/rime`）|
+
+**含義**：本倉不能單獨部署——沒有主倉就沒有方案與詞典。改 lua／schema 請回主倉。
+
+## CI
+
+`.github/workflows/gate.yml` 在 push／PR 上跑：
+
+1. `tools/check_trime.py`（**無主倉模式**：依賴 schema 的校驗自動 SKIP）；
+2. `gen-theme --check`（自包含主題與源檔無漂移）；
+3. `tools/aesthetics.py`（配色對比 WCAG）。
+
+真機側（`deploy.sh push`、`verify.sh`、`shots.sh`）需要 adb 與 Waydroid，不在 CI 跑。

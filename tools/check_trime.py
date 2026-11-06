@@ -148,8 +148,9 @@ def check_theme(theme: dict, schema: dict):
          ('' if not bad else f'；未知引用 {bad}'))
 
     # 字根 hint 對賬（v2 主題已去字根——僅當設有 hint 時才校驗一致性）
-    xlit = parse_schema_xlit(schema)
-    item(xlit is not None, '方案 translator/preedit_format 解析出 xlit 字根映射')
+    xlit = parse_schema_xlit(schema) if schema else None
+    if schema:
+        item(xlit is not None, '方案 translator/preedit_format 解析出 xlit 字根映射')
     if xlit:
         hints = {}
         for k in xk.get('keys') or []:
@@ -197,10 +198,13 @@ def check_theme(theme: dict, schema: dict):
          + (f'；非法 {color_bad}' if color_bad else ''))
 
 
-def check_custom(custom: dict, schema: dict):
+def check_custom(custom: dict, schema):
     print('補丁 xuma_L.custom.yaml：')
     item(isinstance(custom.get('patch'), dict) and custom['patch'],
          'patch 節點存在且非空')
+    if schema is None:
+        item(True, f'SKIP：補丁路徑校驗需方案檔（{len(custom.get("patch") or {})} 條未驗）')
+        return
     for path in (custom.get('patch') or {}):
         item(resolve_schema_path(schema, path), f'補丁路徑存在：{path}')
 
@@ -212,9 +216,12 @@ def check_default():
     l = yaml.safe_load(GEN_CUSTOM['luna_pinyin.custom.yaml'])
     item((l.get('patch') or {}).get('translator/dictionary') == 'luna_pinyin.extended',
          'luna_pinyin.custom.yaml 指向 extended ✓')
-    for ent in d['patch']['schema_list']:
-        sid = ent.get('schema')
-        item((REPO / f'{sid}.schema.yaml').exists(), f'方案檔案存在：{sid}.schema.yaml')
+    missing = [e.get('schema') for e in d['patch']['schema_list']
+               if not (REPO / f"{e.get('schema')}.schema.yaml").exists()]
+    if REPO.is_dir() and any((REPO / 'xuma_L.schema.yaml').exists() for _ in [0]):
+        item(not missing, '方案檔案齊備' + (f'；缺 {missing}' if missing else ''))
+    else:
+        item(True, f'SKIP：方案檔不在主倉（{REPO}）→ 跳過方案清單校驗')
     item(d['patch']['menu/page_size'] == 7,
          'menu/page_size=7（/add /menu 二級菜單防翻頁錯位）')
 
@@ -382,10 +389,17 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == 'manifest':
         manifest()
         return
-    print('── android 資產校驗 ──')
+    print('── 本倉資產校驗 ──')
     theme = load_yaml(ANDROID / 'xuma_L.trime.yaml')
     custom = load_yaml(ANDROID / 'xuma_L.custom.yaml')
-    schema = load_yaml(REPO / 'xuma_L.schema.yaml')
+    # 方案檔在桌面主倉（雙根架構）；CI/獨立檢出時可能不存在 → 跳過依賴它的校驗，
+    # 而不是崩掉（2026-11-07 補，配合本倉 CI）。
+    schema_path = REPO / 'xuma_L.schema.yaml'
+    if schema_path.exists():
+        schema = load_yaml(schema_path)
+    else:
+        schema = None
+        item(True, f'SKIP：方案檔不在（{schema_path}）→ 跳過依賴 schema 的校驗')
 
     for p in ('xuma_L.trime.yaml', 'xuma_L.custom.yaml'):
         try:
