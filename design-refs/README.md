@@ -163,3 +163,29 @@ V3 建議在 `preset_color_schemes` 各加 `nav_back_color`／`nav_text_color` �
 正方形（1.0）在此佈局下不可達——鍵高被全局面板鎖在 97px，6 欄最窄也有 ~128px。
 `horizontal_gap` 是整頁生效，底行 ABC/ASC/CJK/空格/⏎ 會一起變鬆（這是好事）。
 **代價**：整頁所有鍵的 x 座標都會變，`verify.sh`／`shots.sh` 的數字頁座標要重算。
+
+## 設計稿改由「主題」生成（2026-11-07，`tools/render_keyboard.py`）
+
+**問題**：前幾版示意圖是手寫 HTML 拼出來的，與主題是兩份獨立的手工產物，於是反覆出錯——
+初始狀態與按鈕不一致、鍵的比例靠估算、角標顏色與實機不符、把 `**粗體**` 漏在頁面上。
+
+**改法**：示意圖不再手寫，改為**讀 `xuma_L.trime.yaml` 直接渲染**：
+
+```sh
+python3 tools/render_keyboard.py number --scheme xuma_night            # 現狀
+python3 tools/render_keyboard.py number --scheme xuma_cloud --patch '{"gap":14,"spacer":3}'
+```
+
+它照 Trime 的規則算版面：1 單位 = 10.8px、鍵高 = 行格 − vertical_gap、
+`gap` 取 dp×2.625、label 長度 >1 用 `key_long_text_size`、提示取 `label_symbol`
+（沒有就退回長按鍵的 label）、配色按名解析。輸出寬 1080px，與實機同像素。
+
+**驗收方式**：把渲染圖與實機截圖並排（同寬 1080、同裁切），眼見對齊才算數。
+實測現狀：渲染與實機逐行對齊，鍵高 97px、行格 131px 完全一致。
+
+**兩個踩過的坑**（都已修）：
+
+1. **Trime 的顏色是 `#AARRGGBB`，CSS 是 `#RRGGBBAA`** —— 照搬 8 位 hex 會讓整把鍵盤變粉紅；
+2. **label 長度 >1 要用 `key_long_text_size`**（`Enter`／`空格`），否則字會頂出鍵外。
+
+變體（patch）同樣要遵守總寬 100：插 spacer 時其餘鍵按 `(100−spacer)/100` 等比縮小。
