@@ -1996,10 +1996,10 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       width: 19
-    - click: Keyboard_default
+    - click: back_to_kb
       key_back_color: nav_back_color
       key_text_color: nav_text_color
-      label_symbol: ◀
+      label_symbol: ◀◀
       width: 15
     - click: goto_ascii
       key_back_color: fn_back_color
@@ -2090,8 +2090,10 @@ preset_keyboards:
     - click: '!'
       long_click: ！
     - width: 5
-    - click: Keyboard_default
-      label_symbol: ' '
+    - click: back_to_kb
+      key_back_color: nav_back_color
+      key_text_color: nav_text_color
+      label_symbol: ◀◀
       width: 15
     - click: '"'
       long_click: ＂
@@ -2195,8 +2197,10 @@ preset_keyboards:
       key_text_offset_x: -6.6
     - click: 〗
       key_text_offset_x: 6.6
-    - click: Keyboard_default
-      label_symbol: ' '
+    - click: back_to_kb
+      key_back_color: nav_back_color
+      key_text_color: nav_text_color
+      label_symbol: ◀◀
       width: 15
     - click: —
     - click: ×
@@ -3653,6 +3657,10 @@ preset_keys:
   arrow_up:
     label: ▲
     send: Up
+  back_to_kb:
+    label: ABC
+    select: .default
+    send: Eisu_toggle
   clipboard_panel:
     command: clipboard_window
     label: ▤

@@ -470,6 +470,24 @@ def main():
                 seen[key] = raw_lines.index(ln) + 1
     item(not dup, '主題內無重複鍵定義' + (f'（重複：{dup}）' if dup else ''))
 
+    # ⑨ 三頁「回字母」鍵一致（2026-11-07：改了數字頁卻漏掉另兩頁；另一次是
+    #    `git checkout -- xuma_L.trime.yaml` 把未提交的改動整批洗掉，實機仍是舊的單三角）
+    want = {'click': 'back_to_kb', 'label_symbol': '◀◀',
+            'key_back_color': 'nav_back_color', 'key_text_color': 'nav_text_color'}
+    bad_back = []
+    for page in ('number', 'number_ascii', 'number_zh'):
+        kb = theme['preset_keyboards'].get(page) or {}
+        hits = [k for k in kb.get('keys', [])
+                if isinstance(k, dict) and k.get('click') == 'back_to_kb']
+        if len(hits) != 1:
+            bad_back.append(f'{page}：{len(hits)} 顆 back_to_kb（應爲 1）')
+            continue
+        diff = {k: (hits[0].get(k), v) for k, v in want.items() if hits[0].get(k) != v}
+        if diff:
+            bad_back.append(f'{page}：{diff}')
+    item(not bad_back, '三頁「回字母」鍵一致（back_to_kb ＋ ◀◀ ＋ nav 配色）'
+         + ('' if not bad_back else f'；{bad_back}'))
+
     check_theme(theme, schema)
     check_custom(custom, schema)
     check_default()
