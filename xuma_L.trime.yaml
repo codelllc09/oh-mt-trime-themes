@@ -273,45 +273,53 @@ preset_keyboards:
       #   列序：新數學列 │ 括號列 │ 7 4 1 = │ 8 5 2 0 │ 9 6 3 . │ 運算列
       #   每列中心的 x：90 / 270 / 450 / 630 / 810 / 990（1080p）
       # 行 1：,  ( )  7  8▲  9  /
-      - {click: num_comma, long_click: num_comma_fw, width: 16.7, key_text_size: 20,
+      - {click: num_comma, long_click: num_comma_fw, width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: {text: '(){Left}', label: '( )'}, long_click: '<', width: 16.7, key_text_size: 20,
+      - {click: {text: '(){Left}', label: '( )'}, long_click: '<', width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: '7', width: 16.7, key_text_size: 20}
-      - {click: '8', long_click: arrow_up, width: 16.7, key_text_size: 20}
-      - {click: '9', width: 16.7, key_text_size: 20}
-      - {click: '/', long_click: num_divide, width: 16.7, key_text_size: 20,
+      - {width: 6}          # 刻意的不等寬縫隙：6 單位
+      - {click: '7', width: 12, key_text_size: 20}
+      - {click: '8', long_click: arrow_up, width: 12, key_text_size: 20}
+      - {click: '9', width: 12, key_text_size: 20}
+      - {width: 3}          # 刻意的不等寬縫隙：3 單位
+      - {click: '/', long_click: num_divide, width: 19, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       # 行 2：%  [ ]  4◀  5  6▶  *
-      - {click: num_percent, long_click: num_permille, width: 16.7, key_text_size: 20,
+      - {click: num_percent, long_click: num_permille, width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: {text: '[]{Left}', label: '[ ]'}, long_click: '>', width: 16.7, key_text_size: 20,
+      - {click: {text: '[]{Left}', label: '[ ]'}, long_click: '>', width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: '4', long_click: arrow_left, width: 16.7, key_text_size: 20}
-      - {click: '5', width: 16.7, key_text_size: 20}
-      - {click: '6', long_click: arrow_right, width: 16.7, key_text_size: 20}
-      - {click: '*', long_click: '#', width: 16.7, key_text_size: 20,
+      - {width: 6}          # 刻意的不等寬縫隙：6 單位
+      - {click: '4', long_click: arrow_left, width: 12, key_text_size: 20}
+      - {click: '5', width: 12, key_text_size: 20}
+      - {click: '6', long_click: arrow_right, width: 12, key_text_size: 20}
+      - {width: 3}          # 刻意的不等寬縫隙：3 單位
+      - {click: '*', long_click: '#', width: 19, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       # 行 3：√  { }≈  1≤  2▼  3≥  +
-      - {click: num_radic, long_click: num_pi, width: 16.7, key_text_size: 20,
+      - {click: num_radic, long_click: num_pi, width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: {text: '{}{Left}', label: '{ }'}, long_click: num_approx, width: 16.7, key_text_size: 20,
+      - {click: {text: '{}{Left}', label: '{ }'}, long_click: num_approx, width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: '1', long_click: num_le, width: 16.7, key_text_size: 20}
-      - {click: '2', long_click: arrow_down, width: 16.7, key_text_size: 20}
-      - {click: '3', long_click: num_ge, width: 16.7, key_text_size: 20}
-      - {click: '+', long_click: '@', width: 16.7, key_text_size: 20,
+      - {width: 6}          # 刻意的不等寬縫隙：6 單位
+      - {click: '1', long_click: num_le, width: 12, key_text_size: 20}
+      - {click: '2', long_click: arrow_down, width: 12, key_text_size: 20}
+      - {click: '3', long_click: num_ge, width: 12, key_text_size: 20}
+      - {width: 3}          # 刻意的不等寬縫隙：3 單位
+      - {click: '+', long_click: '@', width: 19, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       # 行 4：°  =≠  0  .  -±  ⌫
-      - {click: num_degree, long_click: num_celsius, width: 16.7, key_text_size: 20,
+      - {click: num_degree, long_click: num_celsius, width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: '=', long_click: '≠', width: 16.7, key_text_size: 20,
+      - {click: '=', long_click: '≠', width: 18, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: '0', width: 16.7, key_text_size: 20}
-      - {click: '.', long_click: ',', width: 16.7, key_text_size: 20}
-      - {click: '-', long_click: num_pm, width: 16.7, key_text_size: 20,
+      - {width: 6}          # 刻意的不等寬縫隙：6 單位
+      - {click: '0', width: 12, key_text_size: 20}
+      - {click: '.', long_click: ',', width: 12, key_text_size: 20}
+      - {click: '-', long_click: num_pm, width: 12, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
-      - {click: BackSpace, width: 16.7, key_text_size: 20,
+      - {width: 3}          # 刻意的不等寬縫隙：3 單位
+      - {click: BackSpace, width: 19, key_text_size: 20,
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       # 行 5：導航。ABC 15 ／ ASC 15 ／ CJK 15 ／ 空格 40 ／ ⏎ 15
       #   · ABC 是唯一的「回頭鍵」→ B 方案（角標 ◀）＋ V3 配色（強調色淡染底）
@@ -324,6 +332,8 @@ preset_keyboards:
       - {click: Return, width: 15, label_symbol: ' ',
          key_back_color: accent_fill, key_text_color: accent_text,
          hilited_key_back_color: accent_fill_hl, hilited_key_text_color: accent_text}
+
+
 
   # ── number_ascii：ASCII 符號頁（從數字鍵盤按 ASC 進入）
   #    點＝半角，長按＝全角（U+FF01–FF5E = ASCII + 0xFEE0），一頁覆蓋 Unicode 第二區全部

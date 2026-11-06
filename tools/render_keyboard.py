@@ -125,8 +125,20 @@ def build(theme, kb_name, patch, scheme_id=None):
     if cols:
         new_rows = []
         for r in rows:
-            if len(r) == len(cols):
+            if len(r) == len(cols) and len(r) == len(rows[0]):
                 r = [(k, cols[i]) for i, (k, _w) in enumerate(r)]
+            new_rows.append(r)
+        rows = new_rows
+
+    # Variant：在指定位置插入 spacer（不畫鍵），用於製造「不等寬的縫隙」
+    #   patch: {"insert": [[2, 6], [5, 3]]} → 在第 3 欄前插 6 單位、第 6 欄前插 3 單位
+    ins = patch.get('insert')
+    if ins:
+        new_rows = []
+        for r in rows:
+            if len(r) == len(rows[0]):      # 只動第一種（數字四列），底行不動
+                for pos, units in sorted(ins, key=lambda t: -t[0]):
+                    r = r[:pos] + [({'width': units, '_spacer': True}, units)] + r[pos:]
             new_rows.append(r)
         rows = new_rows
 
@@ -153,7 +165,9 @@ def build(theme, kb_name, patch, scheme_id=None):
     for row in rows:
         cells = []
         for k, w in row:
-            is_spacer = isinstance(k, dict) and k.get('_spacer')
+            is_spacer = isinstance(k, dict) and (
+                k.get('_spacer')
+                or ('click' not in k and 'text' not in k and 'label' not in k))
             if is_spacer:
                 cells.append({'spacer': True, 'units': w})
                 continue

@@ -1870,7 +1870,7 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_comma_fw
-      width: 16.7
+      width: 18
     - click:
         label: ( )
         text: (){Left}
@@ -1878,29 +1878,31 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: <
-      width: 16.7
+      width: 18
+    - width: 6
     - click: '7'
       key_text_size: 20
-      width: 16.7
+      width: 12
     - click: '8'
       key_text_size: 20
       long_click: arrow_up
-      width: 16.7
+      width: 12
     - click: '9'
       key_text_size: 20
-      width: 16.7
+      width: 12
+    - width: 3
     - click: /
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_divide
-      width: 16.7
+      width: 19
     - click: num_percent
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_permille
-      width: 16.7
+      width: 18
     - click:
         label: '[ ]'
         text: '[]{Left}'
@@ -1908,30 +1910,32 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: '>'
-      width: 16.7
+      width: 18
+    - width: 6
     - click: '4'
       key_text_size: 20
       long_click: arrow_left
-      width: 16.7
+      width: 12
     - click: '5'
       key_text_size: 20
-      width: 16.7
+      width: 12
     - click: '6'
       key_text_size: 20
       long_click: arrow_right
-      width: 16.7
+      width: 12
+    - width: 3
     - click: '*'
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: '#'
-      width: 16.7
+      width: 19
     - click: num_radic
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_pi
-      width: 16.7
+      width: 18
     - click:
         label: '{ }'
         text: '{}{Left}'
@@ -1939,55 +1943,59 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_approx
-      width: 16.7
+      width: 18
+    - width: 6
     - click: '1'
       key_text_size: 20
       long_click: num_le
-      width: 16.7
+      width: 12
     - click: '2'
       key_text_size: 20
       long_click: arrow_down
-      width: 16.7
+      width: 12
     - click: '3'
       key_text_size: 20
       long_click: num_ge
-      width: 16.7
+      width: 12
+    - width: 3
     - click: +
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: '@'
-      width: 16.7
+      width: 19
     - click: num_degree
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_celsius
-      width: 16.7
+      width: 18
     - click: '='
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: ≠
-      width: 16.7
+      width: 18
+    - width: 6
     - click: '0'
       key_text_size: 20
-      width: 16.7
+      width: 12
     - click: .
       key_text_size: 20
       long_click: ','
-      width: 16.7
+      width: 12
     - click: '-'
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_pm
-      width: 16.7
+      width: 12
+    - width: 3
     - click: BackSpace
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
-      width: 16.7
+      width: 19
     - click: Keyboard_default
       key_back_color: nav_back_color
       key_text_color: nav_text_color
