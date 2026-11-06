@@ -112,3 +112,16 @@ B 方案（主字 ABC ＋ 左上小 ←）落地時，這顆鍵要不要在配�
 
 落地成本：V1／V2 只需內聯 `key_text_color`／描邊，可引用既有配色名；
 V3 建議在 `preset_color_schemes` 各加 `nav_back_color`／`nav_text_color` 兩值（或用 `#26RRGGBB` 半透明）。
+
+### ABC 鍵的三角角標位置 ＋ 三頁同步（`abc-corner-mock.html`）
+
+用戶指出兩點：① 另外兩頁（ASCII 符號頁、中文標點頁）的 ABC 鍵沒有同步；
+② 三角要真正落在**左上角**，不是居中。
+
+事實：同文把 `label_symbol` 當「符號」畫（`KeyView.drawSymbol`），
+**水平居中**於鍵面（`centerX = 鍵面中心 + key_symbol_offset_x`）。
+所以要挪到左上角，得給這顆鍵加 `key_symbol_offset_x`（負值向左，單位 sp≈2.63px）。
+鍵寬 15 單位 ≈150px，中心在 75px；要把字心放到 ~20px，偏移 ≈ -55px ≈ **-21 sp**。
+
+落地建議：在 `preset_keys` 另立一顆 `back_to_kb`（`label_symbol: '◀'` ＋
+`key_symbol_offset_x: -21` ＋ nav 配色），**三頁共用**，免得日後只改到一頁。
