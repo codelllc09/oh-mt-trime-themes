@@ -1999,7 +1999,7 @@ preset_keyboards:
     - click: back_to_kb
       key_back_color: nav_back_color
       key_text_color: nav_text_color
-      label_symbol: ◀◀
+      label_symbol: ' '
       width: 15
     - click: goto_ascii
       key_back_color: fn_back_color
@@ -2091,9 +2091,9 @@ preset_keyboards:
       long_click: ！
     - width: 5
     - click: back_to_kb
-      key_back_color: nav_back_color
-      key_text_color: nav_text_color
-      label_symbol: ◀◀
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      label_symbol: ' '
       width: 15
     - click: '"'
       long_click: ＂
@@ -2198,9 +2198,9 @@ preset_keyboards:
     - click: 〗
       key_text_offset_x: 6.6
     - click: back_to_kb
-      key_back_color: nav_back_color
-      key_text_color: nav_text_color
-      label_symbol: ◀◀
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      label_symbol: ' '
       width: 15
     - click: —
     - click: ×

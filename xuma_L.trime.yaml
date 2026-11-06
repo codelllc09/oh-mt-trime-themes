@@ -171,8 +171,9 @@ preset_keys:
   # 方案/中英鍵：狀態取單字（中/英）當圖標；長按提示改 ≡（Menu 的 label 即鍵上小字）
   Menu: {label: ≡, send: MENU}
   Keyboard_default: {label: ABC, send: Eisu_toggle, select: .default}
-  # 三頁（數字／ASCII／標點）共用的「回字母」鍵：鍵面 ABC，角標兩個實心三角 ◀◀。
-  # 與數字鍵的單三角提示（▲▼◀▶）靠「數量」區分：單＝長按出方向鍵，雙＝回上一頁。
+  # 三頁（數字／ASCII／標點）共用的「回字母」鍵：鍵面只有 ABC，**不畫任何角標**
+  # （用戶 2026-11-07 最終裁定：三角去掉）。
+  # 配色：數字頁 nav 淡染（該頁沒有 123 可參照）；ASCII／標點頁 fn 灰，與同頁 123 一致。
   back_to_kb: {label: ABC, send: Eisu_toggle, select: .default}
   undo: {label: 撤銷, send: Control+z}
   redo: {label: 恢復, send: Control+y}
@@ -326,7 +327,7 @@ preset_keyboards:
          key_back_color: fn_back_color, key_text_color: fn_text_color}
       # 行 5：導航。ABC 15 ／ ASC 15 ／ CJK 15 ／ 空格 40 ／ ⏎ 15
       #   · ABC 是唯一的「回頭鍵」→ B 方案（角標 ◀）＋ V3 配色（強調色淡染底）
-      - {click: back_to_kb, width: 15, label_symbol: '◀◀',
+      - {click: back_to_kb, width: 15, label_symbol: ' ',
          key_back_color: nav_back_color, key_text_color: nav_text_color}
       - {click: goto_ascii, width: 15, key_back_color: fn_back_color, key_text_color: fn_text_color}
       - {click: goto_cjk, width: 15, key_back_color: fn_back_color, key_text_color: fn_text_color}
@@ -388,8 +389,8 @@ preset_keyboards:
       - {click: '!', long_click: '！'}
       - {width: 5}
       # 行 4：ABC（回主鍵盤）＋其餘符號＋⌫
-      - {click: back_to_kb, width: 15, label_symbol: '◀◀',
-         key_back_color: nav_back_color, key_text_color: nav_text_color}
+      - {click: back_to_kb, width: 15, label_symbol: ' ',
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
       - {click: '"', long_click: '＂'}
       - {click: "'", long_click: '＇'}
       - {click: '~', long_click: '～'}
@@ -465,8 +466,8 @@ preset_keyboards:
       - {click: '〖', key_text_offset_x: -6.6}
       - {click: '〗', key_text_offset_x: 6.6}
       # 行 4：其餘（破折號、乘號、漢字零、低頻全角形；兩端接 ABC 與 ⌫）
-      - {click: back_to_kb, width: 15, label_symbol: '◀◀',
-         key_back_color: nav_back_color, key_text_color: nav_text_color}
+      - {click: back_to_kb, width: 15, label_symbol: ' ',
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
       - {click: '—'}
       - {click: '×'}
       - {click: '〇'}
