@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>徐碼·L 空格鍵比較</title><style>
+body{max-width:1200px;margin:32px auto;padding:0 20px;font:16px system-ui,sans-serif;color:#26364a;background:#f3f6fa}
+main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+section{padding:12px;background:white;border-radius:12px}
+h1{font-size:1.4rem}h2{font-size:1rem;margin:0 0 8px}
+iframe{display:block;width:100%;border:0;aspect-ratio:6.4;border-radius:6px}
+p{font-size:.85rem}
+</style><h1>徐碼·L 空格鍵比較</h1><p>主鍵盤底行。鍵面顯示短按，角標顯示長按。</p><main><section><h2>現狀</h2><iframe title="現狀底行鍵位" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-Hant&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;現狀&lt;/title&gt;
+&lt;style&gt;
+  body { margin:0; background:#0B0C0E; font-family:system-ui,&quot;Noto Sans CJK SC&quot;,sans-serif; }
+  .board { position:relative; width:1080px; height:164.0625px; background:rgba(222,225,230,1.000); }
+  .k { position:absolute; display:flex; align-items:center; justify-content:center;
+        border-radius:23.625px; overflow:hidden; }
+  .k .hint { position:absolute; top:4px; left:0; right:0; text-align:center;
+              font-size:26.25px; line-height:1.1; color:rgba(138,144,152,1.000); }
+&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div class=&quot;board&quot;&gt;&lt;div class=&quot;k&quot; style=&quot;left:6.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(198,203,210,1.000);color:rgba(46,49,52,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;☰&lt;/div&gt;123#&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:114.6px;top:17.1px;width:94.9px;height:129.9px;background:globe_light.png;color:rgba(46,49,52,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;◑&lt;/div&gt;Mode_switch&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:222.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(255,255,255,1.000);color:rgba(31,33,36,1.000);font-size:58px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;;&lt;/div&gt;,&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:330.6px;top:17.1px;width:364.9px;height:129.9px;background:rgba(241,243,246,1.000);color:rgba(95,99,104,1.000);font-size:29px;padding-top:0px&quot;&gt;SUIGEM&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:708.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(255,255,255,1.000);color:rgba(31,33,36,1.000);font-size:58px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;!&lt;/div&gt;.&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:816.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(198,203,210,1.000);color:rgba(46,49,52,1.000);font-size:58px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;?&lt;/div&gt;/&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:924.6px;top:17.1px;width:148.9px;height:129.9px;background:rgba(26,115,232,1.000);color:rgba(255,255,255,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;CODE&lt;/div&gt;Enter&lt;/div&gt;&lt;/div&gt;&lt;script&gt;
+      const board = document.querySelector(&#x27;.board&#x27;)
+      const fit = () =&gt; { board.style.zoom = document.documentElement.clientWidth / 1080 }
+      window.addEventListener(&#x27;resize&#x27;, fit)
+      fit()
+    &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+    <p>短按空格 · 中文選字或輸入空格，英文輸入空格</p><p>長按空格 · 無綁定</p></section><section><h2>建議</h2><iframe title="建議底行鍵位" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-Hant&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;建議&lt;/title&gt;
+&lt;style&gt;
+  body { margin:0; background:#0B0C0E; font-family:system-ui,&quot;Noto Sans CJK SC&quot;,sans-serif; }
+  .board { position:relative; width:1080px; height:164.0625px; background:rgba(222,225,230,1.000); }
+  .k { position:absolute; display:flex; align-items:center; justify-content:center;
+        border-radius:23.625px; overflow:hidden; }
+  .k .hint { position:absolute; top:4px; left:0; right:0; text-align:center;
+              font-size:26.25px; line-height:1.1; color:rgba(138,144,152,1.000); }
+&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div class=&quot;board&quot;&gt;&lt;div class=&quot;k&quot; style=&quot;left:6.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(198,203,210,1.000);color:rgba(46,49,52,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;☰&lt;/div&gt;123#&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:114.6px;top:17.1px;width:94.9px;height:129.9px;background:globe_light.png;color:rgba(46,49,52,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;◑&lt;/div&gt;Mode_switch&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:222.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(255,255,255,1.000);color:rgba(31,33,36,1.000);font-size:58px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;;&lt;/div&gt;,&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:330.6px;top:17.1px;width:364.9px;height:129.9px;background:rgba(241,243,246,1.000);color:rgba(95,99,104,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;語音&lt;/div&gt;SUIGEM&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:708.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(255,255,255,1.000);color:rgba(31,33,36,1.000);font-size:58px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;!&lt;/div&gt;.&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:816.6px;top:17.1px;width:94.9px;height:129.9px;background:rgba(198,203,210,1.000);color:rgba(46,49,52,1.000);font-size:58px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;?&lt;/div&gt;/&lt;/div&gt;
+&lt;div class=&quot;k&quot; style=&quot;left:924.6px;top:17.1px;width:148.9px;height:129.9px;background:rgba(26,115,232,1.000);color:rgba(255,255,255,1.000);font-size:29px;padding-top:0px&quot;&gt;&lt;div class=&quot;hint&quot; style=&quot;color:rgba(138,144,152,1.000)&quot;&gt;CODE&lt;/div&gt;Enter&lt;/div&gt;&lt;/div&gt;&lt;script&gt;
+      const board = document.querySelector(&#x27;.board&#x27;)
+      const fit = () =&gt; { board.style.zoom = document.documentElement.clientWidth / 1080 }
+      window.addEventListener(&#x27;resize&#x27;, fit)
+      fit()
+    &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+    <p>短按空格 · 中文選字或輸入空格，英文輸入空格</p><p>長按空格 · 開啟語音輸入</p></section></main></html>

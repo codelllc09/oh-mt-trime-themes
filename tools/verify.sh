@@ -1,12 +1,11 @@
 #!/bin/bash
-# verify.sh —— 容器/真機全流程驗證（逐項打勾，失敗即非零退出）
+# verify.sh —— 容器/真機驗證（逐項打勾，失敗即非零退出）
 #
 # 用法：TRIME_ADB_SERIAL=… ./tools/verify.sh [--section N] [--quick] [--no-clip]
 #
-# 跑多少由改動風險決定（見 TESTING.md「按改動風險選驗證」）：
-#   只改配色／文案／單鍵數值 → --quick（約 50s，跳過長按全表與功能鍵）
-#   改版式／鍵位／行高     → 全量（約 2 分鐘）
-#   改 lua／schema        → 不歸本腳本，回主倉跑四道門禁
+# 默認只跑與改動直接相關的 --quick 或 --section。
+# 只有用戶明確要求「全量測試」時，才可無參數跑完整流程（見 AGENTS.md）。
+# lua／schema 不歸本腳本，回主倉測試。
 # 前提：同文為當前輸入法、已部署最新主題、1080×2280@420。
 # 判據一律讀**碼位**（uiautomator 取字段文本），不看字形。
 #
@@ -40,11 +39,13 @@ skip_quick() { [ "$QUICK" = 1 ] && [ "$1" = "$2" ]; }
 
 BOT=2088; MBOT=2072                       # 底行中線（符號頁 / 主鍵盤）
 R1=1577; R2=1742; R3=1907                 # 主鍵盤三行字母
+NUM_ABC=63; NUM_ASC=195; NUM_CJK=327      # 數字頁左側三欄
 tap()  { "${ADB[@]}" shell input tap "$1" "$2"; sleep 0.5; }
 hold() { "${ADB[@]}" shell input swipe "$1" "$2" "$1" "$2" 1200; sleep 0.4; }
 wipe() {   # 盲清：不再 dump 確認（一次 dump 近 2s，是最貴的操作）
-  # 必須先 MOVE_END 再 DEL：光標若停在中間（例如上一項輸出了成對括號 「()」，
-  # 光標留在括號內），DEL 只會刪光標左側，殘留會黏在後面——實測曾得到「(7))」。
+  # 先全選刪除，避免雙向標點使 MOVE_END 停在視覺末尾而留下文字。
+  "${ADB[@]}" shell 'input keycombination 113 29; input keyevent 67' >/dev/null 2>&1
+  # 清理舊版 Android 不支援全選按鍵組合時的殘留與括號內光標。
   local codes; codes=$(printf '67 %.0s' $(seq 1 25))
   "${ADB[@]}" shell input keyevent 123 $codes >/dev/null 2>&1; sleep 0.15
   "${ADB[@]}" shell input keyevent 123 $codes >/dev/null 2>&1; sleep 0.25
@@ -82,6 +83,15 @@ batch() {
   fi
 }
 kind() { "${ADB[@]}" exec-out screencap -p > /tmp/_v.png; python3 "$(dirname "$0")/page_kind.py" /tmp/_v.png 2>/dev/null | awk '{print $1}'; }
+expect_page() {
+  local actual
+  for _ in 1 2 3 4; do
+    actual=$(kind)
+    [ "$actual" = "$2" ] && break
+    sleep 0.35
+  done
+  expect "$1" "$actual" "$2"
+}
 ime_alive() { "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mCurMethodId=com.osfans.trime'; }
 reset_ime() {
   "${ADB[@]}" shell am force-stop com.osfans.trime; sleep 2
@@ -107,7 +117,11 @@ PY
 )
     [ -n "$XY" ] || continue
     "${ADB[@]}" shell input tap $XY; sleep 4
-    if "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mInputShown=true'; then return 0; fi
+    if ! ime_alive; then
+      "${ADB[@]}" shell ime set com.osfans.trime/.ime.core.TrimeInputMethodService >/dev/null 2>&1
+      sleep 1
+    fi
+    if ime_alive && "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mInputShown=true'; then return 0; fi
   done
   return 1
 }
@@ -125,8 +139,9 @@ go_num() {   # 確保停在數字頁（符號頁的中轉站；各段可單獨�
 go_main() {   # 確保回到主鍵盤（依 page_kind 判斷，不靠猜）
   case "$(kind)" in
     main*) return 0 ;;
-    num*)  tap 81 $BOT ;;
-    *)     tap 108 1960 ;;
+    num*)  tap $NUM_ABC $BOT ;;
+    ascii*|cjk*) tap 81 $BOT; tap $NUM_ABC $BOT ;;
+    *) return 1 ;;
   esac
   sleep 0.4
   case "$(kind)" in main*) return 0 ;; *) return 1 ;; esac
@@ -139,14 +154,14 @@ if focus; then ok "搜索框已聚焦、鍵盤已彈出"; else bad "鍵盤未彈
 if go_main; then ok "已歸位主鍵盤"; else bad "無法歸位主鍵盤"; fi
 
 if want 1; then
-say "═══ 1. 頁面導航（12# → 數字 → ASC/CJK → 123/ABC）═══"
-expect "起點主鍵盤" "$(kind)" main
-tap 54 $MBOT;  expect "12# → 數字鍵盤" "$(kind)" num
-tap 243 $BOT;   expect "ASC → ASCII 符號頁" "$(kind)" ascii
-tap 81 $BOT;    expect "123 → 數字鍵盤" "$(kind)" num
-tap 405 $BOT;   expect "CJK → 中文標點頁" "$(kind)" cjk
-tap 81 $BOT; tap 81 $BOT
-expect "ABC → 主鍵盤" "$(kind)" main
+say "═══ 1. 頁面導航（123# → 數字 → ASC/CJK → 123/ABC）═══"
+expect_page "起點主鍵盤" main
+tap 54 $MBOT; expect_page "123# → 數字鍵盤" num
+tap $NUM_ASC $BOT; expect_page "ASC → ASCII 符號頁" ascii
+tap 81 $BOT; expect_page "123 → 數字鍵盤" num
+tap $NUM_CJK $BOT; expect_page "CJK → 中文標點頁" cjk
+tap 81 $BOT; tap $NUM_ABC $BOT
+expect_page "ABC → 主鍵盤" main
 fi
 
 if want 2; then
@@ -162,16 +177,18 @@ say "═══ 3. 長按全表（中文態，連打後讀一次）═══"
 wipe
 for x in 54 162 270 378 486 594 702 810 918 1026; do hold $x $R1; done
 batch "row1 長按 → 1..0" "1234567890" 10
+wipe; hold 648 $R2
+batch "h 長按成對括號" "（）" 1
 wipe
-for x in 486 594 756 864 972; do hold $x $R2; done      # g h j k l
+for x in 756 864 972; do hold $x $R2; done              # j k l
 for x in 756 864; do hold $x $R3; done                  # n m
 for x in 270 756 864; do hold $x $MBOT; done            # , . /
-batch "長按符號 g h j k l n m , . /" "（）……——‘：“；！？" 10
+batch "長按符號 j k l n m , . /" "……——‘：“；！？" 8
 fi
 
 if want 4 && ! skip_quick 4 4; then
 say "═══ 4. 功能鍵：長按後 IME 存活 ═══"
-for spec in "486 1742 a:Tab" "216 1742 s:全選" "324 1742 d:撤銷" "432 1742 f:恢復" \
+for spec in "108 1742 a:Tab" "216 1742 s:全選" "324 1742 d:撤銷" "432 1742 f:恢復" \
             "216 1907 z:反查引導" "324 1907 x:剪切" "432 1907 c:複製" "540 1907 v:粘貼"; do
   set -- $spec; wipe; hold $1 $2
   if ime_alive; then ok "$3 IME 存活"; else bad "$3 後 IME 消失"; fi
@@ -179,52 +196,63 @@ done
 fi
 
 if want 5; then
-say "═══ 5. 數字鍵盤（18/18/sp6/12/12/12/sp3/19 · gap 5）═══"
-# 座標：欄中心 x = 97 / 292 / 518 / 648 / 778 / 977（18/18/sp6/12/12/12/sp3/19）；
-#       行中心 y = 1563 / 1694 / 1825 / 1956 / 2087（底行）
+say "═══ 5. 數字鍵盤（三個等寬符號欄）═══"
+# 主區欄中心 x = 63 / 195 / 327 / 494 / 641 / 788 / 986；行中心 y = 1563 / 1694 / 1825 / 1956。
+# 底行中心 x = 63 / 195 / 327 / 494 / 714 / 986，y = 2087。
 go_num || bad "無法進入數字頁"
 
-# 新數學列：點 , ；長按 ‰ π ℃
-wipe; tap 97 1563; hold 97 1694; hold 97 1825; hold 97 1956
-batch "新列：, ‰ π ℃" ",‰π℃" 4
+# 左數學列：′ 長按 ″；其餘長按 ‰ π ℃
+wipe; tap 63 1563; hold 63 1563; hold 63 1694; hold 63 1825; hold 63 1956
+batch "左列：′ ″ ‰ π ℃" "′″‰π℃" 5
+wipe
+for y in 1563 1694 1825 1956; do tap 195 "$y"; hold 195 "$y"; done
+batch "集合與邏輯短按／長按" "∪∩∈∉∧∨∀∃" 8
 # { } 長按 → ≈
-wipe; hold 292 1825
+wipe; hold 327 1825
 batch "{ } 長按 → ≈" "≈" 1
-# 1 ≤ ／ 3 ≥（1 在第3欄、3 在第5欄）
-wipe; hold 518 1825; hold 778 1825
+# 1 ≤ ／ 3 ≥
+wipe; hold 494 1825; hold 788 1825
 batch "1 ≤ ／ 3 ≥" "≤≥" 2
 # / ÷ ／ - ±
-wipe; hold 977 1563; hold 778 1956
+wipe; hold 986 1563; hold 788 1956
 batch "/ ÷ ／ - ±" "÷±" 2
-# 原有行爲：數字、括號成對、長按 < > # ≠
-wipe; tap 518 1563; tap 648 1694
+# 原有行爲：數字、括號成對；更新長按 < > × ≠
+wipe; tap 494 1563; tap 641 1694
 batch "數字鍵盤 7、5" "75" 2
-wipe; tap 292 1563
+wipe; tap 327 1563
 batch "() 一次成對" "()" 1
-wipe; tap 292 1563; tap 518 1563
+wipe; tap 327 1563; tap 494 1563
 batch "光標在括號內 (7)" "(7)" 1
-wipe; hold 292 1563; hold 292 1694; hold 977 1694; hold 292 1956
-batch "( [ * = 長按" "<>#≠" 4
-# 空格鍵（鍵面寫「空格」，寬 40）
-wipe; tap 702 2087
+wipe; hold 327 1563; hold 327 1694; hold 986 1694; hold 327 1956
+batch "( [ * = 長按" "<>×≠" 4
+# 數字方陣底行與獨立逗號：0→#、.→·、逗號原樣上屏
+wipe; hold 494 1956; hold 641 1956; tap 494 2087
+batch "0 # ／ . · ／底行逗號" "#·," 3
+# 空格鍵跨小數點與負號
+wipe; tap 714 2087
 batch "空格鍵 → 空格" " " 1
 fi
 
 if want 6; then
-say "═══ 6. ASCII 符號頁（不翻譯）═══"
+say "═══ 6. ASCII 符號頁（半角與長按變體）═══"
 go_num || bad "無法進入數字頁"
-tap 243 $BOT                                   # 數字頁的 ASC
-wipe; tap 216 1960; hold 216 1960; tap 216 2088
-batch "ASCII 頁 \" 點／長按、, 點擊" '"＂,' 3
+tap $NUM_ASC $BOT
+wipe; tap 54 1694; tap 216 $BOT; hold 216 $BOT; hold 972 1825; hold 756 1825
+batch "半角 @ , 與長按變體" "@,،¡؛" 5
+wipe
+for x in 432 540 648 756; do tap "$x" 1956; hold "$x" 1956; done
+batch "四向箭頭與雙線箭頭" "←⇐↑⇑↓⇓→⇒" 8
 fi
 
 if want 7; then
 say "═══ 7. 中文標點頁（不翻譯）═══"
 # 自足路徑：數字頁 →(ASC) ASCII 頁 →(123) 數字頁 →(CJK) 中文標點頁
 go_num || bad "無法進入數字頁"
-tap 243 $BOT; tap 81 $BOT; tap 405 $BOT
+tap $NUM_ASC $BOT; tap 81 $BOT; tap $NUM_CJK $BOT
 wipe; tap 54 1539; tap 918 1539
 batch "中文頁 ，與 ”" "，”" 2
+wipe; tap 216 $BOT; tap 324 $BOT; tap 540 $BOT; tap 756 $BOT; tap 864 $BOT
+batch "中文頁底行破折號、省略號、空格、間隔號與波浪號" "—… ·～" 5
 fi
 
 if [ "$CLIP" = 1 ] && want 8; then

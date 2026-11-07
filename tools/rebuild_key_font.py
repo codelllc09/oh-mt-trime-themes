@@ -40,7 +40,11 @@ SRC_CANDIDATES = [
 #   ◀ ▶ ▲ ▼ —— **實心三角**。原本方向鍵提示用 ← ↑ → ↓，在 11sp（29px）下細到看不見，
 #   且主題裏那幾個 preset 的 label 還寫成空白（等於沒有提示）。實心三角同字號可讀，
 #   用戶選定用三角而非實心箭頭（見 design-refs/arrow-glyph-mock.html）。
-EXTRA_CHARS = 'ㄓ◀▶▲▼'
+#   ′ ″ —— 數字頁的角分／角秒；不要用 ASCII 單／雙引號冒充。
+#   ∪ ∩ ∈ ∉ ∧ ∨ ∀ ∃ —— 數字頁的集合與邏輯欄。
+#   ASCII 符號頁的新增字形；CJK 上游不收的字形由 Android 系統字體回退。
+#   ※ 〃 —— 中文標點頁底行的註記與同上符號。
+EXTRA_CHARS = 'ㄓ◀▶▲▼′″∪∩∈∉∧∨∀∃«»‖№‰±≈¡⋯•⇐⇒€£¥₩¢¿‚‹›„–−®™©※〃'
 FAMILY = 'Xuma Key CJK'
 
 
@@ -51,9 +55,8 @@ def find_src() -> Path:
     sys.exit(f'[✗] 找不到上游 CJK 字體，試過：{SRC_CANDIDATES}')
 
 
-def instantiate_regular(src: Path, wght=400):
-    """把可變字體的 wght 軸釘死在 400，並取出 SC 子字體。"""
-    from fontTools.varLib.instancer import instantiateVariableFont
+def load_sc_font(src: Path):
+    """從 TTC 取出 SC 子字體；先子集化，再固定字重，避免實例化整套 32MB CJK。"""
     # TTC 裏第一個通常是 JP；按 name 找 SC
     idx = 0
     for i in range(10):
@@ -67,8 +70,6 @@ def instantiate_regular(src: Path, wght=400):
             break
         f.close()
     f = TTFont(str(src), fontNumber=idx)
-    if 'fvar' in f:
-        instantiateVariableFont(f, {'wght': wght}, inplace=True)
     return f
 
 
@@ -79,13 +80,19 @@ def main():
     base.close()
     print(f'  字符集：{len(chars)} 個（含新增 {EXTRA_CHARS!r}）')
 
-    font = instantiate_regular(src)
+    font = load_sc_font(src)
     opts = subset.Options()
     opts.layout_features = ['*']
     opts.name_IDs = ['*']
     sub = subset.Subsetter(options=opts)
     sub.populate(text=''.join(sorted(chars)))
     sub.subset(font)
+
+    # 先縮到鍵盤所需的百餘字形，再把可變字重固定在 Regular；若反過來處理整套
+    # CJK CFF2，fontTools 需逐字形展開變體，會慢數分鐘且耗用大量記憶體。
+    if 'fvar' in font:
+        from fontTools.varLib.instancer import instantiateVariableFont
+        instantiateVariableFont(font, {'wght': 400}, inplace=True)
 
     # 改名（只動 1/3/4/6/16/17；nameID 0 版權、13/14 授權聲明保持上游原文）
     renames = {1: FAMILY, 3: f'{FAMILY}-Regular', 4: FAMILY,

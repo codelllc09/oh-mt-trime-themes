@@ -18,6 +18,7 @@
 
 import re
 import os
+import string
 import sys
 from pathlib import Path
 
@@ -284,6 +285,7 @@ def _resolve_includes(node, base, root=None):
     """展開 __include：`trime:/path` 指 vendor 主題，`/path` 指本文檔根（Rime 語義）。
 
     以目標節點為底，同層其餘鍵覆蓋其上（Rime 的 map 語義）。
+    鍵盤可用本地生成指令 __key_overrides 依 click 覆寫單鍵，避免複製整個 keys 序列。
     """
     root = base if root is None else root
     if isinstance(node, list):
@@ -304,8 +306,19 @@ def _resolve_includes(node, base, root=None):
         if not isinstance(anchor, dict) or seg not in anchor:
             raise SystemExit(f'[✗] __include 目標不存在：{ref}')
         anchor = anchor[seg]
-    siblings = {k: _resolve_includes(v, base, root) for k, v in node.items() if k != '__include'}
-    return _deep_merge(_resolve_includes(anchor, base, sub_root), siblings)
+    siblings = {
+        k: _resolve_includes(v, base, root)
+        for k, v in node.items() if k not in ('__include', '__key_overrides')
+    }
+    merged = _deep_merge(_resolve_includes(anchor, base, sub_root), siblings)
+    for click, patch in node.get('__key_overrides', {}).items():
+        keys = merged.get('keys', [])
+        matches = [i for i, key in enumerate(keys) if isinstance(key, dict) and key.get('click') == click]
+        if len(matches) != 1:
+            raise SystemExit(f'[✗] {ref} 的 {click!r} 鍵應恰好匹配一次，實際 {len(matches)} 次')
+        index = matches[0]
+        keys[index] = _deep_merge(keys[index], _resolve_includes(patch, base, root))
+    return merged
 
 
 def _stringify_colors(node):
@@ -495,6 +508,21 @@ def main():
             bad_back.append(f'{page}：{diff}')
     item(not bad_back, '三頁「回字母」鍵一致（back_to_kb、無角標；數字頁 nav、另兩頁 fn 同 123）'
          + ('' if not bad_back else f'；{bad_back}'))
+
+    ascii_keys = theme['preset_keyboards']['number_ascii']['keys']
+    symbols = [key.get('click') for key in ascii_keys]
+    ascii_punctuation = set(string.punctuation)
+    punctuation = [ch for ch in symbols if isinstance(ch, str) and ch in ascii_punctuation]
+    item(sorted(punctuation) == sorted(string.punctuation)
+         and not any(isinstance(ch, str) and ch.isdecimal() for ch in symbols),
+         'ASCII 頁短按涵蓋 32 個標點，無數字列')
+    popup_keys = [key for key in ascii_keys if key.get('popup')]
+    popup_style = theme['style']
+    item(len(popup_keys) == 6
+         and all(popup_style.get(name, 0) > 0 for name in
+             ('popup_width', 'popup_height', 'popup_key_height', 'popup_text_size'))
+         and all(key.get('label_symbol') and not key.get('long_click') for key in popup_keys),
+         '彈出選單有可見尺寸與角標，且不和長按直出衝突')
 
     check_theme(theme, schema)
     check_custom(custom, schema)

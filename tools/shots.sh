@@ -11,8 +11,8 @@
 # 流程全程確定性——重啓 IME 歸位 → 主鍵盤，其後每一步都是固定按鍵導航，
 # 因此檔名由流程決定，改版時只要同步本腳本的座標即可。
 #
-# 導航模型（Hub，見 android/KEYBOARD_MAP.md）：
-#   主鍵盤 12# → number（數字鍵盤）→ ASC → number_ascii ／ CJK → number_zh
+# 導航模型（Hub，見 KEYBOARD_MAP.md）：
+#   主鍵盤 123# → number（數字鍵盤）→ ASC → number_ascii ／ CJK → number_zh
 #   符號頁 123 → 回 number；各頁 ABC → 回主鍵盤
 # 每一步都由**已知狀態**出發（起點用重啓 IME 歸位），拍完再用 page_kind.py
 # 反查一次頁別，檔名與畫面不符就報錯（歷史上錯過三次）。
@@ -25,9 +25,9 @@ ADB=(adb -s "$SER")
 SEARCH_X=376; SEARCH_Y=605
 # 主鍵盤 4 行：1577/1742/1907/2072；符號頁與數字鍵盤 5 行：底行 2088
 ROW1_Y=1577; ROW2_Y=1742; ROW3_Y=1907; BOTTOM_Y=2072; SYM_BOTTOM_Y=2088
-GLOBE_X=162; KEY12_X=54; SHIFT_X=81; B_X=648    # 底行：12#(0-10) 地球(10-20)，各 10 單位等寬
+GLOBE_X=162; KEY12_X=54; SHIFT_X=81; B_X=648    # 底行：123#(0-10) 地球(10-20)，各 10 單位等寬
 # 各頁底行座標
-NUM_ABC_X=81; NUM_ASC_X=243; NUM_CJK_X=405    # 數字頁底行 15/15/15/40/15
+NUM_ABC_X=76; NUM_ASC_X=227; NUM_CJK_X=378    # 數字頁底行 14/14/14/10/29/19
 SYM_123_X=81
 
 ime_up() { "${ADB[@]}" shell dumpsys input_method 2>/dev/null | grep -q 'mInputShown=true'; }

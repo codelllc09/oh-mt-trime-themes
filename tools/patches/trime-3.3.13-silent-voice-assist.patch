@@ -1,0 +1,10 @@
+--- a/app/src/main/java/com/osfans/trime/ime/keyboard/CommonKeyboardActionListener.kt
++++ b/app/src/main/java/com/osfans/trime/ime/keyboard/CommonKeyboardActionListener.kt
+@@ -334,7 +334,5 @@
+                 if (voiceInputSubType != null) {
+                     val (id, subType) = voiceInputSubType
+                     InputMethodUtils.switchInputMethod(service, id, subType)
+-                } else {
+-                    service.toast(R.string.no_voice_input_installed)
+                 }
+             }

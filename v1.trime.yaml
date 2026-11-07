@@ -1810,6 +1810,127 @@ preset_keyboards:
     name: 預設40鍵
     reset_ascii_mode: true
     width: 10
+  luna_pinyin:
+    ascii_mode: 0
+    author: osfans <waxaca@163.com>
+    columns: 10
+    height: 55
+    key_hint_offset_x: 0
+    key_hint_offset_y: 0
+    key_press_offset_x: 2
+    key_press_offset_y: 2
+    key_symbol_offset_x: 0
+    key_symbol_offset_y: 0
+    key_text_offset_x: 0
+    key_text_offset_y: 0
+    keys:
+    - click: q
+      long_click: '!'
+      swipe_up: 1
+    - click: w
+      long_click: '@'
+      swipe_up: 2
+    - click: e
+      long_click: '#'
+      swipe_up: 3
+    - click: r
+      long_click: $
+      swipe_up: 4
+    - click: t
+      long_click: '%'
+      swipe_up: 5
+    - click: y
+      long_click: ^
+      swipe_up: 6
+    - click: u
+      long_click: '&'
+      swipe_up: 7
+    - click: i
+      long_click: '*'
+      swipe_up: 8
+    - click: o
+      long_click: (){Left}
+      swipe_up: 9
+    - click: p
+      long_click: Hide
+      swipe_up: 0
+    - width: 5
+    - click: a
+      long_click: select_all
+      swipe_down: Down
+      swipe_left: Left
+      swipe_right: Right
+      swipe_up: Up
+    - click: s
+      long_click: '~'
+      swipe_down: Page_Down
+      swipe_left: Home
+      swipe_right: End
+      swipe_up: Page_Up
+    - click: d
+      long_click: '-'
+      swipe_down: _
+    - click: f
+      long_click: +
+      swipe_down: '='
+    - click: g
+      long_click: \
+      swipe_down: '|'
+    - click: h
+      long_click: '[]{Left}'
+      swipe_left: '['
+      swipe_right: ']'
+    - click: j
+      long_click: '{}{Left}'
+      swipe_left: '{'
+      swipe_right: '}'
+    - click: k
+      long_click: ':'
+    - click: l
+      long_click: ;
+    - width: 5
+    - click: Shift_L
+      has_menu: ''''
+      send_bindings: false
+      width: 15
+    - click: z
+      long_click: '`'
+    - click: x
+      long_click: cut
+    - click: c
+      long_click: copy
+    - click: v
+      long_click: paste
+    - click: b
+      long_click: Time
+      swipe_up: Date
+    - click: n
+      long_click: '"'
+    - click: m
+      long_click: ''''
+    - click: BackSpace
+      swipe_left: Escape
+      width: 15
+    - click: Mode_switch
+      long_click: Menu
+      width: 15
+    - click: Keyboard_symbols
+      long_click: Keyboard_number
+    - click: ','
+      long_click: <
+    - click: space
+      width: 30
+    - click: .
+      long_click: '>'
+    - click: /
+      long_click: '?'
+    - click: Return
+      composing: Return1
+      long_click: CommitComment
+      width: 15
+    lock: true
+    name: 預設26鍵
+    width: 10
   mini:
     ascii_mode: 0
     author: tumuyan
@@ -1865,12 +1986,20 @@ preset_keyboards:
     height: 38
     key_text_offset_y: 3
     keys:
-    - click: num_comma
+    - click: num_prime
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
-      long_click: num_comma_fw
-      width: 18
+      long_click: num_dprime
+      width: 11.6875
+    - width: 0.5625
+    - click: num_union
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      key_text_size: 20
+      long_click: num_intersection
+      width: 11.6875
+    - width: 0.5625
     - click:
         label: ( )
         text: (){Left}
@@ -1878,31 +2007,41 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: <
-      width: 18
-    - width: 6
+      width: 11.6875
+    - width: 2.8125
     - click: '7'
       key_text_size: 20
-      width: 12
+      long_click: ✓
+      width: 13.625
     - click: '8'
       key_text_size: 20
       long_click: arrow_up
-      width: 12
+      width: 13.625
     - click: '9'
       key_text_size: 20
-      width: 12
-    - width: 3
+      long_click: ✗
+      width: 13.625
+    - width: 2.875
     - click: /
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_divide
-      width: 19
+      width: 17.25
     - click: num_percent
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_permille
-      width: 18
+      width: 11.6875
+    - width: 0.5625
+    - click: num_member
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      key_text_size: 20
+      long_click: num_not_member
+      width: 11.6875
+    - width: 0.5625
     - click:
         label: '[ ]'
         text: '[]{Left}'
@@ -1910,32 +2049,40 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: '>'
-      width: 18
-    - width: 6
+      width: 11.6875
+    - width: 2.8125
     - click: '4'
       key_text_size: 20
       long_click: arrow_left
-      width: 12
+      width: 13.625
     - click: '5'
       key_text_size: 20
-      width: 12
+      width: 13.625
     - click: '6'
       key_text_size: 20
       long_click: arrow_right
-      width: 12
-    - width: 3
+      width: 13.625
+    - width: 2.875
     - click: '*'
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
-      long_click: '#'
-      width: 19
+      long_click: num_times
+      width: 17.25
     - click: num_radic
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_pi
-      width: 18
+      width: 11.6875
+    - width: 0.5625
+    - click: num_and
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      key_text_size: 20
+      long_click: num_or
+      width: 11.6875
+    - width: 0.5625
     - click:
         label: '{ }'
         text: '{}{Left}'
@@ -1943,86 +2090,101 @@ preset_keyboards:
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_approx
-      width: 18
-    - width: 6
+      width: 11.6875
+    - width: 2.8125
     - click: '1'
       key_text_size: 20
       long_click: num_le
-      width: 12
+      width: 13.625
     - click: '2'
       key_text_size: 20
       long_click: arrow_down
-      width: 12
+      width: 13.625
     - click: '3'
       key_text_size: 20
       long_click: num_ge
-      width: 12
-    - width: 3
+      width: 13.625
+    - width: 2.875
     - click: +
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: '@'
-      width: 19
+      width: 17.25
     - click: num_degree
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_celsius
-      width: 18
+      width: 11.6875
+    - width: 0.5625
+    - click: num_for_all
+      key_back_color: fn_back_color
+      key_text_color: fn_text_color
+      key_text_size: 20
+      long_click: num_exists
+      width: 11.6875
+    - width: 0.5625
     - click: '='
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
       long_click: ≠
-      width: 18
-    - width: 6
+      width: 11.6875
+    - width: 2.8125
     - click: '0'
       key_text_size: 20
-      width: 12
+      long_click: '#'
+      width: 13.625
     - click: .
       key_text_size: 20
-      long_click: ','
-      width: 12
+      long_click: num_middle_dot
+      width: 13.625
     - click: '-'
-      key_back_color: fn_back_color
-      key_text_color: fn_text_color
       key_text_size: 20
       long_click: num_pm
-      width: 12
-    - width: 3
+      width: 13.625
+    - width: 2.875
     - click: BackSpace
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       key_text_size: 20
-      width: 19
+      width: 17.25
     - click: back_to_kb
       key_back_color: nav_back_color
       key_text_color: nav_text_color
       label_symbol: ' '
-      width: 15
+      width: 11.6875
+    - width: 0.5625
     - click: goto_ascii
       key_back_color: fn_back_color
       key_text_color: fn_text_color
-      width: 15
+      width: 11.6875
+    - width: 0.5625
     - click: goto_cjk
       key_back_color: fn_back_color
       key_text_color: fn_text_color
-      width: 15
+      width: 11.6875
+    - width: 2.8125
+    - click: num_comma
+      key_text_size: 20
+      width: 13.625
     - click: space_num
       key_back_color: space_back_color
       key_text_color: space_text_color
-      width: 40
+      width: 27.25
+    - width: 2.875
     - click: Return
       hilited_key_back_color: accent_fill_hl
       hilited_key_text_color: accent_text
       key_back_color: accent_fill
       key_text_color: accent_text
       label_symbol: ' '
-      width: 15
+      width: 17.25
     lock: true
     name: 數字
     reset_ascii_mode: true
+    vertical_gap: 10
     width: 10
   number_ascii:
     ascii_mode: 1
@@ -2030,84 +2192,107 @@ preset_keyboards:
     height: 38
     key_text_offset_y: 3
     keys:
-    - click: '1'
-      long_click: １
-    - click: '2'
-      long_click: ２
-    - click: '3'
-      long_click: ３
-    - click: '4'
-      long_click: ４
-    - click: '5'
-      long_click: ５
-    - click: '6'
-      long_click: ６
-    - click: '7'
-      long_click: ７
-    - click: '8'
-      long_click: ８
-    - click: '9'
-      long_click: ９
-    - click: '0'
-      long_click: ０
-    - width: 5
-    - click: '@'
-      long_click: ＠
-    - click: '#'
-      long_click: ＃
-    - click: $
-      long_click: ＄
-    - click: '%'
-      long_click: ％
-    - click: '&'
-      long_click: ＆
-    - click: '*'
-      long_click: ＊
-    - click: +
-      long_click: ＋
-    - click: '-'
-      long_click: －
-    - click: '='
-      long_click: ＝
-    - width: 5
-    - width: 5
-    - click: (
-      long_click: （
-    - click: )
-      long_click: ）
+    - click: '{'
+    - click: '}'
     - click: '['
-      long_click: ［
     - click: ']'
-      long_click: ］
+    - click: (
+    - click: )
+    - click: <
+      long_click: «
+    - click: '>'
+      long_click: »
+    - click: '|'
+      long_click: ‖
     - click: \
-      long_click: ＼
+    - click: '@'
+    - click: '#'
+      long_click: №
+    - click: $
+      key_symbol_color: nav_text_color
+      label_symbol: €…
+      popup:
+      - €
+      - £
+      - ¥
+      - ₹
+      - ₩
+      - ₽
+      - ₱
+      - ¢
+    - click: '%'
+      long_click: ‰
+    - click: ^
+    - click: '&'
+    - click: '*'
+      long_click: ×
+    - click: +
+      long_click: ±
+    - click: '-'
+      key_symbol_color: nav_text_color
+      label_symbol: –…
+      popup:
+      - –
+      - —
+      - −
+    - click: '='
+      long_click: ≠
+    - width: 5
+    - click: '`'
+    - click: ''''
+      key_symbol_color: nav_text_color
+      label_symbol: ‘…
+      popup:
+      - ‘
+      - ’
+      - ‚
+      - ‹
+      - ›
+    - click: '"'
+      key_symbol_color: nav_text_color
+      label_symbol: “…
+      popup:
+      - “
+      - ”
+      - „
+    - click: '~'
+      long_click: ≈
+    - click: _
     - click: ':'
-      long_click: ：
     - click: ;
-      long_click: ；
+      long_click: ؛
     - click: '?'
-      long_click: ？
+      key_symbol_color: nav_text_color
+      label_symbol: ¿…
+      popup:
+      - ¿
+      - ؟
     - click: '!'
-      long_click: ！
+      long_click: ¡
     - width: 5
     - click: back_to_kb
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       label_symbol: ' '
       width: 15
-    - click: '"'
-      long_click: ＂
-    - click: ''''
-      long_click: ＇
-    - click: '~'
-      long_click: ～
-    - click: ÷
-    - click: <
-      long_click: ＜
-    - click: '>'
-      long_click: ＞
-    - click: _
-      long_click: ＿
+    - click: …
+      long_click: ⋯
+    - click: ·
+      long_click: •
+    - click: ←
+      long_click: ⇐
+    - click: ↑
+      long_click: ⇑
+    - click: ↓
+      long_click: ⇓
+    - click: →
+      long_click: ⇒
+    - click: ©
+      key_symbol_color: nav_text_color
+      label_symbol: ®…
+      popup:
+      - ®
+      - ™
     - click: BackSpace
       key_back_color: fn_back_color
       key_text_color: fn_text_color
@@ -2117,6 +2302,7 @@ preset_keyboards:
       key_text_color: fn_text_color
       width: 15
     - click: ','
+      long_click: ،
       width: 10
     - click: space_ascii
       key_back_color: space_back_color
@@ -2125,6 +2311,7 @@ preset_keyboards:
     - click: .
       width: 10
     - click: /
+      long_click: ÷
       width: 10
     - click: Return
       hilited_key_back_color: accent_fill_hl
@@ -2160,7 +2347,7 @@ preset_keyboards:
       key_text_offset_x: -6.0
     - click: ”
       key_text_offset_x: 6.0
-    - click: ·
+    - click: ※
     - click: 「
       key_text_offset_x: -6.6
     - click: 」
@@ -2175,8 +2362,10 @@ preset_keyboards:
       key_text_offset_x: -7.0
     - click: ）
       key_text_offset_x: 6.9
-    - click: ～
-    - click: …
+    - click: ［
+      key_text_offset_x: -7.4
+    - click: ］
+      key_text_offset_x: 7.4
     - click: 《
       key_text_offset_x: -7.6
     - click: 》
@@ -2202,7 +2391,7 @@ preset_keyboards:
       key_text_color: fn_text_color
       label_symbol: ' '
       width: 15
-    - click: —
+    - click: 〃
     - click: ×
     - click: 〇
     - click: ／
@@ -2217,10 +2406,14 @@ preset_keyboards:
       key_back_color: fn_back_color
       key_text_color: fn_text_color
       width: 15
+    - click: —
+    - click: …
     - click: space_cjk
       key_back_color: space_back_color
       key_text_color: space_text_color
-      width: 70
+      width: 30
+    - click: ·
+    - click: ～
     - click: Return
       hilited_key_back_color: accent_fill_hl
       hilited_key_text_color: accent_text
@@ -3264,9 +3457,11 @@ preset_keyboards:
     - click: f
       long_click: redo
     - click: g
-      long_click: (
+      label_symbol: ⇤ ⇥
+      swipe_left: Home
+      swipe_right: End
     - click: h
-      long_click: )
+      long_click: main_paren_pair
     - click: j
       long_click: ^
     - click: k
@@ -3314,6 +3509,7 @@ preset_keyboards:
       key_back_color: space_back_color
       key_text_color: space_text_color
       key_text_size: 13
+      long_click: VOICE_ASSIST
       width: 35
     - click: .
       long_click: '!'
@@ -3548,10 +3744,10 @@ preset_keys:
     label: 重复
     option: '%1$s'
   Return:
-    label: Enter
+    label: enter_labels
     send: Return
   Return1:
-    label: Enter
+    label: ic@text_box_check_outline
     send: Return
   Return2:
     label: 回车
@@ -3663,7 +3859,7 @@ preset_keys:
     send: Eisu_toggle
   clipboard_panel:
     command: clipboard_window
-    label: ▤
+    label: ic@script_outline
     option: '0'
     send: FUNCTION
   clipboard_window:
@@ -3713,6 +3909,12 @@ preset_keys:
     label: 更多
     option: 更多
     send: FUNCTION
+  main_paren_pair:
+    label: ( )
+    text: (){Left}
+  num_and:
+    label: ∧
+    text: ∧
   num_approx:
     label: ≈
     text: ≈
@@ -3722,21 +3924,42 @@ preset_keys:
   num_comma:
     label: ','
     text: ','
-  num_comma_fw:
-    label: ，
-    text: ，
   num_degree:
     label: °
     text: °
   num_divide:
     label: ÷
     text: ÷
+  num_dprime:
+    label: ″
+    text: ″
+  num_exists:
+    label: ∃
+    text: ∃
+  num_for_all:
+    label: ∀
+    text: ∀
   num_ge:
     label: ≥
     text: ≥
+  num_intersection:
+    label: ∩
+    text: ∩
   num_le:
     label: ≤
     text: ≤
+  num_member:
+    label: ∈
+    text: ∈
+  num_middle_dot:
+    label: ·
+    text: ·
+  num_not_member:
+    label: ∉
+    text: ∉
+  num_or:
+    label: ∨
+    text: ∨
   num_percent:
     label: '%'
     text: '%'
@@ -3749,9 +3972,18 @@ preset_keys:
   num_pm:
     label: ±
     text: ±
+  num_prime:
+    label: ′
+    text: ′
   num_radic:
     label: √
     text: √
+  num_times:
+    label: ×
+    text: ×
+  num_union:
+    label: ∪
+    text: ∪
   one_hand_switch_1:
     send: SWITCH_CHARSET
     states:
@@ -3772,13 +4004,13 @@ preset_keys:
     toggle: _one_hand_mode_3
   paste:
     command: clipboard
-    label: ⤒
+    label: ic@clipboard_text_outline
     send: FUNCTION
   paste_text:
     label: 貼上文本
     send: Control+Shift+Alt+v
   redo:
-    label: 恢復
+    label: ↷
     send: Control+y
   schema_menu:
     label: ☰
@@ -3834,18 +4066,18 @@ preset_keys:
     repeatable: false
     send: space
   sym:
-    label: 12#
+    label: 123#
     select: number
     send: Eisu_toggle
   tab_key:
-    label: Tab
+    label: ↹
     send: Tab
   theme_menu:
     label: ◑
     option: theme
     send: SETTINGS
   undo:
-    label: 撤銷
+    label: ↶
     send: Control+z
   unicode_lead:
     label: ' '
@@ -3869,15 +4101,15 @@ style:
   comment_position: right
   comment_text_size: 10
   comment_vertical_bias: 0.0
-  enter_label_mode: 0
+  enter_label_mode: 2
   enter_labels:
-    default: Enter
-    done: 完成
-    go: 前往
-    next: 下个
-    pre: 上个
-    search: 搜索
-    send: 发送
+    default: ic@keyboard_return
+    done: ic@check_bold
+    go: ic@arrow_right
+    next: ic@keyboard_tab
+    pre: ic@keyboard_tab_reverse
+    search: ic@magnify
+    send: ic@send
   hanb_font: hanb.ttf
   horizontal_gap: 5
   key_font: xuma_key.otf
@@ -3896,6 +4128,12 @@ style:
   label_font: label.ttf
   label_text_size: 22
   latin_font: xuma_latin.ttf
+  popup_bottom_margin: 52
+  popup_font: xuma_key.otf
+  popup_height: 44
+  popup_key_height: 44
+  popup_text_size: 22
+  popup_width: 40
   preview_font: latin.ttf
   preview_height: 60
   preview_offset: -12
@@ -3907,6 +4145,17 @@ style:
   symbol_text_size: 10
   text_font: latin.ttf
   vertical_gap: 13
+tool_bar:
+  button_spacing: 5
+  buttons:
+  - action: Hide
+    foreground:
+      style: ic@menu_down
+  - action: Zenkaku_Hankaku
+    foreground:
+      option_styles:
+      - ic@moon_waxing_crescent
+      - ic@moon_full
 window:
   foreground:
     comment_font_size: 16
