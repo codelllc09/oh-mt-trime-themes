@@ -1,10 +1,14 @@
 # Oh My Trime Themes
 
-[同文（Trime）](https://github.com/osfans/trime) 的通用 26 鍵主題集，包含配色、字體與鍵音。以同文 3.3.13 驗證。
+简体中文 · [繁體中文](README.zh-Hant.md)
 
-## 主題名單
+[同文（Trime）](https://github.com/osfans/trime)的通用 26 键主题集，包含配色、字体和按键音效。已在同文 3.3.13 上验证。
 
-- **V1**（[雲白](rime/theme/overview/v1-cloud.png)、[墨空](rime/theme/overview/v1-night.png)）
+[观看实机演示（含按键音效，26 秒）](docs/media/theme-demo.mp4)
+
+## 主题名单
+
+- **V1**（[云白](rime/theme/overview/v1-cloud.png)、[墨空](rime/theme/overview/v1-night.png)）
 - [V2-typewriter](rime/theme/overview/v2-typewriter.png) · [V2-calculator](rime/theme/overview/v2-calculator.png) · [V2-labelmaker](rime/theme/overview/v2-labelmaker.png)
 - [V2-halftone](rime/theme/overview/v2-halftone.png) · [V2-contour](rime/theme/overview/v2-contour.png) · [V2-cyanotype](rime/theme/overview/v2-cyanotype.png)
 - [V2-patchwork](rime/theme/overview/v2-patchwork.png) · [V2-stainedglass](rime/theme/overview/v2-stainedglass.png) · [V2-oscilloscope](rime/theme/overview/v2-oscilloscope.png)
@@ -13,18 +17,19 @@
 - [V2-backplane](rime/theme/overview/v2-backplane.png) · [V2-vacuum](rime/theme/overview/v2-vacuum.png) · [V2-thermogram](rime/theme/overview/v2-thermogram.png)
 - [V2-foundry](rime/theme/overview/v2-foundry.png) · [V2-wafer](rime/theme/overview/v2-wafer.png) · [V2-pneumatic](rime/theme/overview/v2-pneumatic.png)
 
-## 安裝
+## 安装
 
-1. 下載 Release 的純主題 ZIP，解壓到同文設定顯示的「使用者資料夾」。
-2. 在同文點「部署」，再選所需主題與配色。
-3. 若要啟用鍵音，在「虛擬鍵盤」打開「按鍵聲音」與「使用自訂按鍵音」，再於「自訂按鍵音效」選同名音效包。
+1. 在本仓库的 **Releases** 页面展开 **Assets**，按需下载一个 ZIP。
+   - **完整包** `trime-themes.zip` 包含全部主题。
+   - **单主题包** 先在[主题名单](#主题名单)查看预览，再下载对应的安装包。例如，V2-typewriter 对应 `trime-v2-typewriter.zip`。V1 的云白和墨空共用 `trime-v1.zip`。
+2. 在同文设置中确认用户数据目录的位置，将 ZIP **内容**解压到该目录。`*.trime.yaml` 应直接放在用户数据目录下，字体、背景和音效保留压缩包内的目录结构。
+3. 在同文点击「部署」，再选择刚安装的主题和配色。
+4. 如需启用 V2 的按键音效，在「虚拟键盘」中开启「按键声音」和「使用自定义按键音」，再在「自定义按键音效」中选择同名音效包。
 
-[自行打包](docs/DESIGN.md#重建與打包) · [徐碼·L 選裝](extras/xuma-l/README.md)
+## 常用键位
 
-## 常用鍵位
+- 点击 `123#` 进入数字页，长按打开方案菜单。在数字页点击 `ASC` 或 `CJK` 可切换到对应的符号页，点击 `ABC` 返回主键盘。
+- 点击地球键切换中英文输入状态，长按打开主题菜单。
+- 长按第一排的 `q` 至 `p` 可输入 `1` 至 `0`。长按空格可打开已启用的语音输入法。
 
-- `123#` 點按進數字頁，長按開啓方案選單。數字頁的 `ASC` 和 `CJK` 可切換符號頁，`ABC` 返回主鍵盤。
-- 地球鍵點按切換中英文態，長按開啓主題選單。
-- 第一排 `q` 至 `p` 長按輸入 `1` 至 `0`。長按空格可開啓已啓用的語音輸入法。
-
-下載[互動鍵位指南](keyboard-guide.html)並用瀏覽器開啓，可點編號查看動作。完整規則見[文字鍵位表](docs/KEYBOARD_MAP.md)。
+下载[交互式键位指南](keyboard-guide.html)并在浏览器中打开，点击编号可查看按键动作。完整规则见[键位表](docs/KEYBOARD_MAP.md)。

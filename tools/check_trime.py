@@ -576,7 +576,26 @@ def package(target, theme_id=None, *, xuma=None):
             raise SystemExit(f'[✗] 部署包已存在：{target}') from None
 
     listing = ''.join(f'{src}\t{dst}\n' for src, dst in files)
-    print(f'{len(files) + len(extras)}\t{md5(listing.encode(), usedforsecurity=False).hexdigest()[:8]}')
+    return len(files) + len(extras), md5(listing.encode(), usedforsecurity=False).hexdigest()[:8]
+
+
+def package_release(target: Path):
+    """在新目錄生成完整包及每款主題的 Release 安裝包。"""
+    if target.exists():
+        raise SystemExit(f'[✗] Release 安裝包目錄已存在：{target}')
+    if not gen_theme(check=True):
+        raise SystemExit(1)
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(prefix='.trime-release-', dir=target.parent) as stage:
+        packages = Path(stage) / 'packages'
+        packages.mkdir()
+        package(packages / 'trime-themes.zip')
+        for theme_id in THEME_IDS:
+            package(packages / f'trime-{theme_id}.zip', theme_id)
+        packages.rename(target)
+
+    print(f'已打包並校驗：{target}（{len(THEME_IDS) + 1} 個 ZIP）')
 
 
 def deployment_options(command):
@@ -599,9 +618,15 @@ def main():
         args = deployment_options(command)
         xuma = load_xuma_config() if args.xuma else None
         if command == 'package':
-            package(args.target, args.theme, xuma=xuma)
+            count, fingerprint = package(args.target, args.theme, xuma=xuma)
+            print(f'{count}\t{fingerprint}')
         else:
             manifest(args.theme, xuma=xuma)
+        return
+    if command == 'package-release':
+        parser = argparse.ArgumentParser(prog='check_trime.py package-release')
+        parser.add_argument('target', type=Path, help='輸出目錄（須尚未存在）')
+        package_release(parser.parse_args(sys.argv[2:]).target)
         return
     if command == 'gen-custom' and len(sys.argv) == 3:
         gen_custom(sys.argv[2])

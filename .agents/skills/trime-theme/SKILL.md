@@ -1,26 +1,18 @@
 ---
 name: trime-theme
-description: 為 Oh My Trime Themes 設計、製作或更新 Trime 主題及鍵音，包括並排原型、主題 YAML、離線鍵位指南、配色 PNG，以及按要求在 Waydroid 部署、抽驗和錄影。
+description: 設計、維護或排查同文（Trime）鍵盤主題與鍵音，涵蓋鍵位、配色、字體、生成、打包和實機驗證。
 ---
 
 # 同文主題工作流
 
-依當次要求進入相應階段。靈感需求交付構想，原型需求交付並排稿，已定案的提案直接進入獲授權的實作或驗收。倉庫限制以 [AGENTS.md](../../../AGENTS.md) 為準，鍵位與動作查 [鍵位表](../../../docs/KEYBOARD_MAP.md)。
+遵循[倉庫規則](../../../AGENTS.md)，以[現行鍵位表](../../../docs/KEYBOARD_MAP.md)和主題配置為基準。
 
-## 原型
+- **原型**　由現行配置渲染受影響的頁面，並排比較短按和長按。比較鍵音時用相同節奏，保留定案畫面和樣音。[原型步驟](references/build.md#原型)
+- **實作**　編輯 `rime/theme/sources/` 的源檔，共用鍵位先重建 V1，再重建受影響的 V2。安裝用的 `*.trime.yaml` 在 `rime/theme/`。只有字符集、字形來源或字重改變才重建字體。鍵面尺寸或比例有變動時，只重建受影響的圖片。[生成步驟](references/build.md#重建主題)
+- **同步**　更新受影響的鍵位表條目及配色 PNG。共用鍵位變動時同步 `keyboard-guide.html`。[指南生成](references/build.md#更新鍵位指南)
+- **打包**　以 `tools/check_trime.py manifest` 核對安裝檔與手機端路徑。發佈時一併產出完整包與各款安裝包。[安裝包](references/build.md#安裝包)
+- **驗證**　依改動選擇靜態校驗或實機抽驗。用現行版式與尺寸定位，讀 Unicode 碼位核對輸出，用截圖檢查外觀。回報實測主題、鍵音、範圍與待驗項目。[驗證與部署](references/device.md)
 
-- 優先用 [鍵面渲染工具](../../../tools/render_keyboard.py) 讀取現有主題。將現況與提案放在同一份 HTML，展示主鍵盤、數字頁、短按字面與長按角標。
-- 有鍵音時，用同一節奏比較樣音，讓字鍵和回車容易辨認。記住定案的畫面與音效版本，供後續生成。
+遇到具體問題時查[故障經驗](references/lessons.md)的相關段落。[配置與按鍵動作](references/lessons.md#配置與按鍵動作) · [配色、字體與圖像](references/lessons.md#配色字體與圖像) · [鍵音](references/lessons.md#鍵音) · [設備驗證](references/lessons.md#設備驗證)
 
-## 實作
-
-- 新外觀沿用 V1 鍵位。顯示名用 `V2-xxx`，配置 ID 用 `v2-xxx`。在 `rime/theme/sources/` 維護 `*.theme-source.yaml`，生成的 `*.trime.yaml` 放在 `rime/theme/`。優先重用 [V2 生成函式](../../../tools/gen_calculator.py) 的 `inherit_skin`、`skin_keys` 和 `write_theme_assets`。
-- 音效沿用定案樣本，按鍵類別寫入 `rime/soundeffect/<id>.sound.yaml`，WAV 放在同名子目錄。獨立 ZIP 以 `soundeffect/` 為根，包含描述檔及其引用的 WAV。取用實錄時保留來源與授權。
-- 在 [部署清單](../../../tools/check_trime.py) 納入主題及其資產。用獨立主題清單核對引用、鍵位與音效包，並依 [指南生成步驟](../../../docs/DESIGN.md#由配置生成的鍵位指南) 更新受影響的配色 PNG。共用鍵位變動時更新 V1 互動指南。交付主題 YAML、配色圖與配套音效包。
-
-## Waydroid 驗收
-
-- 當次要求包含設備部署或錄影時，確認 Waydroid 裝置和現行解析度，只推目標主題清單所需的檔案。選用主題和同名獨立音效，等載入完成，再確認實際鍵面與錄到的鍵音。
-- 用同文測試框抽驗徐碼主鍵盤的候選上屏、數字頁的輸入與退格、ABC 返回及回車聲。依現行版式取座標，以 Unicode 碼位核對輸出。範圍與失敗處理見 [測試手冊](../../../docs/TESTING.md)。
-- 需要影片時錄製 Android 畫面和內部鍵音，抽看成片兩頁並確認回車聲。逐鍵複核音軌中的疑似漏聲。若無窗錄影在 Wayland 初始化失敗，可只為該次 scrcpy 行程設定 `SDL_VIDEODRIVER=dummy`。
-- 回報實測範圍與目前啟用的主題。交付影片時說明成片的音量調整或仍待驗證的項目。
+將可跨主題重用的故障成因與處理方式補入故障經驗。

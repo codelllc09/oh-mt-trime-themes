@@ -43,4 +43,4 @@ jobs:
           echo "本倉不含 corpus/ 與 scheme；§corpus §tendency 類檢查在桌面主倉執行。"
 
   # 真機/容器側（deploy.sh push、verify.sh、shots.sh）不在 CI 跑：
-  # 需要 adb 與 Waydroid，屬本機驗收，見 docs/TESTING.md。
+  # 需要 adb 與 Waydroid，屬本機驗收，見 .agents/skills/trime-theme/references/device.md。

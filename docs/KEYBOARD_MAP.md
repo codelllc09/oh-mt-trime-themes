@@ -1,15 +1,12 @@
 # KEYBOARD_MAP —— 同文（Trime）鍵盤現行配置
 
-> 這份文檔只記**當前實際配置**。修改版式後同步受影響的規則；只有座標改變時
-> 才同步 `tools/kbmap.py`、`tools/verify.sh` 或 `tools/shots.sh` 中相應座標。
+> 本表記錄現行鍵位與版式。
 
 ## 一、通用 26 鍵與符號頁規則
 
 1. **主鍵盤只有 4 行**，多一行都不行（用戶裁定）。
-2. **主鍵盤有 3 個標點鍵**，即 `,`、`.`、`/`。中文態的逗號和句號直接輸出
-   `，`、`。`，斜線則進入標點候選。其餘標點可透過長按輸入。
-3. 方案的標點表決定主鍵盤輸出。以徐碼·L 為例，逗號和句號按語言態換形（`,`→`，`、`.`→`。`）。數字頁與 ASCII 頁避開中文標點映射，
-   送出的 ASCII 鍵事件受全半角開關控制；中文標點頁直接提交鍵面上的 Unicode 字符。
+2. **主鍵盤有 3 個標點鍵**，即 `,`、`.`、`/`。輸出由方案的標點表決定。以徐碼·L 為例，中文態的逗號和句號換成 `，`、`。`，斜線進入標點候選。其餘標點可透過長按輸入。
+3. 數字頁與 ASCII 頁送出的 ASCII 鍵事件受全半角開關控制。中文標點頁直接提交鍵面上的 Unicode 字符。
 4. **主鍵盤不設獨立數字行**。第一排 `q w e r t y u i o p` 長按依序輸入 `1–0`，點按 `123#` 進數字頁。
 
 ## 二、頁面與導航（Hub 模型）
@@ -43,16 +40,11 @@
 
 ### 鍵高與縫隙
 
-Trime 的行是平鋪的：可視鍵高 = 行格高 − `vertical_gap`。目前配置：
-
 | 項目 | 現值 | 1080p 效果 |
 |---|---|---|
 | `vertical_gap` | 13 | 可視鍵約 95×128px |
 | `horizontal_gap` | 5 | 普通橫縫約 13px |
 | `keyboard_height` | 250 | 調整鍵縫時不改總高 |
-
-地球鍵背景圖會拉伸至鍵位；只有地球鍵寬高比改變時，才需同步
-`tools/gen_icons.py` 的 `ASPECT` 並重生成圖像。
 
 ### 空格鍵標籤
 
@@ -61,7 +53,7 @@ Trime 的行是平鋪的：可視鍵高 = 行格高 − `vertical_gap`。目前�
 | 徐碼·L | **SUIGEM**（`space_zh`） | **QWERTY**（`space_en`） |
 | 通用 26 鍵、朙月拼音 | 當前方案名（`space`） | **QWERTY**（`space_en`） |
 
-徐碼空格使用 `key_text_size: 13`，拉丁字樣由 `xuma_latin.ttf` 繪製。
+徐碼空格使用 `key_text_size: 13`，拉丁字樣由 `xuma_latin.ttf` 繪製。空格上的「語音」取自 `VOICE_ASSIST` 的固定長按標籤。
 
 ### 底行寬度與中心座標
 
@@ -99,13 +91,13 @@ Trime 的行是平鋪的：可視鍵高 = 行格高 − `vertical_gap`。目前�
 
 `g` 上方的灰色 `⇤ ⇥` 表示左滑 Home、右滑 End，通常用於移到行首／行尾。
 
-主鍵盤、數字頁和兩個符號頁的回車鍵隨輸入框動作顯示。發送用紙飛機、
+主鍵盤、數字頁和兩個符號頁使用[動態回車鍵](../.agents/skills/trime-theme/references/lessons.md#回車鍵在不同輸入框顯示不同)。發送用紙飛機、
 搜索用放大鏡、普通回車用折返箭頭、前往用右箭頭、完成用單勾。
 下一項和上一項用帶豎線的左右箭頭。主鍵盤組稿時用文字框加勾表示上屏。
 App 提供自訂動作名稱時優先顯示該名稱。普通回車在多行框通常換行，
 具體結果由當前輸入框處理。
 
-標點長按值使用 ASCII，讓 Rime 在中文態換形、英文態保留半角。
+主鍵盤的標點長按送出表列的 ASCII 值。
 
 在徐碼·L，點按斜線送出 ASCII `/`，保留 `/menu`、`/add`、`/time` 等 Lua 命令入口。
 中文半角狀態下，標點候選依序為 `、`、`､`、`/`、`／`、`÷`，再按空格即可選首項。
@@ -153,7 +145,7 @@ V2-contour 的 `0–9`、`.`、`-` 採帶刻度的淺綠鍵，回車採橘紅鍵
 藍曬、布章與彩窗的數字區分別採淺藍紙、灰藍布和蜂蜜色玻璃。
 底行逗號與 `0` 等寬對齊，空格左緣對齊 `.`、右緣對齊 `-`，Enter 與退格等寬對齊。
 
-Trime 的 `horizontal_gap` 只能整頁統一；上述不等間距由無點擊動作的 spacer 鍵實現。
+上述分組間距由[間隔項目](../.agents/skills/trime-theme/references/lessons.md#同頁需要不同的分組間距)實現。
 
 1080p@420 座標：主區欄中心 x = **63 / 195 / 327 / 494 / 641 / 788 / 986**；
 行中心 y = 1563 / 1694 / 1825 / 1956；底行中心 x =
@@ -212,26 +204,20 @@ Trime 的 `horizontal_gap` 只能整頁統一；上述不等間距由無點擊�
 本頁不翻譯：鍵位直接提交所列 Unicode 字符；
 字形逐鍵光學居中（`key_text_offset_x` 由 `tools/glyph_offsets.py` 量測）。
 
-鍵面依序查找 `latin_font`（Roboto 子集）和 `key_font`（Noto Sans CJK SC Regular 子集），
-再用系統字體補缺。中文引號由 CJK 子集繪製。字體來源、授權和重建方式見[字體說明](../rime/fonts/README.md)。
+V1 的拉丁鍵面用 Roboto 子集，中文引號用 Noto Sans CJK SC Regular 子集。字體來源、授權和重建方式見[字體說明](../rime/fonts/README.md)。
 
-## 主題（configId = `v1`）
+## 主題（V1）
 
 各款 V2 主題均沿用本表的短按、長按、滑動與導航規則。
 V2-pixelblock 的水平鍵縫設為 0，組與組之間以色片的階梯邊分隔。
-V2-labelmaker 的地球鍵鍵帽顯示「中／英」。安裝方式見 [README](../README.md#安裝)。
+V2-labelmaker 的地球鍵鍵帽顯示「中／英」。安裝方式見 [README](../README.md#安装)。
 
 | 項 | 值 | 說明 |
 |---|---|---|
 | 源檔 | [`rime/theme/sources/v1.theme-source.yaml`](../rime/theme/sources/v1.theme-source.yaml) | 在倉庫編輯，引用 Trime 預設並覆寫自訂項 |
 | 生成物 | [`rime/theme/v1.trime.yaml`](../rime/theme/v1.trime.yaml) | `check_trime.py gen-theme` 生成的自包含版，部署到手機 Rime 根目錄 |
 | 顯示名 | `V1` | 主題選單顯示此名 |
-| configId | `v1` | ＝檔名去掉 `.trime.yaml` |
+| 本倉打包短名 | `v1` | 用於 `--theme v1` |
+| Trime `configId` | `v1.trime` | [檔名與主題載入](../.agents/skills/trime-theme/references/lessons.md#主題檔名衝突) |
 
-**為什麼不再用 `trime.yaml` 當檔名**：Trime 內建的默認主題就叫 `trime.yaml`（顯示名「預設」），
-而主題**按 configId 加載、用戶目錄優先**。之前我們把自包含主題也命名 `trime.yaml`，
-結果菜單裏「預設」和「徐碼·L」指向同一份檔案（看起來一模一樣）。
-改成獨立的 `v1.trime.yaml` 後三支主題各歸各。
-
-**代價**：`pm clear`／首次安裝後，Trime 的默認 configId 仍是 `trime`，
-即內建「預設」；需手動「地球長按 → 主題選單 → V1」切一次（之後記住）。
+首次安裝或清除同文資料後，從主題選單選取 V1。
