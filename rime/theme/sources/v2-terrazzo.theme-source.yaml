@@ -1,4 +1,4 @@
-# 外觀由 tools/gen_contrast.py 套在 V1 鍵位上。
+# 外觀由 tools/check_trime.py gen-theme --theme v2-terrazzo 套在 V1 鍵位上。
 name: V2-terrazzo
 style:
   color_scheme: terrazzo_stone

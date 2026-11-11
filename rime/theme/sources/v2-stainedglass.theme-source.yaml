@@ -1,4 +1,4 @@
-# 外觀由 tools/gen_materials.py 套在 V1 鍵位上。
+# 外觀由 tools/check_trime.py gen-theme --theme v2-stainedglass 套在 V1 鍵位上。
 name: V2-stainedglass
 style:
   color_scheme: stainedglass_amber

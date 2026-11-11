@@ -18,26 +18,18 @@ uv run --with pyyaml python tools/render_keyboard.py number --scheme xuma_night 
 uv run --with pyyaml python tools/check_trime.py gen-theme
 ```
 
-新外觀沿用 V1 鍵位，顯示名用 `V2-xxx`，主題 ID 用 `v2-xxx`。可沿用 [`gen_calculator.py`](../../../../tools/gen_calculator.py) 的 `inherit_skin`、`skin_keys` 和 `write_theme_assets`。
+V2 沿用 V1 鍵位。源檔放在 `rime/theme/sources/`，顯示名用 `V2-xxx`，主題 ID 用 `v2-xxx`。在 [`theme_build`](../../../../tools/theme_build/__init__.py) 登記繪圖函式。
 
-執行對應生成器，例如 `uv run --with pyyaml --with pillow python tools/gen_typewriter.py`。V2-halftone 另加 `--with fonttools`。加 `--check` 核對生成物。
+```sh
+uv run --with pyyaml --with pillow python tools/check_trime.py gen-theme --theme v2-typewriter
+uv run --with pyyaml --with pillow --with fonttools python tools/check_trime.py gen-theme --all --check
+```
 
-| 主題 | 生成器 |
-|---|---|
-| V2-typewriter | `gen_typewriter.py` |
-| V2-calculator | `gen_calculator.py` |
-| V2-labelmaker | `gen_labelmaker.py` |
-| V2-halftone | `gen_halftone.py` |
-| V2-contour | `gen_contour.py` |
-| V2-cyanotype、V2-patchwork、V2-stainedglass | `gen_materials.py` |
-| V2-oscilloscope、V2-pixelblock | `gen_scope_pixel.py` |
-| V2-cassette、V2-terrazzo、V2-bauhaus | `gen_contrast.py` |
-| V2-perforation、V2-interlock、V2-backplane、V2-vacuum、V2-thermogram | `gen_industrial.py` |
-| V2-foundry、V2-wafer、V2-pneumatic | `gen_factory.py` |
+加 `--check` 比對生成物。生成 V2-halftone 或使用 `--all` 時加 `--with fonttools`。
 
 ### 鍵音
 
-描述檔和樣音放在 `rime/soundeffect/`，保留[描述檔引用的 WAV 路徑](lessons.md#鍵音包漏聲或對錯鍵)。生成器可使用倉庫收錄的 WAV。`gen_scope_pixel.py`、`gen_contrast.py`、`gen_industrial.py` 和 `gen_factory.py` 可加 `--sound-zips dist` 單獨打包音效。
+一般生成讀取 `rime/soundeffect/` 的描述檔和 WAV。從定案 HTML 匯入時指定單款 V2 並加 `--prototype 路徑`。加 `--sound-zips dist` 可輸出獨立音效包。
 
 V2-typewriter 採用 [nvmbky 的 CC0 打字機實錄](https://freesound.org/people/nvmbky/sounds/801118/)。
 

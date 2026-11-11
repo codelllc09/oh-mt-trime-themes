@@ -1,4 +1,4 @@
-# tools/gen_industrial.py 將定案外觀套在 V1 鍵位上。
+# tools/check_trime.py gen-theme --theme v2-thermogram 將定案外觀套在 V1 鍵位上。
 name: V2-thermogram
 style:
   color_scheme: thermogram_industrial

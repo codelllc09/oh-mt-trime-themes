@@ -8,7 +8,7 @@
 | `xuma_latin.ttf` | 拉丁字母、數字、ASCII 符號 | Roboto 3.002（© 2011 Google Inc.） | [Apache License 2.0](Apache-2.0.txt) |
 | `typewriter_latin.ttf` | V2-typewriter 的鍵帽，覆蓋 ASCII，中文沿用 V1 字體 | [Courier Prime Bold](https://github.com/google/fonts/tree/main/ofl/courierprime) | [SIL OFL 1.1](CourierPrime-OFL.txt) |
 | `labelmaker_mono.otf` | V2-labelmaker、V2-cyanotype、V2-oscilloscope、V2-pixelblock 的等寬英數，收錄 `A–Z`、`a–z`、`0–9` | Source Code Pro Semibold（Adobe） | [SIL OFL 1.1](SourceCodePro-OFL.txt) |
-| `halftone_latin.ttf` | V2-halftone、V2-patchwork 的粗體 ASCII | `xuma_latin.ttf` 的 Roboto Bold 子集，由 `gen_halftone.py` 生成 | [Apache License 2.0](Apache-2.0.txt) |
+| `halftone_latin.ttf` | V2-halftone、V2-patchwork 的粗體 ASCII | `xuma_latin.ttf` 的 Roboto Bold 子集，由 `gen-theme --theme v2-halftone` 生成 | [Apache License 2.0](Apache-2.0.txt) |
 
 ## 共用字體
 

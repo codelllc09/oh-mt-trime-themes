@@ -5,9 +5,9 @@
 #   1. 本倉 *.yaml 語法與結構校驗（主題鍵盤/配色/補丁路徑/方案表）；
 #   2. 主題字根 hint 與方案 speller/preedit_format 的 xlit 映射逐鍵對賬；
 #   3. 輸出部署清單（manifest 子命令，deploy.sh 的唯一來源）。
-#   4. 將 rime/theme/ 內的 Trime 預設與 V1 源檔深合併，展開 __include，生成手機主題。
+#   4. 由源檔生成 V1，並將 V2 外觀套到共用鍵位。
 #
-# 依賴：PyYAML。
+# 依賴：PyYAML。生成 V2 另需 Pillow，Halftone 另需 fontTools。
 # 用法：
 #   uv run --with pyyaml python tools/check_trime.py            # 靜態校驗
 #   uv run --with pyyaml python tools/check_trime.py manifest   # 純主題 TSV，可加 --theme v1 或 --xuma
@@ -38,7 +38,6 @@ THEME_SOURCE_DIR = THEME_DIR / 'sources'
 THEME_SOURCE = THEME_SOURCE_DIR / 'v1.theme-source.yaml'
 THEME_BUILD = THEME_DIR / 'v1.trime.yaml'
 TYPEWRITER_ID = 'v2-typewriter'
-TYPEWRITER_BUILD = THEME_DIR / f'{TYPEWRITER_ID}.trime.yaml'
 CALCULATOR_ID = 'v2-calculator'
 LABELMAKER_ID = 'v2-labelmaker'
 HALFTONE_ID = 'v2-halftone'
@@ -450,11 +449,18 @@ def resolve_theme(ours, base):
     return merged
 
 
-def gen_theme(target: Path = THEME_BUILD, check: bool = False) -> bool:
-    """合併 Trime 預設與 v1.theme-source.yaml，生成自包含的手機主題。"""
+def load_base_theme():
     base = load_yaml(THEME_DIR / 'vendor' / 'trime-3.3.13.yaml')
-    merged = resolve_theme(load_yaml(THEME_SOURCE), base)
-    text = yaml.safe_dump(merged, allow_unicode=True, sort_keys=True, width=4096)
+    return resolve_theme(load_yaml(THEME_SOURCE), base)
+
+
+def dump_theme(theme):
+    return yaml.safe_dump(theme, allow_unicode=True, sort_keys=True, width=4096)
+
+
+def gen_theme(target: Path = THEME_BUILD, check: bool = False) -> bool:
+    """由 V1 源檔生成自包含的手機主題。"""
+    text = dump_theme(load_base_theme())
 
     if check:
         cur = target.read_text(encoding='utf-8') if target.exists() else ''
@@ -612,6 +618,37 @@ def deployment_options(command):
     return parser.parse_args(sys.argv[2:])
 
 
+def generate_themes(argv):
+    parser = argparse.ArgumentParser(prog='check_trime.py gen-theme', allow_abbrev=False)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--theme', choices=THEME_IDS, help='生成指定主題（預設 V1）')
+    selection.add_argument('--all', action='store_true', help='生成所有主題')
+    parser.add_argument('--check', action='store_true', help='檢查生成物是否同步')
+    parser.add_argument('--prototype', type=Path, help='從定稿 HTML 匯入指定 V2 的鍵音')
+    parser.add_argument('--sound-zips', type=Path, help='獨立鍵音包的輸出目錄')
+    args = parser.parse_args(argv)
+
+    if args.prototype is not None and args.theme not in SKINNED_THEME_IDS:
+        parser.error('--prototype 需指定一款 V2 主題')
+    if args.sound_zips is not None and not (args.all or args.theme in SKINNED_THEME_IDS):
+        parser.error('--sound-zips 需選擇 V2 或 --all')
+
+    theme_ids = THEME_IDS if args.all else (args.theme or 'v1',)
+    for theme_id in theme_ids:
+        if theme_id == 'v1':
+            if not gen_theme(check=args.check):
+                return 1
+            continue
+
+        from theme_build import build_theme
+
+        try:
+            build_theme(theme_id, check=args.check, prototype=args.prototype, sound_zips=args.sound_zips)
+        except (ValueError, OSError) as error:
+            parser.exit(1, f'[✗] {theme_id}：{error}\n')
+    return 0
+
+
 def main():
     command = sys.argv[1] if len(sys.argv) > 1 else None
     if command in ('package', 'manifest'):
@@ -632,8 +669,7 @@ def main():
         gen_custom(sys.argv[2])
         return
     if command == 'gen-theme':
-        ok = gen_theme(check='--check' in sys.argv)
-        sys.exit(0 if ok else 1)
+        sys.exit(generate_themes(sys.argv[2:]))
     if command == 'xuma-desktop-dir' and len(sys.argv) == 2:
         print(load_xuma_config().desktop_dir)
         return

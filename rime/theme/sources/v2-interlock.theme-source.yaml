@@ -1,4 +1,4 @@
-# tools/gen_industrial.py 將定案外觀套在 V1 鍵位上。
+# tools/check_trime.py gen-theme --theme v2-interlock 將定案外觀套在 V1 鍵位上。
 name: V2-interlock
 style:
   color_scheme: interlock_industrial

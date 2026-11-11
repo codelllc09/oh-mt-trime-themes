@@ -1,4 +1,4 @@
-# 從 V1 繼承版面與動作，由 tools/gen_labelmaker.py 生成主題及資產。
+# 從 V1 繼承版面與動作，由 tools/check_trime.py gen-theme --theme v2-labelmaker 生成主題及資產。
 name: V2-labelmaker
 style:
   color_scheme: labelmaker_tape

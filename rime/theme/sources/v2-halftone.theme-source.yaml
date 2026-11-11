@@ -1,4 +1,4 @@
-# 從 V1 繼承版面與動作，由 tools/gen_halftone.py 生成主題及鍵帽。
+# 從 V1 繼承版面與動作，由 tools/check_trime.py gen-theme --theme v2-halftone 生成主題及鍵帽。
 name: V2-halftone
 style:
   color_scheme: halftone_print

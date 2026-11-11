@@ -1,4 +1,4 @@
-# tools/gen_scope_pixel.py 將跨鍵色塊套在 V1 鍵位上。
+# tools/check_trime.py gen-theme --theme v2-pixelblock 將跨鍵色塊套在 V1 鍵位上。
 name: V2-pixelblock
 style:
   color_scheme: pixelblock_arcade

@@ -1,31 +1,16 @@
-#!/usr/bin/env python3
-"""從 V1 生成卡帶、水磨石和包浩斯主題，並打包定稿鍵音。"""
+"""卡帶、水磨石與包浩斯外觀。"""
 
-import argparse
-from base64 import b64decode
 from functools import partial
-from io import BytesIO
-import json
 from math import cos, sin, tau
-from pathlib import Path
 from random import Random
-import re
-import wave
-from zipfile import ZIP_DEFLATED, ZipFile
 
 from PIL import Image, ImageColor, ImageDraw
-import yaml
 
-from check_trime import CASSETTE_ID, CONTRAST_THEME_IDS, RIME_DIR, TERRAZZO_ID
-from gen_calculator import draw_globe, inherit_skin, skin_keys, write_theme_assets
-from gen_typewriter import gradient, rounded_layer
-from render_keyboard import DP, SCREEN_W
+from check_trime import CASSETTE_ID, TERRAZZO_ID
+from render_keyboard import SCREEN_W
+from .core import SCALE, active_scheme, case_geometry, draw_globe, gradient, rounded_layer, skin_keys
 
 
-SCALE = 2
-ROLES = ('glyph-1', 'glyph-2', 'glyph-3', 'space', 'glyph-4', 'glyph-5', 'erase', 'return')
-SOUND_PARAMS = (1, 2, 24000, 'NONE')
-SAMPLE_FRAMES = 2544  # 定稿試聽的每次按鍵均為 106 ms。
 CAP_COLORS = {
     'glyph': ('key_back_color', 'hilited_key_back_color'),
     'control': ('fn_back_color', 'hilited_off_key_back_color'),
@@ -149,12 +134,9 @@ def cap_texture(theme_id, scheme, kind, width, height, pressed):
     return image.resize((width, height), Image.Resampling.LANCZOS)
 
 
-def make_theme(theme_id):
-    theme = inherit_skin(theme_id)
-    style = theme['style']
-    scheme = theme['preset_color_schemes'][style['color_scheme']]
-    bar = round(style['candidate_view_height'] * DP)
-    height = bar + round(style['keyboard_height'] * DP)
+def render(theme_id, theme):
+    scheme = active_scheme(theme)
+    height, bar = case_geometry(theme)
     if theme_id == CASSETTE_ID:
         case = cassette_case(height)
         strip = cassette_strip(case, bar)
@@ -168,99 +150,4 @@ def make_theme(theme_id):
     images = {'case.png': case, 'strip.png': strip}
     skin_keys(theme, images, partial(cap_texture, theme_id, scheme),
               theme_id.removeprefix('v2-'), separate_space=True)
-    return theme, images
-
-
-def validate_wave(stream, frames=None):
-    params = (stream.getnchannels(), stream.getsampwidth(), stream.getframerate(), stream.getcomptype())
-    if params != SOUND_PARAMS or (frames is not None and stream.getnframes() != frames):
-        raise ValueError('鍵音須為 24 kHz、16 bit、單聲道 PCM，單鍵 106 ms')
-
-
-def approved_samples(prototype):
-    match = re.search(r'<script id="tongwen-contrast-data" type="application/json">(.*?)</script>',
-                      prototype.read_text(encoding='utf-8'), re.S)
-    if not match:
-        raise ValueError('定稿 HTML 缺少試聽資料')
-    data = json.loads(match[1])
-    samples = {}
-    for theme_id in CONTRAST_THEME_IDS:
-        url = data['sounds'][theme_id.removeprefix('v2-')]
-        with wave.open(BytesIO(b64decode(url.split(',', 1)[1], validate=True))) as demo:
-            validate_wave(demo)
-            clips = {}
-            for role, beat in zip(ROLES, data['beats'], strict=True):
-                demo.setpos(round(beat * SOUND_PARAMS[2]))
-                pcm = demo.readframes(SAMPLE_FRAMES)
-                if len(pcm) != SAMPLE_FRAMES * SOUND_PARAMS[1]:
-                    raise ValueError(f'{theme_id} 的 {role} 樣音不完整')
-                output = BytesIO()
-                with wave.open(output, 'wb') as sample:
-                    sample.setparams((*SOUND_PARAMS[:3], 0, 'NONE', 'not compressed'))
-                    sample.writeframes(pcm)
-                clips[f'{role}.wav'] = output.getvalue()
-            samples[theme_id] = clips
-    return samples
-
-
-def sound_files(theme_id, name, approved):
-    folder = RIME_DIR / 'soundeffect' / theme_id
-    names = [f'{role}.wav' for role in ROLES]
-    samples = approved if approved is not None else {filename: (folder / filename).read_bytes() for filename in names}
-    for filename in names:
-        with wave.open(BytesIO(samples[filename])) as sample:
-            validate_wave(sample, SAMPLE_FRAMES)
-
-    glyphs = [i for i, role in enumerate(ROLES) if role.startswith('glyph')]
-    descriptor = {
-        'name': name, 'folder': theme_id, 'sound': names,
-        'keyset': [
-            {'keys': ['KEYCODE_ENTER', 'KEYCODE_NUMPAD_ENTER'], 'inOrder': True, 'sounds': [ROLES.index('return')]},
-            {'keys': ['KEYCODE_SPACE'], 'inOrder': True, 'sounds': [ROLES.index('space')]},
-            {'keys': ['KEYCODE_DEL', 'KEYCODE_FORWARD_DEL'], 'inOrder': True, 'sounds': [ROLES.index('erase')]},
-            {'keys': ['KEYCODE_SHIFT_LEFT', 'KEYCODE_SHIFT_RIGHT', 'KEYCODE_EISU', 'KEYCODE_LANGUAGE_SWITCH',
-                      'KEYCODE_TAB', 'KEYCODE_ESCAPE'], 'inOrder': True, 'sounds': [glyphs[0]]},
-            {'min': 'KEYCODE_A', 'max': 'KEYCODE_Z', 'inOrder': False, 'sounds': glyphs.copy()},
-            {'min': 'KEYCODE_0', 'max': 'KEYCODE_9', 'inOrder': False, 'sounds': glyphs.copy()},
-            {'keys': ['KEYCODE_COMMA', 'KEYCODE_PERIOD', 'KEYCODE_SLASH', 'KEYCODE_SEMICOLON',
-                      'KEYCODE_APOSTROPHE', 'KEYCODE_PLUS', 'KEYCODE_MINUS', 'KEYCODE_EQUALS', 'KEYCODE_GRAVE',
-                      'KEYCODE_LEFT_BRACKET', 'KEYCODE_RIGHT_BRACKET', 'KEYCODE_BACKSLASH'],
-             'inOrder': False, 'sounds': glyphs.copy()},
-        ],
-    }
-    config = '# 由定稿合成試聽逐鍵截取。\n' + yaml.safe_dump(descriptor, sort_keys=False)
-    return {f'soundeffect/{theme_id}.sound.yaml': config.encode(),
-            **{f'soundeffect/{theme_id}/{filename}': samples[filename] for filename in names}}
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('theme', nargs='?', choices=CONTRAST_THEME_IDS)
-    parser.add_argument('--check', action='store_true', help='檢查生成物是否同步')
-    parser.add_argument('--prototype', type=Path, help='從定稿 HTML 匯入或核對原音')
-    parser.add_argument('--sound-zips', type=Path, help='獨立音效包的輸出目錄')
-    args = parser.parse_args()
-    approved = approved_samples(args.prototype) if args.prototype else {}
-    for theme_id in (args.theme,) if args.theme else CONTRAST_THEME_IDS:
-        theme, images = make_theme(theme_id)
-        files = sound_files(theme_id, theme['name'], approved.get(theme_id))
-        write_theme_assets(theme_id, theme, images, check=args.check)
-        for asset, content in files.items():
-            path = RIME_DIR / asset
-            if args.check:
-                if not path.is_file() or path.read_bytes() != content:
-                    parser.exit(1, f'{asset} 缺失或未同步\n')
-            else:
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(content)
-        if args.sound_zips and not args.check:
-            args.sound_zips.mkdir(parents=True, exist_ok=True)
-            output = args.sound_zips / f'{theme["name"]}-sound.zip'
-            with ZipFile(output, 'w', compression=ZIP_DEFLATED) as archive:
-                for asset, content in files.items():
-                    archive.writestr(asset, content)
-            print(f'→ {output}')
-
-
-if __name__ == '__main__':
-    main()
+    return images

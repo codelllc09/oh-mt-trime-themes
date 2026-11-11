@@ -1,25 +1,15 @@
-#!/usr/bin/env python3
-"""由 V1 鍵位和定案樣音生成五款工業同文主題。"""
+"""沖孔、互鎖、背板、真空管與熱像外觀。"""
 
-import argparse
 from functools import partial
-import json
 from math import exp
-from pathlib import Path
-import re
-from zipfile import ZIP_DEFLATED, ZipFile
 
 from PIL import Image, ImageColor, ImageDraw, ImageEnhance
 
-from check_trime import (
-    BACKPLANE_ID, INDUSTRIAL_THEME_IDS, INTERLOCK_ID, PERFORATION_ID,
-    RIME_DIR, ROOT, THERMOGRAM_ID, VACUUM_ID,
-    packaged_sound_files,
+from check_trime import BACKPLANE_ID, INTERLOCK_ID, PERFORATION_ID, THERMOGRAM_ID, VACUUM_ID
+from render_keyboard import SCREEN_W, build, key_geometry
+from .core import (
+    PAGES, SCALE, active_scheme, case_geometry, draw_globe, gradient, rounded_layer, skin_keys,
 )
-from gen_calculator import SCALE, draw_globe, inherit_skin, skin_keys, write_theme_assets
-from gen_scope_pixel import sound_files
-from gen_typewriter import PAGES, gradient, rounded_layer
-from render_keyboard import DP, SCREEN_W, build, key_geometry
 
 
 EMPHASIZED = {BACKPLANE_ID, VACUUM_ID, THERMOGRAM_ID}
@@ -271,12 +261,10 @@ def case_textures(theme_id, height, bar):
     return {'case.png': case, 'strip.png': candidate.convert('RGB')}
 
 
-def make_theme(theme_id):
-    theme = inherit_skin(theme_id)
-    style = theme['style']
-    scheme = theme['preset_color_schemes'][style['color_scheme']]
-    bar = round(style['candidate_view_height'] * DP)
-    images = case_textures(theme_id, bar + round(style['keyboard_height'] * DP), bar)
+def render(theme_id, theme):
+    scheme = active_scheme(theme)
+    height, bar = case_geometry(theme)
+    images = case_textures(theme_id, height, bar)
     skin_keys(theme, images, partial(cap_texture, theme_id, scheme), theme_id[3:],
               separate_space=True, classify=partial(key_role, theme_id), color_keys=COLORS)
     if theme_id == PERFORATION_ID:
@@ -291,49 +279,4 @@ def make_theme(theme_id):
         for cell, (_, y, _, _) in cells:
             if y < footer:
                 cell['key']['key_text_offset_y'] = 3
-    return theme, images
-
-
-def samples(filename):
-    path = ROOT / 'design' / 'prototypes' / filename
-    if not path.is_file():
-        return None
-    source = path.read_text(encoding='utf-8')
-    match = re.search(r'<script id="sample-data" type="application/json">(.*?)</script>', source, re.S)
-    if match is None:
-        raise ValueError(f'{filename} 缺少定案樣音')
-    return json.loads(match[1])
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--check', action='store_true', help='檢查生成物是否同步')
-    parser.add_argument('--sound-zips', type=Path, help='獨立音效包的輸出目錄')
-    args = parser.parse_args()
-    approved = samples('interlock-docking.html')
-    perforation = samples('perforation-wayfinding-terrace.html')
-    for theme_id in INDUSTRIAL_THEME_IDS:
-        theme, images = make_theme(theme_id)
-        bank = perforation if theme_id == PERFORATION_ID else approved
-        files = (packaged_sound_files(theme_id) if bank is None
-                 else sound_files(theme_id, theme['name'], bank[theme_id.removeprefix('v2-')]))
-        write_theme_assets(theme_id, theme, images, check=args.check)
-        for asset, content in files.items():
-            path = RIME_DIR / asset
-            if args.check:
-                if not path.is_file() or path.read_bytes() != content:
-                    parser.exit(1, f'{asset} 缺失或未同步\n')
-            else:
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(content)
-        if args.sound_zips and not args.check:
-            args.sound_zips.mkdir(parents=True, exist_ok=True)
-            output = args.sound_zips / f'{theme["name"]}-sound.zip'
-            with ZipFile(output, 'w', compression=ZIP_DEFLATED) as archive:
-                for asset, content in files.items():
-                    archive.writestr(asset, content)
-            print(f'→ {output}')
-
-
-if __name__ == '__main__':
-    main()
+    return images

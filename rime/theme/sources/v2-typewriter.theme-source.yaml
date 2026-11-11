@@ -1,4 +1,4 @@
-# V2 外觀覆寫。tools/gen_typewriter.py 從展開後的 V1 繼承所有鍵位與動作。
+# V2 外觀覆寫。tools/check_trime.py gen-theme --theme v2-typewriter 從展開後的 V1 繼承所有鍵位與動作。
 name: V2-typewriter
 style:
   color_scheme: typewriter_ink

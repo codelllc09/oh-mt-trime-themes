@@ -1,20 +1,16 @@
-#!/usr/bin/env python3
-"""生成藍曬、刺繡布章和彩繪玻璃的同文主題及圖片。"""
+"""藍曬、刺繡布章與彩繪玻璃外觀。"""
 
-import argparse
 from functools import partial
 from math import hypot, pi, sin
 
 from PIL import Image, ImageDraw
 
-from check_trime import CYANOTYPE_ID, MATERIAL_THEME_IDS, PATCHWORK_ID, STAINEDGLASS_ID
-from gen_calculator import draw_globe, inherit_skin, skin_keys, write_theme_assets
-from gen_typewriter import gradient
+from check_trime import CYANOTYPE_ID, PATCHWORK_ID, STAINEDGLASS_ID
 from render_keyboard import DP, SCREEN_W
+from .core import SCALE, active_scheme, draw_globe, gradient, skin_keys
 
 
 STRIP_HEIGHT = 136
-SCALE = 2
 NUMBER_COLORS = {
     CYANOTYPE_ID: ('#C6DCE4', '#AACAD9'),
     PATCHWORK_ID: ('#4C6B7B', '#405D6D'),
@@ -172,20 +168,9 @@ def cap_texture(theme_id, scheme, kind, width, height, pressed):
     return image.resize((width, height), Image.Resampling.LANCZOS)
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('theme', nargs='?', choices=MATERIAL_THEME_IDS)
-    parser.add_argument('--check', action='store_true', help='檢查生成物是否同步')
-    args = parser.parse_args()
-    for theme_id in (args.theme,) if args.theme else MATERIAL_THEME_IDS:
-        theme = inherit_skin(theme_id)
-        style = theme['style']
-        scheme = theme['preset_color_schemes'][style['color_scheme']]
-        height = round(style['keyboard_height'] * DP) + STRIP_HEIGHT
-        images = {'case.png': case_texture(theme_id, height), 'strip.png': strip_texture(theme_id)}
-        skin_keys(theme, images, partial(cap_texture, theme_id, scheme), theme_id.removeprefix('v2-'))
-        write_theme_assets(theme_id, theme, images, check=args.check)
-
-
-if __name__ == '__main__':
-    main()
+def render(theme_id, theme):
+    scheme = active_scheme(theme)
+    height = round(theme['style']['keyboard_height'] * DP) + STRIP_HEIGHT
+    images = {'case.png': case_texture(theme_id, height), 'strip.png': strip_texture(theme_id)}
+    skin_keys(theme, images, partial(cap_texture, theme_id, scheme), theme_id.removeprefix('v2-'))
+    return images

@@ -1,27 +1,14 @@
-#!/usr/bin/env python3
-"""由 V1 與定案原型生成示波器、像素積木主題及音效。"""
+"""示波器與像素積木外觀。"""
 
-import argparse
-from base64 import b64decode
-from io import BytesIO
 from itertools import groupby
-import json
-from pathlib import Path
-import re
-import wave
-from zipfile import ZIP_DEFLATED, ZipFile
 
 from PIL import Image, ImageColor, ImageDraw
-import yaml
 
-from check_trime import OSCILLOSCOPE_ID, PIXELBLOCK_ID, RIME_DIR, ROOT, packaged_sound_files
-from gen_calculator import draw_globe, inherit_skin, skin_keys, write_theme_assets
-from gen_typewriter import MAIN_PAGES, PAGES, gradient
-from render_keyboard import DP, SCREEN_W, build, hint_of, key_geometry
+from check_trime import OSCILLOSCOPE_ID
+from render_keyboard import SCREEN_W, build, hint_of, key_geometry
+from .core import MAIN_PAGES, PAGES, active_scheme, attach_key_images, case_geometry, draw_globe, gradient, skin_keys
 
 
-DRAFT = ROOT / 'design' / 'prototypes' / 'scope-pixelblock.html'
-THEMES = {OSCILLOSCOPE_ID: 'scope', PIXELBLOCK_ID: 'pixel'}
 MAIN_GROUPS = (
     ((3, '#BBA9FF'), (3, '#81EED6'), (4, '#FFCE64')),
     ((3, '#FF9BD7'), (3, '#FFD878'), (3, '#9BDAFA')),
@@ -128,7 +115,7 @@ def pixel_cap(w, h, color, first, last, globe, pressed):
 
 
 def pixel_keys(theme, images):
-    scheme = theme['preset_color_schemes'][theme['style']['color_scheme']]
+    scheme = active_scheme(theme)
     presets = theme['preset_keys']
     for page in PAGES:
         model = build(theme, page, {})
@@ -142,13 +129,8 @@ def pixel_keys(theme, images):
                 edge = ('l' if first else 'm') + ('r' if last else 'm')
                 tile = 'globe' if globe else 'tile'
                 alias = f'block_{tile}_{color[1:].lower()}_{edge}_{w}x{h}'
-                for pressed, field in ((False, 'key_back_color'), (True, 'hilited_key_back_color')):
-                    ref = alias + ('_down' if pressed else '')
-                    name = ref + '.png'
-                    if name not in images:
-                        images[name] = pixel_cap(w, h, color, first, last, globe, pressed)
-                    scheme[ref] = name
-                    key[field] = ref
+                attach_key_images(scheme, key, images, alias, pixel_cap,
+                                  w, h, color, first, last, globe)
                 key.update(key_text_color='key_text_color', hilited_key_text_color='key_text_color',
                            key_symbol_color='key_symbol_color', hilited_key_symbol_color='key_symbol_color')
                 if globe:
@@ -160,86 +142,12 @@ def pixel_keys(theme, images):
                 key['key_text_offset_y'] = 3 if hint_of(key, presets) else 0
 
 
-def make_theme(theme_id):
-    theme = inherit_skin(theme_id)
-    style = theme['style']
-    bar = round(style['candidate_view_height'] * DP)
+def render(theme_id, theme):
+    height, bar = case_geometry(theme)
     if theme_id == OSCILLOSCOPE_ID:
-        height = bar + round(style['keyboard_height'] * DP)
         images = {'grid.png': scope_grid(height), 'trace.png': scope_trace(bar)}
         skin_keys(theme, images, scope_cap, 'scope')
     else:
         images = {'hud.png': pixel_hud(bar)}
         pixel_keys(theme, images)
-    return theme, images
-
-
-def sound_files(theme_id, name, approved):
-    files = {}
-    for kind, count in (('glyph', 3), ('space', 1), ('return', 1)):
-        if len(approved[kind]) != count:
-            raise ValueError(f'{name} 的 {kind} 樣音數量不同')
-        for index, encoded in enumerate(approved[kind], 1):
-            data = b64decode(encoded, validate=True)
-            with wave.open(BytesIO(data)) as track:
-                if (track.getnchannels(), track.getsampwidth(), track.getframerate()) != (1, 2, 24000):
-                    raise ValueError(f'{name} 的 {kind}-{index} 格式錯誤')
-            files[f'{kind}-{index}.wav'] = data
-
-    descriptor = {
-        'name': name, 'folder': theme_id, 'sound': list(files),
-        'keyset': [
-            {'keys': ['KEYCODE_ENTER', 'KEYCODE_NUMPAD_ENTER'], 'inOrder': True, 'sounds': [4]},
-            {'keys': ['KEYCODE_SPACE'], 'inOrder': True, 'sounds': [3]},
-            {'keys': ['KEYCODE_DEL', 'KEYCODE_FORWARD_DEL'], 'inOrder': True, 'sounds': [2]},
-            {'keys': ['KEYCODE_SHIFT_LEFT', 'KEYCODE_SHIFT_RIGHT', 'KEYCODE_SWITCH_CHARSET', 'KEYCODE_EISU',
-                      'KEYCODE_LANGUAGE_SWITCH', 'KEYCODE_TAB', 'KEYCODE_ESCAPE'], 'inOrder': True, 'sounds': [1]},
-            {'min': 'KEYCODE_A', 'max': 'KEYCODE_Z', 'inOrder': False, 'sounds': [0, 1, 2]},
-            {'min': 'KEYCODE_0', 'max': 'KEYCODE_9', 'inOrder': False, 'sounds': [0, 1, 2]},
-            {'keys': ['KEYCODE_COMMA', 'KEYCODE_PERIOD', 'KEYCODE_SLASH', 'KEYCODE_SEMICOLON',
-                      'KEYCODE_APOSTROPHE', 'KEYCODE_PLUS', 'KEYCODE_MINUS', 'KEYCODE_EQUALS'],
-             'inOrder': False, 'sounds': [0, 1, 2]},
-        ],
-    }
-    config = '# 樣音取自定案 HTML。退格和切換各用一個短鍵音變體。\n'
-    config += yaml.safe_dump(descriptor, sort_keys=False)
-    return {f'soundeffect/{theme_id}.sound.yaml': config.encode(),
-            **{f'soundeffect/{theme_id}/{filename}': data for filename, data in files.items()}}
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--check', action='store_true', help='檢查生成物是否同步')
-    parser.add_argument('--sound-zips', type=Path, help='獨立音效包的輸出目錄')
-    args = parser.parse_args()
-    approved = None
-    if DRAFT.is_file():
-        match = re.search(r'<script id="sample-data" type="application/json">(.*?)</script>',
-                          DRAFT.read_text(encoding='utf-8'), re.S)
-        if not match:
-            parser.error('定案 HTML 缺少樣音')
-        approved = json.loads(match[1])
-    for theme_id, skin in THEMES.items():
-        theme, images = make_theme(theme_id)
-        files = (packaged_sound_files(theme_id) if approved is None
-                 else sound_files(theme_id, theme['name'], approved[skin]))
-        write_theme_assets(theme_id, theme, images, check=args.check)
-        for asset, content in files.items():
-            path = RIME_DIR / asset
-            if args.check:
-                if not path.is_file() or path.read_bytes() != content:
-                    parser.exit(1, f'{asset} 缺失或未同步\n')
-            else:
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(content)
-        if args.sound_zips and not args.check:
-            args.sound_zips.mkdir(parents=True, exist_ok=True)
-            output = args.sound_zips / f'{theme["name"]}-sound.zip'
-            with ZipFile(output, 'w', compression=ZIP_DEFLATED) as archive:
-                for asset, content in files.items():
-                    archive.writestr(asset, content)
-            print(f'→ {output}')
-
-
-if __name__ == '__main__':
-    main()
+    return images

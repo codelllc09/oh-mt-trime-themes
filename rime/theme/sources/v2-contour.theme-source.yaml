@@ -1,4 +1,4 @@
-# 從 V1 繼承版面與動作，由 tools/gen_contour.py 生成主題及鍵帽。
+# 從 V1 繼承版面與動作，由 tools/check_trime.py gen-theme --theme v2-contour 生成主題及鍵帽。
 name: V2-contour
 style:
   color_scheme: contour_atlas

@@ -1,4 +1,4 @@
-# tools/gen_scope_pixel.py 將示波器外觀套在 V1 鍵位上。
+# tools/check_trime.py gen-theme --theme v2-oscilloscope 將示波器外觀套在 V1 鍵位上。
 name: V2-oscilloscope
 style:
   color_scheme: oscilloscope_phosphor

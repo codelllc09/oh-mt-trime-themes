@@ -1,27 +1,17 @@
-#!/usr/bin/env python3
-"""由定案原型生成砂型鑄造、晶圓步進機與氣動分揀台。"""
+"""砂型鑄造、晶圓步進機與氣動分揀台外觀。"""
 
-import argparse
-from base64 import b64decode
 from functools import partial
-from io import BytesIO
-from pathlib import Path
 from random import Random
-import wave
-from zipfile import ZIP_DEFLATED, ZipFile
 
 from PIL import Image, ImageColor, ImageDraw, ImageEnhance
-import yaml
 
-from check_trime import FACTORY_THEME_IDS, RIME_DIR, packaged_sound_files
-from gen_calculator import SCALE, draw_globe, inherit_skin, skin_keys, write_theme_assets
-from gen_industrial import samples
-from gen_typewriter import PAGES, gradient, rounded_layer
+from check_trime import FACTORY_THEME_IDS
 from render_keyboard import DP, SCREEN_W, build, key_geometry
+from .core import (
+    PAGES, SCALE, active_scheme, case_geometry, draw_globe, gradient, rounded_layer, skin_keys,
+)
 
 
-DRAFT = 'cast-wafer-pneumatic.html'
-SAMPLE_NAMES = ('key', 'space', 'delete', 'return')
 SKINS = dict(zip(FACTORY_THEME_IDS, ('cast', 'wafer', 'air')))
 COLOR_KEYS = {
     'glyph': ('key_text_color', 'key_symbol_color'),
@@ -206,13 +196,11 @@ def case_textures(skin, height, bar):
     return {'case.png': case, 'strip.png': candidate}
 
 
-def make_theme(theme_id):
+def render(theme_id, theme):
     skin = SKINS[theme_id]
-    theme = inherit_skin(theme_id)
-    style = theme['style']
-    scheme = theme['preset_color_schemes'][style['color_scheme']]
-    bar = round(style['candidate_view_height'] * DP)
-    images = case_textures(skin, bar + round(style['keyboard_height'] * DP), bar)
+    scheme = active_scheme(theme)
+    height, bar = case_geometry(theme)
+    images = case_textures(skin, height, bar)
     appearances = key_appearances(theme, skin)
 
     def classify(page, click, _action):
@@ -221,55 +209,4 @@ def make_theme(theme_id):
     draw_cap = partial(cap_texture, skin, '#' + scheme['fn_text_color'][-6:])
     skin_keys(theme, images, draw_cap, theme_id[3:], separate_space=True,
               classify=classify, color_keys=COLOR_KEYS)
-    return theme, images
-
-
-def sound_assets(theme_id, name, approved):
-    paths = {f'{kind}.wav': b64decode(approved[kind], validate=True) for kind in SAMPLE_NAMES}
-    for data in paths.values():
-        with wave.open(BytesIO(data)) as track:
-            if (track.getnchannels(), track.getsampwidth(), track.getframerate()) != (1, 2, 24000):
-                raise ValueError(f'{name} 的樣音須為 24 kHz、16 bit、單聲道')
-    keys = [
-        {'keys': ['KEYCODE_ENTER', 'KEYCODE_NUMPAD_ENTER'], 'inOrder': True, 'sounds': [3]},
-        {'keys': ['KEYCODE_DEL', 'KEYCODE_FORWARD_DEL'], 'inOrder': True, 'sounds': [2]},
-        {'keys': ['KEYCODE_SPACE'], 'inOrder': True, 'sounds': [1]},
-        {'min': 'KEYCODE_A', 'max': 'KEYCODE_Z', 'inOrder': True, 'sounds': [0]},
-        {'min': 'KEYCODE_0', 'max': 'KEYCODE_9', 'inOrder': True, 'sounds': [0]},
-    ]
-    config = {'name': name, 'folder': theme_id, 'sound': list(paths), 'keyset': keys}
-    descriptor = '# 合成樣音取自定案互動原型。\n' + yaml.safe_dump(config, sort_keys=False)
-    return {f'soundeffect/{theme_id}.sound.yaml': descriptor.encode(),
-            **{f'soundeffect/{theme_id}/{file}': data for file, data in paths.items()}}
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--check', action='store_true', help='只檢查生成物是否同步')
-    parser.add_argument('--sound-zips', type=Path, help='獨立音效包的輸出目錄')
-    args = parser.parse_args()
-    approved = samples(DRAFT)
-    for theme_id, skin in SKINS.items():
-        theme, images = make_theme(theme_id)
-        files = (packaged_sound_files(theme_id) if approved is None
-                 else sound_assets(theme_id, theme['name'], approved[skin]))
-        write_theme_assets(theme_id, theme, images, check=args.check)
-        for relative, content in files.items():
-            path = RIME_DIR / relative
-            if args.check:
-                if not path.is_file() or path.read_bytes() != content:
-                    parser.exit(1, f'{relative} 缺失或未同步\n')
-            else:
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(content)
-        if args.sound_zips and not args.check:
-            args.sound_zips.mkdir(parents=True, exist_ok=True)
-            archive_path = args.sound_zips / f"{theme['name']}-sound.zip"
-            with ZipFile(archive_path, 'w', compression=ZIP_DEFLATED) as archive:
-                for relative, content in files.items():
-                    archive.writestr(relative, content)
-            print(f'→ {archive_path}')
-
-
-if __name__ == '__main__':
-    main()
+    return images

@@ -1,4 +1,4 @@
-# tools/gen_factory.py 將定案外觀套在 V1 鍵位上。
+# tools/check_trime.py gen-theme --theme v2-pneumatic 將定案外觀套在 V1 鍵位上。
 name: V2-pneumatic
 style:
   color_scheme: pneumatic

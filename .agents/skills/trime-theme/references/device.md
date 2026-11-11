@@ -7,7 +7,7 @@
 | 改動 | 驗證 |
 |---|---|
 | 文檔、註釋 | 核對連結與命令 |
-| 主題配置或資產 | `uv run --with pyyaml python tools/check_trime.py`。按需加跑 `gen-theme --check` 或對應 V2 生成器的 `--check` |
+| 主題配置或資產 | `uv run --with pyyaml python tools/check_trime.py`。按需加跑 `gen-theme --check`，校驗 V2 時加 `--theme 主題 ID` 和生成所需依賴 |
 | 鍵位輸出或長按 | 手動抽驗受影響的鍵，或執行 `verify.sh --section N` |
 | 鍵寬、行高、間距、導航 | 抽驗受影響頁面，按[鍵位表](../../../../docs/KEYBOARD_MAP.md)核對返回、語言態與按鍵動作 |
 | 字體或圖片 | 抽查受影響的字符、鍵面及深淺色對比。舊圖仍出現時查[圖片快取](lessons.md#圖片替換後仍顯示舊圖) |
