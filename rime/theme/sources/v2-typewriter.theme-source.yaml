@@ -1,0 +1,64 @@
+# V2 外觀覆寫。tools/gen_typewriter.py 從展開後的 V1 繼承所有鍵位與動作。
+name: V2-typewriter
+style:
+  color_scheme: typewriter_ink
+  background_folder: v2-typewriter
+  latin_font: [typewriter_latin.ttf, xuma_latin.ttf]
+  key_text_size: 16
+  key_long_text_size: 11
+  symbol_text_size: 8
+  round_corner: 8
+
+preset_color_schemes:
+  typewriter_ink:
+    name: 松綠琺瑯
+    back_color: '#FFF9F1DC'
+    root_background: '#FF253C31'
+    candidate_background: '#FFF9F1DC'
+    keyboard_back_color: '#FF21352A'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FF253C31'
+    border_color: '#FFBFAE88'
+    text_color: '#FF30291E'
+    text_back_color: '#FFF9F1DC'
+    candidate_text_color: '#FF30291E'
+    candidate_separator_color: '#FFD8C9A3'
+    comment_text_color: '#FF6B5139'
+    label_color: '#FF6B5139'
+    hilited_back_color: '#FFE9D7AF'
+    hilited_text_color: '#FF712B34'
+    hilited_candidate_back_color: '#FFE9D7AF'
+    hilited_candidate_text_color: '#FF712B34'
+    hilited_label_color: '#FF712B34'
+    hilited_comment_text_color: '#FF6B5139'
+    key_back_color: '#FFF1E4C5'
+    key_text_color: '#FF272319'
+    key_symbol_color: '#FF694431'
+    number_text_color: '#FF272B27'
+    number_symbol_color: '#FF4B554E'
+    hilited_key_back_color: '#FFDCC895'
+    hilited_key_text_color: '#FF272319'
+    hilited_key_symbol_color: '#FF5A392A'
+    off_key_back_color: '#FF344438'
+    off_key_text_color: '#FFFFF0CC'
+    off_key_symbol_color: '#FFF5D2A0'
+    hilited_off_key_back_color: '#FF526452'
+    hilited_off_key_text_color: '#FFFFF0CC'
+    hilited_off_key_symbol_color: '#FFFFE3B4'
+    on_key_back_color: '#FF796747'
+    on_key_text_color: '#FFFFF1CF'
+    on_key_symbol_color: '#FFFFE3B4'
+    hilited_on_key_back_color: '#FF5D5138'
+    hilited_on_key_text_color: '#FFFFF1CF'
+    hilited_on_key_symbol_color: '#FFFFE3B4'
+    preview_back_color: '#FFFFF0CC'
+    preview_text_color: '#FF30291E'
+    fn_back_color: '#FF344438'
+    fn_text_color: '#FFFFF0CC'
+    accent_fill: '#FF76323C'
+    accent_fill_hl: '#FF8B464C'
+    accent_text: '#FFFFF0CC'
+    space_back_color: '#FF293329'
+    space_text_color: '#FFFFF0CC'
+    nav_back_color: '#FF405642'
+    nav_text_color: '#FF9C303C'

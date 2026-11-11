@@ -1,0 +1,64 @@
+# 外觀由 tools/gen_materials.py 套在 V1 鍵位上。
+name: V2-patchwork
+style:
+  color_scheme: patchwork_denim
+  background_folder: v2-patchwork
+  latin_font: [halftone_latin.ttf, xuma_latin.ttf]
+  key_text_size: 20
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 5
+  candidate_corner_radius: 4
+
+preset_color_schemes:
+  patchwork_denim:
+    name: 刺繡布章
+    back_color: '#FFF2E4CA'
+    root_background: '#FFC7AE87'
+    candidate_background: strip.png
+    keyboard_back_color: '#FFC7AE87'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FFF2E4CA'
+    border_color: '#FF937453'
+    text_color: '#FF263E51'
+    text_back_color: '#FFF2E4CA'
+    candidate_text_color: '#FF263E51'
+    candidate_separator_color: '#FFC4AB87'
+    comment_text_color: '#FF5D4F41'
+    label_color: '#FF5D4F41'
+    hilited_back_color: '#FF365976'
+    hilited_candidate_back_color: '#FF365976'
+    hilited_candidate_text_color: '#FFF9EBCA'
+    hilited_comment_text_color: '#FFE7D7B5'
+    hilited_label_color: '#FFE7D7B5'
+    key_back_color: '#FF294660'
+    key_text_color: '#FFFFF2D7'
+    key_symbol_color: '#FFF2DEB5'
+    hilited_key_back_color: '#FF203950'
+    hilited_key_text_color: '#FFFFF2D7'
+    hilited_key_symbol_color: '#FFF2DEB5'
+    off_key_back_color: '#FF435C6A'
+    off_key_text_color: '#FFFFF0CF'
+    off_key_symbol_color: '#FFF3DFB8'
+    hilited_off_key_back_color: '#FF354D5C'
+    hilited_off_key_text_color: '#FFFFF0CF'
+    hilited_off_key_symbol_color: '#FFF3DFB8'
+    on_key_back_color: '#FFE8C789'
+    on_key_text_color: '#FF293746'
+    on_key_symbol_color: '#FF293746'
+    hilited_on_key_back_color: '#FFDAB572'
+    hilited_on_key_text_color: '#FF293746'
+    hilited_on_key_symbol_color: '#FF293746'
+    preview_back_color: '#FFF2E4CA'
+    preview_text_color: '#FF263E51'
+    fn_back_color: '#FF435C6A'
+    fn_text_color: '#FFFFF0CF'
+    number_text_color: '#FFFFF5DF'
+    number_symbol_color: '#FFF5E8CB'
+    accent_fill: '#FFB84E36'
+    accent_fill_hl: '#FF963E2D'
+    accent_text: '#FFFFF4D8'
+    space_back_color: '#FF435C6A'
+    space_text_color: '#FFFFF0CF'
+    nav_back_color: '#FF435C6A'
+    nav_text_color: '#FFF2C899'

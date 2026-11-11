@@ -1,0 +1,36 @@
+# 合成樣音取自定案互動原型。
+name: V2-wafer
+folder: v2-wafer
+sound:
+- key.wav
+- space.wav
+- delete.wav
+- return.wav
+keyset:
+- keys:
+  - KEYCODE_ENTER
+  - KEYCODE_NUMPAD_ENTER
+  inOrder: true
+  sounds:
+  - 3
+- keys:
+  - KEYCODE_DEL
+  - KEYCODE_FORWARD_DEL
+  inOrder: true
+  sounds:
+  - 2
+- keys:
+  - KEYCODE_SPACE
+  inOrder: true
+  sounds:
+  - 1
+- min: KEYCODE_A
+  max: KEYCODE_Z
+  inOrder: true
+  sounds:
+  - 0
+- min: KEYCODE_0
+  max: KEYCODE_9
+  inOrder: true
+  sounds:
+  - 0

@@ -1,26 +1,16 @@
 #!/usr/bin/env bash
-# deploy.sh —— 同文（Trime）端部署與回採（本倉＝安卓資產倉，路徑不含 android/ 前綴）
+# deploy.sh —— 同文（Trime）端部署與回採
 #
-# 用法：
-#   ./deploy.sh pkg          # 打包部署 zip → tmp/tongwen-pkg-<時間>.zip
-#   ./deploy.sh push         # adb 逐檔推送到 /storage/emulated/0/rime
-#   ./deploy.sh pull-spool   # 回收手機 /add 攢詞 spool → 桌面主工作樹（去重合併）
-#
-# 設計：
-#   · 清單唯一來源＝tools/check_trime.py manifest（改清單只改一處）；
-#   · 寫盤動作（zip 產物、spool 合併）一律經 _ledger 留痕（AGENTS 留痕規定）；
-#   · 推送不刪手機端其他檔案（userdb、其他方案不受影響）。
+#   ./deploy.sh pkg [--theme v1 | --xuma]   # 生成 ZIP 到 dist/
+#   ./deploy.sh push [--theme v1 | --xuma]  # 透過 adb 推送
+#   ./deploy.sh pull-spool                 # 回收徐碼·L 的手機加詞
+# pkg / push 預設包含全部主題。--theme 選單款，--xuma 另含徐碼·L 方案。
+
 set -euo pipefail
 
-ROOT="$(git rev-parse --show-toplevel)"                       # 本倉（安卓資產）
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+CHECK="$ROOT/tools/check_trime.py"
 PHONE_DIR="${TRIME_PHONE_DIR:-/storage/emulated/0/rime}"
-DESKTOP_RIME="${RIME_DESKTOP_DIR:-$HOME/.config/ibus/rime}"   # 桌面主倉（共享 schema/詞典/lua；部署源）
-TOOLS="$DESKTOP_RIME/lua/codelllc09/tools"                    # 台賬寫主倉（獨立成倉 2026-11-07）
-src_of() {  # 清單源雙根解析：先本倉（資產），後主倉（共享件）
-  if [ -f "$ROOT/$1" ]; then echo "$ROOT/$1"
-  elif [ -f "$DESKTOP_RIME/$1" ]; then echo "$DESKTOP_RIME/$1"
-  else echo "$1"; fi
-}
 # 多目標支持（2026-11-05）：USB 真機默認；設 TRIME_ADB_SERIAL 指向 Waydroid 容器
 # （如 localhost:5555）或網絡 adb 設備，例：
 #   TRIME_ADB_SERIAL=localhost:5555 ./deploy.sh push
@@ -28,69 +18,91 @@ SER="${TRIME_ADB_SERIAL:-}"
 adbx() { if [ -n "$SER" ]; then adb -s "$SER" "$@"; else adb "$@"; fi; }
 
 note() {  # _ledger 台賬（寫盤留痕；失敗不阻塞但會打印）
-  python3 "$TOOLS/_ledger.py" "$1" "$2" "$3" || echo "[!] 台賬寫入失敗（不阻塞）" >&2
+  python3 "$RIME_DESKTOP_DIR/lua/codelllc09/tools/_ledger.py" "$1" "$2" "$3" || echo "[!] 台賬寫入失敗（不阻塞）" >&2
 }
 
-manifest() { python3 "$ROOT/tools/check_trime.py" manifest; }
+make_phone_dirs() {
+  local root=$1 manifest=$2 folder quoted
+  local -a dirs=("$root")
+  while IFS= read -r folder; do
+    dirs+=("$root/$folder")
+  done < <(cut -f 2 <<< "$manifest" | sed -n 's|/[^/]*$||p' | sort -u)
+  printf -v quoted " '%s'" "${dirs[@]//\'/\'\\\'\'}"
+  adbx shell "mkdir -p$quoted"
+}
 
-case "${1:-}" in
+usage() {
+  sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+ACTION=${1:-}
+if (($#)); then shift; fi
+XUMA=0
+if [[ "$ACTION" == pkg || "$ACTION" == push ]]; then
+  case "$#:${1:-}" in
+    0:|2:--theme) ;;
+    1:--xuma) XUMA=1 ;;
+    1:--help|1:-h) usage; exit 0 ;;
+    *) usage >&2; exit 1 ;;
+  esac
+fi
+
+if ((XUMA)) || [[ "$ACTION" == pull-spool ]]; then
+  RIME_DESKTOP_DIR=$(python3 "$CHECK" xuma-desktop-dir)
+  export RIME_DESKTOP_DIR
+fi
+
+case "$ACTION" in
 pkg)
-  mkdir -p "$ROOT/tmp"
-  ZIP="$ROOT/tmp/tongwen-pkg-$(date +%Y%m%d-%H%M).zip"
-  STAGE="$(mktemp -d)"
-  trap 'rm -rf "$STAGE"' EXIT
-  python3 "$ROOT/tools/check_trime.py" gen-custom "$STAGE" 2>/dev/null   # 個人配置二件（不入庫，gen-custom 生成）
-  manifest | while IFS=$'\t' read -r src dst; do
-    mkdir -p "$STAGE/$(dirname "$dst")"
-    cp "$(src_of "$src")" "$STAGE/$dst"
-  done
-  # /add spool 佔位（手機端 io.open 追加寫需要目錄已存在）
-  mkdir -p "$STAGE/lua/codelllc09/tools/dict_pipeline"
-  printf '# 同文端 /add 攢詞暫存（deploy.sh pull-spool 回收入庫；桌面勿編）\n' \
-    > "$STAGE/lua/codelllc09/tools/dict_pipeline/README.txt"
-  python3 -m zipfile -c "$ZIP" "$STAGE/."
-  echo "已打包：$ZIP（$(manifest | wc -l)+1 件）"
-  note "$ZIP" 生成 "同文部署包：manifest $(manifest | md5sum | cut -c1-8) 共 $(manifest | wc -l) 件"
+  python3 "$CHECK" gen-theme --check
+  NAME=trime-themes
+  if ((XUMA)); then
+    NAME=tongwen-pkg
+  elif [[ $# == 2 && $1 == --theme && $2 =~ ^[a-z0-9-]+$ ]]; then
+    NAME="trime-$2"
+  fi
+  mkdir -p "$ROOT/dist"
+  ZIP="$ROOT/dist/$NAME-$(date +%Y%m%d-%H%M%S).zip"
+  PACKAGE=$(python3 "$CHECK" package "$ZIP" "$@")
+  IFS=$'\t' read -r count fingerprint <<< "$PACKAGE"
+  echo "已打包並校驗：$ZIP（$count 件）"
+  if ((XUMA)); then
+    note "$ZIP" 生成 "同文端部署包：manifest $fingerprint 共 $count 件"
+  fi
   ;;
 
 push)
   command -v adb >/dev/null || { echo '✗ 缺 adb（android-tools 或 scrcpy 附帶）'; exit 1; }
-  adbx get-state >/dev/null 2>&1 || { echo '✗ adb 設備不在线（或 TRIME_ADB_SERIAL 設錯）'; exit 1; }
-  GENDIR="$(mktemp -d)"; trap 'rm -rf "$GENDIR"' EXIT
-  python3 "$ROOT/tools/check_trime.py" gen-custom "$GENDIR" 2>/dev/null
-  for f in default.custom.yaml luna_pinyin.custom.yaml; do
-    adbx push "$GENDIR/$f" "$PHONE_DIR/$f" >/dev/null && echo "  pushed $f (gen)"
-  done
-  adbx shell "mkdir -p $PHONE_DIR/lua/codelllc09/tools/dict_pipeline"
-  manifest | while IFS=$'\t' read -r src dst; do
-    adbx push "$(src_of "$src")" "$PHONE_DIR/$dst" >/dev/null
-    echo "  pushed $dst"
-  done
-  echo '✓ 推送完成。手機端操作：同文 → 部署 → 主題選「V1」→ 配色選「徐碼·雲白 / 徐碼·墨空」（首裝需手動切主題）'
-  # 內部副本即時同步（2026-11-05 Waydroid 實測：外部存儲模式的 import 不會主動
-  # 拉取主題/補丁改動，直接覆寫內部副本可免手動同步；失敗不阻塞，
-  # 部署時 Trime 仍會走正常 import 鏈）
-  INTERNAL_DIR="${TRIME_INTERNAL_DIR:-/storage/emulated/0/Android/data/com.osfans.trime/files/rime}"
-  for f in xuma_L.custom.yaml v1.trime.yaml; do
-    adbx push "$ROOT/$f" "$INTERNAL_DIR/$f" >/dev/null 2>&1 \
-      && echo "  synced → 內部副本 $f" || true
-  done
-  # 鍵盤字體（key_font 從內部 userDataDir/fonts 讀；與 themes 同批推送）
-  adbx shell "mkdir -p $INTERNAL_DIR/fonts" >/dev/null 2>&1
-  if [ -d "$ROOT/fonts" ]; then
-    for f in "$ROOT"/fonts/*.otf "$ROOT"/fonts/*.ttf; do
-      [ -f "$f" ] || continue
-      adbx push "$f" "$INTERNAL_DIR/fonts/$(basename "$f")" >/dev/null 2>&1 \
-        && echo "  synced → 內部副本 fonts/$(basename "$f")" || true
+  adbx get-state >/dev/null 2>&1 || { echo '✗ adb 設備不在線（或 TRIME_ADB_SERIAL 設錯）'; exit 1; }
+  MANIFEST=$(python3 "$CHECK" manifest "$@")
+  make_phone_dirs "$PHONE_DIR" "$MANIFEST"
+  if ((XUMA)); then
+    GENDIR="$(mktemp -d)"
+    trap 'rm -rf "$GENDIR"' EXIT
+    python3 "$CHECK" gen-custom "$GENDIR" 2>/dev/null
+    for f in default.custom.yaml luna_pinyin.custom.yaml; do
+      adbx push "$GENDIR/$f" "$PHONE_DIR/$f" >/dev/null && echo "  pushed $f (gen)"
     done
   fi
-  # 鍵位圖標（Trime 的 image-valued color 通道從內部 userDataDir 讀 backgrounds/）
-  adbx shell "mkdir -p $INTERNAL_DIR/backgrounds" >/dev/null 2>&1
-  for f in "$ROOT"/backgrounds/*.png; do
-    adbx push "$f" "$INTERNAL_DIR/backgrounds/$(basename "$f")" >/dev/null 2>&1 \
-      && echo "  synced → 內部副本 backgrounds/$(basename "$f")" || true
-  done
-  # Trime 會把主題編譯進 build/<theme>.trime.yaml，鍵盤讀的是那份 ——（本主題 configId = v1）
+  while IFS=$'\t' read -r src dst; do
+    if [[ "$src" != /* ]]; then src="$ROOT/$src"; fi
+    source_file=$(realpath -e -- "$src")
+    adbx push "$source_file" "$PHONE_DIR/$dst" >/dev/null
+    echo "  pushed $dst"
+  done <<< "$MANIFEST"
+  echo '✓ 推送完成。手機端操作：同文 → 部署 → 選擇主題。V2 鍵音另在「虛擬鍵盤」設定選擇。'
+  # 內部副本即時同步。失敗時，Trime 仍可走正常匯入流程。
+  INTERNAL_DIR="${TRIME_INTERNAL_DIR:-/storage/emulated/0/Android/data/com.osfans.trime/files/rime}"
+  if [[ "$INTERNAL_DIR" != "$PHONE_DIR" ]]; then
+    UI_MANIFEST=$(awk -F '\t' '$2 ~ /^(fonts|backgrounds|soundeffect)\// || $2 ~ /(\.trime\.yaml|^xuma_L\.custom\.yaml)$/' <<< "$MANIFEST")
+    make_phone_dirs "$INTERNAL_DIR" "$UI_MANIFEST" >/dev/null 2>&1 || true
+    while IFS=$'\t' read -r src dst; do
+      if [[ "$src" != /* ]]; then src="$ROOT/$src"; fi
+      adbx push "$src" "$INTERNAL_DIR/$dst" >/dev/null 2>&1 \
+        && echo "  synced → 內部副本 $dst" || true
+    done <<< "$UI_MANIFEST"
+  fi
+  # Trime 也維護 build/<theme>.trime.yaml；與方案一起推送時按原流程部署。
   # 只推文件不生效，必須在 app 內按一次 Deploy（TRIME_NO_DEPLOY=1 可跳過）
   if [ "${TRIME_NO_DEPLOY:-0}" != "1" ]; then
     adbx shell am start -n com.osfans.trime/.ui.main.MainActivity >/dev/null 2>&1 || true
@@ -116,13 +128,15 @@ push)
       echo "  ⚠ 找不到 Deploy 按鈕（請手動部署，或先讓同文主界面在前臺）"
     fi
   fi
-  note "$PHONE_DIR" 推送 "同文端部署：manifest $(manifest | md5sum | cut -c1-8)${SER:+ → $SER}"
+  if ((XUMA)); then
+    note "$PHONE_DIR" 推送 "同文端部署：manifest $(printf '%s\n' "$MANIFEST" | md5sum | cut -c1-8)${SER:+ → $SER}"
+  fi
   ;;
 
 pull-spool)
   command -v adb >/dev/null || { echo '✗ 缺 adb'; exit 1; }
   adbx get-state >/dev/null 2>&1 || { echo '✗ adb 設備不在线（或 TRIME_ADB_SERIAL 設錯）'; exit 1; }
-  SPOOL="$DESKTOP_RIME/lua/codelllc09/tools/dict_pipeline/spool_pending.txt"
+  SPOOL="$RIME_DESKTOP_DIR/lua/codelllc09/tools/dict_pipeline/spool_pending.txt"
   TMP="$(mktemp)"
   trap 'rm -f "$TMP"' EXIT
   adbx pull "$PHONE_DIR/lua/codelllc09/tools/dict_pipeline/spool_pending.txt" "$TMP" >/dev/null \
@@ -151,7 +165,7 @@ PY
   ;;
 
 *)
-  sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+  usage >&2
   exit 1
   ;;
 esac

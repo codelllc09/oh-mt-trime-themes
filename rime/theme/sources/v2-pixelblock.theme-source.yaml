@@ -1,0 +1,63 @@
+# tools/gen_scope_pixel.py 將跨鍵色塊套在 V1 鍵位上。
+name: V2-pixelblock
+style:
+  color_scheme: pixelblock_arcade
+  background_folder: v2-pixelblock
+  latin_font: [labelmaker_mono.otf, xuma_latin.ttf]
+  horizontal_gap: 0
+  candidate_view_height: 43
+  comment_height: 0
+  candidate_corner_radius: 0
+  candidate_padding: 7
+  key_text_size: 21
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 0
+
+preset_color_schemes:
+  pixelblock_arcade:
+    name: 藍紫像素
+    back_color: '#FF242682'
+    root_background: '#FF343BD5'
+    keyboard_back_color: '#FF343BD5'
+    candidate_background: hud.png
+    liquid_keyboard_background: '#FF242682'
+    border_color: '#FF9397FF'
+    candidate_text_color: '#FFF6F0FF'
+    comment_text_color: '#FFDAD8FF'
+    label_color: '#FFDAD8FF'
+    candidate_separator_color: '#FF686CF0'
+    text_color: '#FFF6F0FF'
+    text_back_color: '#FF242682'
+    hilited_back_color: '#FFFFC2F5'
+    hilited_candidate_back_color: '#FFFFC2F5'
+    hilited_candidate_text_color: '#FF291954'
+    hilited_candidate_button_color: '#FF4D51BC'
+    hilited_comment_text_color: '#FF513C73'
+    key_back_color: '#FFBBA9FF'
+    key_text_color: '#FF171A48'
+    key_symbol_color: '#FF35376C'
+    hilited_key_back_color: '#FF8F83DA'
+    hilited_key_text_color: '#FF171A48'
+    hilited_key_symbol_color: '#FF35376C'
+    off_key_back_color: '#FFB8BCFF'
+    off_key_text_color: '#FF171A48'
+    off_key_symbol_color: '#FF35376C'
+    hilited_off_key_back_color: '#FF8F83DA'
+    hilited_off_key_text_color: '#FF171A48'
+    on_key_back_color: '#FFFFE17B'
+    on_key_text_color: '#FF171A48'
+    hilited_on_key_back_color: '#FFD9BB63'
+    fn_back_color: '#FFB8BCFF'
+    fn_text_color: '#FF171A48'
+    number_text_color: '#FF171A48'
+    number_symbol_color: '#FF35376C'
+    accent_fill: '#FFFFA9DC'
+    accent_fill_hl: '#FFD486BF'
+    accent_text: '#FF171A48'
+    nav_back_color: '#FFB8BCFF'
+    nav_text_color: '#FF35376C'
+    space_back_color: '#FF9DEBE2'
+    space_text_color: '#FF171A48'
+    preview_back_color: '#FFFFC2F5'
+    preview_text_color: '#FF291954'

@@ -12,17 +12,20 @@
 
 ## 倉庫邊界
 
-- 本倉只維護 Trime 主題、手機補丁、字體、背景、部署和驗證工具。
+- 本倉維護 Trime 主題、字體、背景、鍵音、部署和驗證工具，徐碼·L 手機補丁放在 `extras/xuma-l/`。
 - schema、詞典、Lua 與加詞管道屬於桌面 Rime 主倉；不要在本倉複製或另改一份。
-- `xuma_L.trime.yaml` 是主題源檔；`v1.trime.yaml` 是生成物，不直接手改。
+- 徐碼選裝直接讀取本機 `extras/xuma-l/config.local.yaml` 或 `RIME_DESKTOP_DIR` 指定的桌面 Rime。Git 只收錄配置範例。
+- 主題源檔放在 `rime/theme/sources/`，可安裝的 `*.trime.yaml` 放在 `rime/theme/`。編輯 V1 源檔後，用 `gen-theme` 生成 `v1.trime.yaml`。
+- 手機資產放在 `rime/`，由 `tools/check_trime.py manifest` 明列部署檔及其手機端路徑。V1 生成檔部署到手機 Rime 根目錄。
 
 ## 視覺與鍵位改動
 
-- `KEYBOARD_MAP.md` 是現行鍵位、頁面和長按規則的唯一來源；修改後只同步受影響部分。
+- `docs/KEYBOARD_MAP.md` 是現行鍵位、頁面和長按規則的唯一來源；修改後只同步受影響部分。
+- 每次修改輸入方案或主題後，按[生成步驟](design/README.md#由配置生成的鍵位指南)重生成受影響的配色 PNG。互動鍵位指南只維護 `design/guides/v1/index.html`。
 - 版面、鍵位或配色改動先提供現狀／建議**並排**的單檔 HTML，再按用戶選定方案修改主題。
 - 示意圖必須呈現短按和長按兩層；優先由 `tools/render_keyboard.py` 讀主題生成，避免手寫稿與配置分叉。
 - 不憑字形判定字符是否正確；交互驗證讀 Unicode 碼位，視覺問題才看截圖。
-- 不手猜設備鍵位座標；使用 `tools/kbmap.py` 或按當前版式推導。
+- 鍵位座標依當前版式推導，或使用已核對適用版式與尺寸的座標工具。
 
 ## 字體與性能
 
@@ -33,7 +36,7 @@
 ## 文件與工作區
 
 - 保留用戶已有的未提交改動；不得用整檔 checkout、reset 等方式回退混有用戶改動的文件。
-- 歷史試錯寫入 `LESSONS.md` 的前提是可復用；現行規則不要同時散落在多份文檔。
+- 歷史試錯寫入 `docs/LESSONS.md` 的前提是可復用；現行規則不要同時散落在多份文檔。
 
 ## Python 環境
 

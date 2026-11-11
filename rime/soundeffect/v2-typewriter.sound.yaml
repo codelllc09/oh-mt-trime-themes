@@ -1,0 +1,93 @@
+# CC0 實錄剪輯：nvmbky · https://freesound.org/people/nvmbky/sounds/801118/
+name: V2-typewriter
+folder: v2-typewriter
+sound:
+- glyph-1.wav
+- glyph-2.wav
+- glyph-3.wav
+- glyph-4.wav
+- glyph-5.wav
+- glyph-6.wav
+- glyph-7.wav
+- glyph-8.wav
+- space-1.wav
+- space-2.wav
+- erase-1.wav
+- erase-2.wav
+- control-1.wav
+- return-1.wav
+keyset:
+- keys:
+  - KEYCODE_ENTER
+  - KEYCODE_NUMPAD_ENTER
+  inOrder: true
+  sounds:
+  - 13
+- keys:
+  - KEYCODE_SPACE
+  inOrder: false
+  sounds:
+  - 8
+  - 9
+- keys:
+  - KEYCODE_DEL
+  - KEYCODE_FORWARD_DEL
+  inOrder: false
+  sounds:
+  - 10
+  - 11
+- keys:
+  - KEYCODE_SHIFT_LEFT
+  - KEYCODE_SHIFT_RIGHT
+  - KEYCODE_LANGUAGE_SWITCH
+  - KEYCODE_TAB
+  - KEYCODE_ESCAPE
+  inOrder: true
+  sounds:
+  - 12
+- min: KEYCODE_A
+  max: KEYCODE_Z
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+- min: KEYCODE_0
+  max: KEYCODE_9
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+- keys:
+  - KEYCODE_COMMA
+  - KEYCODE_PERIOD
+  - KEYCODE_SLASH
+  - KEYCODE_SEMICOLON
+  - KEYCODE_APOSTROPHE
+  - KEYCODE_MINUS
+  - KEYCODE_EQUALS
+  - KEYCODE_GRAVE
+  - KEYCODE_LEFT_BRACKET
+  - KEYCODE_RIGHT_BRACKET
+  - KEYCODE_BACKSLASH
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7

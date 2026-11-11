@@ -1,0 +1,64 @@
+# 外觀由 tools/gen_materials.py 套在 V1 鍵位上。
+name: V2-cyanotype
+style:
+  color_scheme: cyanotype_fern
+  background_folder: v2-cyanotype
+  latin_font: [labelmaker_mono.otf, xuma_latin.ttf]
+  key_text_size: 20
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 3
+  candidate_corner_radius: 2
+
+preset_color_schemes:
+  cyanotype_fern:
+    name: 藍曬植物標本
+    back_color: '#FFF3ECD5'
+    root_background: '#FF153F70'
+    candidate_background: strip.png
+    keyboard_back_color: '#FF153F70'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FF173B62'
+    border_color: '#FF6C98B3'
+    text_color: '#FF264462'
+    text_back_color: '#FFF3ECD5'
+    candidate_text_color: '#FF264462'
+    candidate_separator_color: '#FFC4C9B8'
+    comment_text_color: '#FF435B6C'
+    label_color: '#FF435B6C'
+    hilited_back_color: '#FF2C5677'
+    hilited_candidate_back_color: '#FF2C5677'
+    hilited_candidate_text_color: '#FFFBF3DC'
+    hilited_comment_text_color: '#FFDBE8E5'
+    hilited_label_color: '#FFDBE8E5'
+    key_back_color: '#FF16395F'
+    key_text_color: '#FFF0F3E9'
+    key_symbol_color: '#FFD5E7E5'
+    hilited_key_back_color: '#FF214B75'
+    hilited_key_text_color: '#FFF0F3E9'
+    hilited_key_symbol_color: '#FFD5E7E5'
+    off_key_back_color: '#FF2D5476'
+    off_key_text_color: '#FFE4F1EE'
+    off_key_symbol_color: '#FFD3E9E8'
+    hilited_off_key_back_color: '#FF3E6789'
+    hilited_off_key_text_color: '#FFE4F1EE'
+    hilited_off_key_symbol_color: '#FFD3E9E8'
+    on_key_back_color: '#FFC6DCE4'
+    on_key_text_color: '#FF16395F'
+    on_key_symbol_color: '#FF16395F'
+    hilited_on_key_back_color: '#FFAACAD9'
+    hilited_on_key_text_color: '#FF16395F'
+    hilited_on_key_symbol_color: '#FF16395F'
+    preview_back_color: '#FFF3ECD5'
+    preview_text_color: '#FF264462'
+    fn_back_color: '#FF2D5476'
+    fn_text_color: '#FFE4F1EE'
+    number_text_color: '#FF16395F'
+    number_symbol_color: '#FF2E536F'
+    accent_fill: '#FFF4DFA7'
+    accent_fill_hl: '#FFE4C987'
+    accent_text: '#FF203C55'
+    space_back_color: '#FF2D5476'
+    space_text_color: '#FFE4F1EE'
+    nav_back_color: '#FF2D5476'
+    nav_text_color: '#FFE3D6AE'

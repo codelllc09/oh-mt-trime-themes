@@ -1,0 +1,65 @@
+# 從 V1 繼承版面與動作，由 tools/gen_halftone.py 生成主題及鍵帽。
+name: V2-halftone
+style:
+  color_scheme: halftone_print
+  background_folder: v2-halftone
+  latin_font: [halftone_latin.ttf, xuma_latin.ttf]
+  key_text_size: 21
+  key_long_text_size: 13
+  symbol_text_size: 9
+  round_corner: 4
+  candidate_corner_radius: 8
+
+preset_color_schemes:
+  halftone_print:
+    name: 套色漫畫
+    back_color: '#FFFFF4DB'
+    root_background: '#FFE4CFA5'
+    candidate_background: bubble.png
+    keyboard_back_color: '#FFE4CFA5'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FFEEE0BD'
+    border_color: '#FF57404A'
+    text_color: '#FF211C23'
+    text_back_color: '#FFFFF4DB'
+    candidate_text_color: '#FF211C23'
+    candidate_separator_color: '#FFD2BB92'
+    comment_text_color: '#FF624B4C'
+    label_color: '#FF624B4C'
+    hilited_back_color: '#FFF8D484'
+    hilited_text_color: '#FF211C23'
+    hilited_candidate_back_color: '#FFF8D484'
+    hilited_candidate_text_color: '#FF211C23'
+    hilited_comment_text_color: '#FF523B36'
+    hilited_label_color: '#FF523B36'
+    key_back_color: '#FFFFF6DF'
+    key_text_color: '#FF26202A'
+    key_symbol_color: '#FF5B4650'
+    hilited_key_back_color: '#FFF2DBAA'
+    hilited_key_text_color: '#FF26202A'
+    hilited_key_symbol_color: '#FF5B4650'
+    off_key_back_color: '#FFD3E1E0'
+    off_key_text_color: '#FF27333E'
+    off_key_symbol_color: '#FF3E4F58'
+    hilited_off_key_back_color: '#FFB9CFCF'
+    hilited_off_key_text_color: '#FF27333E'
+    hilited_off_key_symbol_color: '#FF3E4F58'
+    on_key_back_color: '#FF3F6069'
+    on_key_text_color: '#FFFFF7DF'
+    on_key_symbol_color: '#FFFFF7DF'
+    hilited_on_key_back_color: '#FF2E4C55'
+    hilited_on_key_text_color: '#FFFFF7DF'
+    hilited_on_key_symbol_color: '#FFFFF7DF'
+    preview_back_color: '#FFFFE1A0'
+    preview_text_color: '#FF26202A'
+    fn_back_color: '#FFD3E1E0'
+    fn_text_color: '#FF27333E'
+    number_text_color: '#FF302421'
+    number_symbol_color: '#FF624431'
+    accent_fill: '#FFBB332D'
+    accent_fill_hl: '#FF982621'
+    accent_text: '#FFFFF7DF'
+    space_back_color: '#FFD3E1E0'
+    space_text_color: '#FF27333E'
+    nav_back_color: '#FFD3E1E0'
+    nav_text_color: '#FF713E32'

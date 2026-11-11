@@ -1,0 +1,61 @@
+# tools/gen_factory.py 將定案外觀套在 V1 鍵位上。
+name: V2-foundry
+style:
+  color_scheme: foundry
+  background_folder: v2-foundry
+  candidate_view_height: 40
+  candidate_corner_radius: 2
+  round_corner: 1
+preset_color_schemes:
+  foundry:
+    name: 砂型鑄造
+    keyboard_background: case.png
+    candidate_background: strip.png
+    back_color: '#FF27211A'
+    text_back_color: '#FF27211A'
+    liquid_keyboard_background: '#FF27211A'
+    root_background: '#FF30261C'
+    keyboard_back_color: '#FF30261C'
+    candidate_text_color: '#FFFFF0D3'
+    comment_text_color: '#FFFFF0D3'
+    label_color: '#FFFFF0D3'
+    text_color: '#FFFFF0D3'
+    border_color: '#FFFFF0D3'
+    hilited_back_color: '#FFF8AC60'
+    hilited_candidate_back_color: '#FFF8AC60'
+    hilited_candidate_button_color: '#FFF8AC60'
+    on_key_back_color: '#FFF8AC60'
+    hilited_on_key_back_color: '#FFF8AC60'
+    preview_back_color: '#FFF8AC60'
+    hilited_candidate_text_color: '#FF24160B'
+    hilited_comment_text_color: '#FF24160B'
+    hilited_label_color: '#FF24160B'
+    on_key_text_color: '#FF24160B'
+    on_key_symbol_color: '#FF24160B'
+    hilited_on_key_text_color: '#FF24160B'
+    hilited_on_key_symbol_color: '#FF24160B'
+    preview_text_color: '#FF24160B'
+    key_back_color: '#FFCBB187'
+    hilited_key_back_color: '#FFCBB187'
+    key_text_color: '#FF25180E'
+    hilited_key_text_color: '#FF25180E'
+    key_symbol_color: '#FF513727'
+    hilited_key_symbol_color: '#FF513727'
+    fn_back_color: '#FF65513F'
+    nav_back_color: '#FF65513F'
+    space_back_color: '#FF65513F'
+    off_key_back_color: '#FF65513F'
+    hilited_off_key_back_color: '#FF65513F'
+    fn_text_color: '#FFFFF0DC'
+    nav_text_color: '#FFFFF0DC'
+    space_text_color: '#FFFFF0DC'
+    off_key_text_color: '#FFFFF0DC'
+    hilited_off_key_text_color: '#FFFFF0DC'
+    fn_symbol_color: '#FFFFDFBD'
+    nav_symbol_color: '#FFFFDFBD'
+    off_key_symbol_color: '#FFFFDFBD'
+    hilited_off_key_symbol_color: '#FFFFDFBD'
+    accent_fill: '#FFFFC477'
+    accent_fill_hl: '#FFFFC477'
+    accent_text: '#FF2B160A'
+    accent_symbol: '#FF2B160A'

@@ -1,0 +1,61 @@
+# tools/gen_scope_pixel.py 將示波器外觀套在 V1 鍵位上。
+name: V2-oscilloscope
+style:
+  color_scheme: oscilloscope_phosphor
+  background_folder: v2-oscilloscope
+  latin_font: [labelmaker_mono.otf, xuma_latin.ttf]
+  candidate_view_height: 43
+  comment_height: 0
+  candidate_corner_radius: 1
+  candidate_padding: 7
+  key_text_size: 21
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 1
+
+preset_color_schemes:
+  oscilloscope_phosphor:
+    name: 冷光刻度
+    back_color: '#FF0B202C'
+    root_background: '#FF0B1C2A'
+    keyboard_back_color: '#FF0B1C2A'
+    keyboard_background: grid.png
+    candidate_background: trace.png
+    liquid_keyboard_background: '#FF0B202C'
+    border_color: '#FF4E807C'
+    candidate_text_color: '#FFBDF9E6'
+    comment_text_color: '#FF98CCC5'
+    candidate_separator_color: '#FF315659'
+    label_color: '#FF98CCC5'
+    text_color: '#FFD3FFF1'
+    text_back_color: '#FF102B38'
+    hilited_back_color: '#FF9BF1D2'
+    hilited_candidate_back_color: '#FF9BF1D2'
+    hilited_candidate_text_color: '#FF102C33'
+    hilited_candidate_button_color: '#FF285752'
+    hilited_comment_text_color: '#FF214B4C'
+    key_back_color: '#000B1C2A'
+    hilited_key_back_color: '#FF235253'
+    key_text_color: '#FFD3FFF1'
+    key_symbol_color: '#FF90C5C0'
+    off_key_back_color: '#000B1C2A'
+    off_key_text_color: '#FF9FDDD9'
+    off_key_symbol_color: '#FF90C5C0'
+    hilited_off_key_back_color: '#FF235253'
+    hilited_off_key_text_color: '#FFD3FFF1'
+    on_key_back_color: '#FF235253'
+    on_key_text_color: '#FFD3FFF1'
+    hilited_on_key_back_color: '#FF337069'
+    fn_back_color: '#000B1C2A'
+    fn_text_color: '#FF9FDDD9'
+    number_text_color: '#FFD3FFF1'
+    number_symbol_color: '#FF90C5C0'
+    accent_fill: '#FF1A4246'
+    accent_fill_hl: '#FF2C605D'
+    accent_text: '#FFA2FFDB'
+    nav_back_color: '#000B1C2A'
+    nav_text_color: '#FF9FDDD9'
+    space_back_color: '#000B1C2A'
+    space_text_color: '#FF9FDDD9'
+    preview_back_color: '#FF9BF1D2'
+    preview_text_color: '#FF102C33'

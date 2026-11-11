@@ -1,7 +1,7 @@
 name: gate
 
 # 本倉只負責同文（Trime）主題與 UI 資產；方案／詞典／lua 在桌面主倉，
-# CI 取不到 → 依賴它們的校驗自動 SKIP（見 tools/check_trime.py 的 SKIP 分支）。
+# CI 未指定桌面 Rime 目錄，依賴方案的校驗自動跳過。
 on:
   push:
   pull_request:
@@ -12,27 +12,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           python-version: '3.12'
 
-      - name: 依賴
-        run: python3 -m pip install --quiet pyyaml
-
       - name: 主題與資產校驗（無主倉模式）
-        env:
-          RIME_DESKTOP_DIR: /nonexistent   # 明確模擬「沒有桌面主倉」
-        run: python3 tools/check_trime.py
+        run: uv run --with pyyaml python tools/check_trime.py
 
       - name: 自包含主題無漂移（gen-theme --check）
-        run: python3 tools/check_trime.py gen-theme --check
+        run: uv run --with pyyaml python tools/check_trime.py gen-theme --check
 
       - name: 配色對比與可讀性（WCAG）
-        run: python3 tools/aesthetics.py --theme xuma_L.trime.yaml
+        run: uv run --with pyyaml python tools/aesthetics.py --theme rime/theme/sources/v1.theme-source.yaml
 
       - name: 頁別判定工具自測（純函數，抓壞圖不應崩）
         run: |
-          python3 - <<'PY'
+          uv run --with pillow python - <<'PY'
           from PIL import Image
           Image.new('RGB', (1080, 2280), (30, 30, 32)).save('/tmp/blank.png')
           import subprocess, sys
@@ -48,4 +43,4 @@ jobs:
           echo "本倉不含 corpus/ 與 scheme；§corpus §tendency 類檢查在桌面主倉執行。"
 
   # 真機/容器側（deploy.sh push、verify.sh、shots.sh）不在 CI 跑：
-  # 需要 adb 與 Waydroid，屬本機驗收，見 TESTING.md。
+  # 需要 adb 與 Waydroid，屬本機驗收，見 docs/TESTING.md。

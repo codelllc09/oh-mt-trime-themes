@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""rebuild_key_font.py —— 重建 fonts/xuma_key.otf（鍵盤用 CJK 子集字體）
+"""rebuild_key_font.py —— 重建 rime/fonts/xuma_key.otf（鍵盤用 CJK 子集字體）
 
 為什麼要有這支腳本：字體是**二進制生成物**，靠手上傳不可重現。
 以前的做法是臨時 `uv run --with fonttools` 打一段 heredoc，字符集存在 /tmp，
@@ -27,7 +27,7 @@ from fontTools.ttLib import TTFont
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-OUT = ROOT / 'fonts' / 'xuma_key.otf'
+OUT = ROOT / 'rime' / 'fonts' / 'xuma_key.otf'
 
 # 系統字體（Arch: google-noto-sans-cjk-vf-fonts）
 SRC_CANDIDATES = [
@@ -39,7 +39,7 @@ SRC_CANDIDATES = [
 #   ㄓ —— 曾用作空格鍵的 RIME 標記（後來改成 SUIGEM，字形留着備用）；
 #   ◀ ▶ ▲ ▼ —— **實心三角**。原本方向鍵提示用 ← ↑ → ↓，在 11sp（29px）下細到看不見，
 #   且主題裏那幾個 preset 的 label 還寫成空白（等於沒有提示）。實心三角同字號可讀，
-#   用戶選定用三角而非實心箭頭（見 design-refs/arrow-glyph-mock.html）。
+#   三角與箭頭的字形對照見 design/references/arrow-glyphs.png。
 #   ′ ″ —— 數字頁的角分／角秒；不要用 ASCII 單／雙引號冒充。
 #   ∪ ∩ ∈ ∉ ∧ ∨ ∀ ∃ —— 數字頁的集合與邏輯欄。
 #   ASCII 符號頁的新增字形；CJK 上游不收的字形由 Android 系統字體回退。

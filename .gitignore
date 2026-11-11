@@ -1,6 +1,22 @@
 # 本機產物
 tmp/
+/dist/
+/design/*
+!design/guides/
+!design/README.md
 .venv/
 __pycache__/
 *.pyc
-/trime-skins/
+/third-party-skins/
+
+# 本機徐碼配置與舊版軟鏈
+/extras/xuma-l/config.local.yaml
+/desktop-rime-links/
+
+# 裝置生成的 Rime 資料與暫存檔
+/rime/build/
+/rime/sync/
+/rime/*.userdb/
+/rime/installation.yaml
+/rime/user.yaml
+*.tmp

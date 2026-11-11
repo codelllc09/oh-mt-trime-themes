@@ -1,0 +1,62 @@
+# 從 V1 繼承版面與動作，由 tools/gen_calculator.py 生成主題及鍵帽。
+name: V2-calculator
+style:
+  color_scheme: calculator_lcd
+  background_folder: v2-calculator
+  key_text_size: 21
+  key_long_text_size: 13
+  symbol_text_size: 9
+  round_corner: 4
+
+preset_color_schemes:
+  calculator_lcd:
+    name: 灰綠液晶
+    back_color: '#FFB6C58F'
+    root_background: '#FF303731'
+    candidate_background: lcd.png
+    keyboard_back_color: '#FF3C423D'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FF353D36'
+    border_color: '#FF7B9165'
+    text_color: '#FF233721'
+    text_back_color: '#FFB6C58F'
+    candidate_text_color: '#FF233721'
+    candidate_separator_color: '#FF809465'
+    comment_text_color: '#FF35452B'
+    label_color: '#FF35452B'
+    hilited_back_color: '#FF354B33'
+    hilited_candidate_back_color: '#FF354B33'
+    hilited_candidate_text_color: '#FFEDF3D7'
+    hilited_comment_text_color: '#FFD5E2BB'
+    hilited_label_color: '#FFD5E2BB'
+    key_back_color: '#FF49534D'
+    key_text_color: '#FFF1F2E8'
+    key_symbol_color: '#FFDCE4D2'
+    hilited_key_back_color: '#FF37413D'
+    hilited_key_text_color: '#FFF1F2E8'
+    hilited_key_symbol_color: '#FFDCE4D2'
+    off_key_back_color: '#FF303A35'
+    off_key_text_color: '#FFF0E2BE'
+    off_key_symbol_color: '#FFF0E2BE'
+    hilited_off_key_back_color: '#FF222D28'
+    hilited_off_key_text_color: '#FFF0E2BE'
+    hilited_off_key_symbol_color: '#FFF0E2BE'
+    on_key_back_color: '#FFA9BA86'
+    on_key_text_color: '#FF263624'
+    on_key_symbol_color: '#FF263624'
+    hilited_on_key_back_color: '#FF94A775'
+    hilited_on_key_text_color: '#FF263624'
+    hilited_on_key_symbol_color: '#FF263624'
+    preview_back_color: '#FFCDD9AE'
+    preview_text_color: '#FF233721'
+    fn_back_color: '#FF303A35'
+    fn_text_color: '#FFF0E2BE'
+    number_text_color: '#FF2E352E'
+    number_symbol_color: '#FF3E483C'
+    accent_fill: '#FFDFA14F'
+    accent_fill_hl: '#FFBC8139'
+    accent_text: '#FF281E13'
+    space_back_color: '#FF303A35'
+    space_text_color: '#FFF0E2BE'
+    nav_back_color: '#FF303A35'
+    nav_text_color: '#FFF4D591'

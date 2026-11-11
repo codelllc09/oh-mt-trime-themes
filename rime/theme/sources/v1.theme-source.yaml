@@ -1,0 +1,607 @@
+# v1.theme-source.yaml —— 生成 V1 的自訂主題源檔
+# encoding: utf-8
+#
+# 在倉庫編輯本檔，用 tools/check_trime.py gen-theme 生成 rime/theme/v1.trime.yaml。
+#
+# 適配目標：Trime（同文輸入法）≥ v3.3（格式 config_version "3.0"，v3.3.13 實測結構）。
+# 通用 26 鍵使用 qwerty，方案同名鍵盤可覆寫個別鍵。其他版面沿用上游配置。
+#
+# 現行設計：主鍵盤四行；123# 進數字 Hub，再以 ASC／CJK 進兩個符號頁；
+# 雲白／墨空雙配色；Enter 使用強調色，功能鍵灰色。完整鍵位見 docs/KEYBOARD_MAP.md。
+
+config_version: "3.0"
+name: V1
+author: codelllc09
+
+tool_bar:
+  button_spacing: 5
+  buttons:  # 從右向左：收鍵盤、半角彎月／全角實心圓
+    - action: Hide
+      foreground: {style: "ic@menu_down"}
+    - action: Zenkaku_Hankaku
+      foreground: {option_styles: ["ic@moon_waxing_crescent", "ic@moon_full"]}
+
+# ── 全局樣式：引用默認主題，覆寫現代手感參數 ──
+style:
+  __include: trime:/style
+  # 鍵盤字形用自帶的 CJK 子集字體（Noto Sans CJK SC Regular）。
+  # 爲什麼不用 vendor 默認的 symbol.ttf：它把 “”‘’ 畫成拉丁字形（又小又貼上緣），
+  # 看着不像中文引號；CJK 字體才給出寬大的中文引號。
+  # 子集缺的 8 個功能符號（⇞⇟⌂⌫☰⤒⤓⧉）由系統字體回退。
+  # 字體兩段式：拉丁用 Roboto（與原來一致），其餘落到 CJK 黑體子集。
+  # Trime 的字體鏈＝latin_font ＋ key_font ＋ hanb_font，前面優先；
+  # 故把 “”‘’ 從 Roboto 子集裏剔除，讓它們落到 xuma_key.otf 的中文寬字形。
+  latin_font: xuma_latin.ttf
+  key_font: xuma_key.otf
+  color_scheme: xuma_cloud            # 雲白；暗黑模式自動切墨空（dark_scheme 聯動）
+  # 候選欄：dp/sp 密度無關，1080p@420 與 2K@560 使用同一組值自動縮放
+  candidate_view_height: 40
+  candidate_text_size: 22            # 同文亦用於剪貼板標題
+  candidate_padding: 6
+  comment_text_size: 10
+  comment_position: right
+  # 鍵盤（佔屏 ≤40%；圓角 5 對齊 Gboard subtle；縫隙加大鍵邊界分明）
+  key_text_size: 22
+  key_long_text_size: 11
+  symbol_text_size: 10
+  # App 提供自訂動作名稱時優先顯示，標準動作則用主題鍵帽。
+  enter_label_mode: 2
+  enter_labels:
+    send: 'ic@send'
+    search: 'ic@magnify'
+    default: 'ic@keyboard_return'
+    go: 'ic@arrow_right'
+    done: 'ic@check_bold'
+    next: 'ic@keyboard_tab'
+    pre: 'ic@keyboard_tab_reverse'
+  # 預設彈出尺寸為零。符號頁的長按選單需要可見的鍵面與文字。
+  popup_width: 40
+  popup_height: 44
+  popup_key_height: 44
+  popup_bottom_margin: 52
+  popup_text_size: 22
+  popup_font: xuma_key.otf
+  key_height: 38
+  round_corner: 9
+  horizontal_gap: 5
+  # 2026-11-07：鍵位原本縱向細長（可視 95×148，比例 0.64）。Trime 的行是平鋪的，
+  # 行與行之間沒有真空隙，可視鍵高 = 格高 − vertical_gap。故把 vertical_gap 由 6 拉到 13：
+  # 鍵變矮（≈95×128）、縫加倍，而 keyboard_height 不動 → 鍵盤總高不變。
+  # ⚠ 改這個值要同步改 tools/gen_icons.py 的 ASPECT（地球圖檔按鍵位比例拉伸）。
+  vertical_gap: 13
+
+preedit:
+  __include: trime:/preedit
+  alpha: 1.0                         # 組稿前景與底色不受下方應用程式畫面影響
+window:
+  __include: trime:/window
+liquid_keyboard:
+  __include: trime:/liquid_keyboard
+
+fallback_colors:
+  __include: trime:/fallback_colors
+  hilited_text_color: text_color      # 組稿高亮沿用 text_back_color，前景跟隨組稿文字色
+
+# ── 配色：雲白（Gboard light 語言）＋墨空（Gboard dark 語言）──
+preset_color_schemes:
+  xuma_cloud:
+    name: 雲白
+    author: codelllc09
+    dark_scheme: xuma_night
+    back_color: '#FFFFFFFF'                # 候選欄白
+    text_color: '#FF1F2124'               # preedit 前景（PreeditDelegate 必須鍵，缺則崩）
+    text_back_color: '#FFFFFFFF'          # preedit 背景
+    keyboard_back_color: '#FFDEE1E6'       # 鍵盤底加深（與鍵對比分明，G3）
+    key_back_color: '#FFFFFFFF'            # 字母鍵純白
+    key_text_color: '#FF1F2124'
+    key_symbol_color: '#FF8A9098'          # 長按符號（WCAG 輔助 ≥3.0，量化實測定值）
+    hilited_key_back_color: '#FFD5E3FC'    # 按下淺藍（搜狗式鮮明按下態）
+    hilited_key_text_color: '#FF0B57D0'
+    off_key_back_color: '#FFC6CBD2'        # 功能鍵明顯深一檔（G4）
+    off_key_text_color: '#FF2E3134'
+    on_key_back_color: '#FF0B57D0'         # 點亮態（Shift 鎖定／英文模式）：實心強調
+    on_key_text_color: '#FFFFFFFF'
+    candidate_text_color: '#FF1F2124'
+    comment_text_color: '#FF8A9098'        # 註解淡而可辨（量化 ≥3.0）
+    hilited_candidate_back_color: '#FFDCE9FF'
+    hilited_candidate_text_color: '#FF0B57D0'   # 首選 Google Blue（G7）
+    hilited_comment_text_color: '#FF8A9098'
+    label_color: '#FF8A9098'
+    preview_back_color: '#FFFFFFFF'
+    preview_text_color: '#FF1F2124'
+    accent_fill: '#FF1A73E8'               # Enter 實心藍（Gboard 主色）
+    accent_fill_hl: '#FF1765CC'
+    accent_text: '#FFFFFFFF'
+    globe_img: globe_light.png             # 地球鍵背景＝自繪圖檔（gen_icons.py 生成）
+    globe_hl_back_color: '#FFB4BAC2'       # 地球鍵按下（圖檔無按下態，用純色）
+    space_back_color: '#FFF1F3F6'          # 空格鍵底（兩版分明，須隨配色切）
+    space_text_color: '#FF5F6368'
+    # 數字頁「回字母」鍵（V3 配色）：強調色 13% 淡染底 ＋ 強調色文字
+    nav_back_color: '#FFC9D9F2'
+    nav_text_color: '#FF1A73E8'
+    fn_back_color: '#FFC6CBD2'             # #+/123 功能鍵底
+    fn_text_color: '#FF2E3134'
+  xuma_night:
+    name: 墨空
+    author: codelllc09
+    light_scheme: xuma_cloud
+    back_color: '#FF191A1C'                # 候選欄深
+    text_color: '#FFE6E8EB'               # preedit 前景（必須鍵）
+    text_back_color: '#FF191A1C'          # preedit 背景
+    keyboard_back_color: '#FF101113'       # 鍵盤底近黑
+    key_back_color: '#FF2C2F33'            # 鍵深灰
+    key_text_color: '#FFE6E8EB'
+    key_symbol_color: '#FF8A9098'
+    hilited_key_back_color: '#FF3C4753'    # 按下亮灰
+    hilited_key_text_color: '#FFFFFFFF'
+    off_key_back_color: '#FF212428'        # 功能鍵沉灰（比鍵深，G4）
+    off_key_text_color: '#FFC8CCD2'
+    on_key_back_color: '#FFA8C7FA'         # 點亮態（Shift 鎖定／英文模式）：實心淺藍
+    on_key_text_color: '#FF10233F'
+    candidate_text_color: '#FFE6E8EB'
+    comment_text_color: '#FF8A9098'
+    hilited_candidate_back_color: '#FF2B3C55'
+    hilited_candidate_text_color: '#FFA8C7FA'
+    hilited_comment_text_color: '#FF8A9098'
+    label_color: '#FF8A9098'
+    preview_back_color: '#FF2C2F33'
+    preview_text_color: '#FFE6E8EB'
+    accent_fill: '#FF8AB4F8'               # Enter 實心天藍（Gboard dark 主色）
+    accent_fill_hl: '#FFA8C7FA'
+    accent_text: '#FF1B1C1E'
+    globe_img: globe_dark.png              # 地球鍵背景＝自繪圖檔（gen_icons.py 生成）
+    globe_hl_back_color: '#FF555B63'       # 地球鍵按下
+    space_back_color: '#FF33363B'          # 空格鍵底（比鍵略亮，區分層次）
+    space_text_color: '#FFB4B9C0'
+    # 數字頁「回字母」鍵（V3 配色）：強調色 16% 淡染底 ＋ 強調色文字
+    nav_back_color: '#FF232B38'
+    nav_text_color: '#FF8AB4F8'
+    fn_back_color: '#FF454A51'             # 功能鍵灰（比字母鍵亮一檔，Gboard dark 慣例）
+    fn_text_color: '#FFE6E8EB'
+
+android_keys:
+  __include: trime:/android_keys
+
+preset_keys:
+  __include: trime:/preset_keys
+  unicode_lead:
+    label: ' '
+    send: Shift+u                   # 保留可選 preset；現行手機鍵位未綁定
+  grave_lead:
+    label: '`'
+    send: '`'                       # 反查引導（2026-11-06 實測：long_click 直寫字符
+                                    # 進組稿但 recognizer 不匹配，send 命令走 keysym 才有效）
+  # ── 功能鍵符號化：除非必要文字，一律使用符號 ──
+  # 覆蓋時必須保留原 send/shift_lock/repeatable 屬性（原定義見 Trime v3.3.13 trime.yaml）
+  Shift_L: {label: Shift, send: Shift_L, shift_lock: ascii_long}
+  BackSpace: {label: ⌫, repeatable: true, send: BackSpace}
+  Keyboard_symbols: {label: 123, send: Eisu_toggle, select: symbols}   # 數字層必要文字（業界慣例）
+  Keyboard_number: {label: '#+', send: Eisu_toggle, select: number}    # 長按提示符號化（原「數字」）
+  Return: {label: enter_labels, send: Return}
+  Return1: {label: 'ic@text_box_check_outline', send: Return}  # 組稿時由 Rime 先處理
+  select_all: {label: ⬚, send: Control+a}
+  Home: {label: ⌂, send: Home}
+  End: {label: ⤓, send: End}
+  Page_Up: {label: ⇞, send: Page_Up}
+  Page_Down: {label: ⇟, send: Page_Down}
+  cut: {label: ✂, send: Control+x}
+  copy: {label: ⧉, send: Control+c}
+  # 方案/中英鍵：狀態取單字（中/英）當圖標；長按提示改 ≡（Menu 的 label 即鍵上小字）
+  Menu: {label: ≡, send: MENU}
+  Keyboard_default: {label: ABC, send: Eisu_toggle, select: .default}
+  # 三頁（數字／ASCII／標點）共用的「回字母」鍵：鍵面只有 ABC，**不畫任何角標**
+  # （用戶 2026-11-07 最終裁定：三角去掉）。
+  # 配色：數字頁 nav 淡染（該頁沒有 123 可參照）；ASCII／標點頁 fn 灰，與同頁 123 一致。
+  back_to_kb: {label: ABC, send: Eisu_toggle, select: .default}
+  undo: {label: '↶', send: Control+z}
+  redo: {label: '↷', send: Control+y}
+  # 地球鍵用：label 留空（鍵上只顯示背景圖標，不顯示文字）
+  # ── 頁面導航（Hub 模型，2026-11-06 用戶裁定）────────────────────────
+  #   主鍵盤 123# ──→ number（小數字鍵盤，Hub）
+  #                  ├─ ASC ──→ number_ascii（ASCII 符號頁）
+  #                  └─ CJK ──→ number_zh（中文標點頁）
+  #   兩個符號頁的 123 ──→ 回 number
+  #   三頁的 ABC ──→ 回主鍵盤
+  #   只有主鍵盤標點依中英狀態走方案映射；ASCII 鍵另受全局全半角開關控制。
+  sym: {label: '123#', send: Eisu_toggle, select: number}
+  goto_ascii: {label: ASC, send: Eisu_toggle, select: number_ascii}
+  goto_cjk: {label: CJK, send: Eisu_toggle, select: number_zh}
+  goto_number: {label: 123, send: Eisu_toggle, select: number}
+  # 數字鍵盤 2/4/6/8 的長按：送方向鍵事件。提示用**實心三角**——
+  # 原本 label 是空白（等於沒有提示），改用 ←↑→↓ 後在 11sp 下細到看不見，
+  # 實心三角同字號可讀（字形由 tools/rebuild_key_font.py 補進 xuma_key.otf）。
+  arrow_up: {label: '▲', send: Up}
+  arrow_down: {label: '▼', send: Down}
+  arrow_left: {label: '◀', send: Left}
+  arrow_right: {label: '▶', send: Right}
+  main_paren_pair: {label: '( )', text: '(){Left}'}  # 主鍵盤按中英狀態換形，光標停在括號內
+
+  # ── 數字頁新增的符號（全部直接上屏，不經 Rime 轉換）──
+  num_comma:    {label: ',',  text: ','}     # 半角逗號（數字頁底行獨立鍵）
+  num_prime:    {label: '′',  text: '′'}     # 角分
+  num_dprime:   {label: '″',  text: '″'}     # 角秒（角分鍵長按）
+  num_percent:  {label: '%',  text: '%'}
+  num_permille: {label: '‰',  text: '‰'}
+  num_radic:    {label: '√',  text: '√'}
+  num_pi:       {label: 'π',  text: 'π'}
+  num_degree:   {label: '°',  text: '°'}
+  num_celsius:  {label: '℃', text: '℃'}
+  num_approx:   {label: '≈',  text: '≈'}     # { } 的長按
+  num_le:       {label: '≤',  text: '≤'}     # 1 的長按
+  num_ge:       {label: '≥',  text: '≥'}     # 3 的長按
+  num_divide:   {label: '÷',  text: '÷'}     # / 的長按
+  num_times:    {label: '×',  text: '×'}     # * 的長按
+  num_middle_dot: {label: '·', text: '·'}    # . 的長按（點乘）
+  num_pm:       {label: '±',  text: '±'}     # - 的長按
+  num_union:        {label: '∪', text: '∪'}
+  num_intersection: {label: '∩', text: '∩'}
+  num_member:       {label: '∈', text: '∈'}
+  num_not_member:   {label: '∉', text: '∉'}
+  num_and:          {label: '∧', text: '∧'}
+  num_or:           {label: '∨', text: '∨'}
+  num_for_all:      {label: '∀', text: '∀'}
+  num_exists:       {label: '∃', text: '∃'}
+  # 主鍵盤 a 長按＝Tab，角標用相對的帶止線箭頭。
+  tab_key: {label: '↹', send: Tab}
+  schema_menu: {label: '☰', send: MENU}                          # 123# 長按：選擇輸入方案
+  theme_menu: {label: '◑', send: SETTINGS, option: 'theme'}      # 地球長按：主題選單
+  # v 長按＝快速粘貼：用 Trime 內建 command: clipboard（直接讀系統剪貼板並上屏，
+  # CommonKeyboardActionListener.kt:247），不依賴目標 App 是否響應 Ctrl+V
+  paste: {label: 'ic@clipboard_text_outline', send: FUNCTION, command: clipboard}
+  clipboard_panel: {label: 'ic@script_outline', send: FUNCTION, command: clipboard_window, option: '0'}
+  CommitComment: {label: CODE}     # 長按 Enter 提交組稿原碼（原 label「編碼」語義不明）
+
+  # 地球鍵：圖標由 backgrounds/globe_*.png 提供（Gboard 風格自繪），鍵上文字留空
+  Mode_switch: {toggle: ascii_mode, send: SWITCH_CHARSET, states: [" ", " "]}
+
+  # 徐碼中文態顯示 SUIGEM；各主鍵盤以 ascii: space_en 顯示 QWERTY。
+  space_zh: {label: 'SUIGEM', send: space, repeatable: false, functional: false}
+  space_en: {label: 'QWERTY', send: space, repeatable: false, functional: false}
+  # 符號頁的空格顯示「頁面身份」而非輸入方案
+  space_ascii: {label: 'ASCII', send: space, repeatable: false, functional: false}
+  space_cjk: {label: 'CJK標點', send: space, repeatable: false, functional: false}
+  # 頁面身份標籤（ASCII／CJK標點）保留；數字頁的空格改成直白的「空格」——
+  # 「數字」會被誤讀成「切到數字」，而這一頁本來就是數字頁（用戶 2026-11-07 指出）。
+  space_num: {label: '空格', send: space, repeatable: false, functional: false}
+
+# ── 鍵盤佈局：通用 26 鍵、方案覆寫及共用數字／符號頁 ──
+preset_keyboards:
+  __include: trime:/preset_keyboards
+  # ── 數字／符號頁：number 作 Hub，另有 ASCII 與中文標點頁。
+  # ── number：數字鍵盤（Hub）。主體照電腦小鍵盤排列，左側三個等寬符號欄。
+  #    本頁跳過方案標點映射（ascii_mode: 1）；ASCII 鍵受全局全半角開關控制。
+  #
+  #    括號列：**點一次出一對，光標停在中間**（text 用 Trime 的鍵序列語法：
+  #    `(){Left}` ＝ 打 ) 打 ( 再按左 —— 上屏 "()" 且光標在括號內），
+  #    長按再給別的符號（不常用的 < >），使主鍵面保持乾淨。
+  #
+  #    其餘補充符號的長按配對：
+  #      = → ≠   等號旁邊就是不等號（數學配對）
+  #      * → ×   ASCII 乘號與排版乘號
+  #      0 → #   # 移到數字方陣底行 0 的長按
+  #      + → @   同屬附加／位址類，同在右列
+  #      . → ·   小數點與點乘符號；半角逗號改為底行獨立鍵
+  #      2 4 6 8 → ↓ ← → ↑：實體小鍵盤上這四個鍵印的就是方向箭頭（NumLock 關閉時
+  #      用作光標移動），此處長按送出方向鍵事件（不是箭頭字符），可移動光標。
+  number:
+    name: 數字
+    author: codelllc09
+    ascii_mode: 1
+    reset_ascii_mode: true
+    width: 10
+    height: 38
+    lock: true
+    vertical_gap: 10
+    key_text_offset_y: 3          # 鍵面文字下移，讓上方的長按提示不吃到數字
+    keys:
+      # 版面：左側兩個符號欄為次級分組（中間 spacer 0.5u）；與數字區以 7u 分隔。
+      #   列序：數學 17.25 │ 0.5u │ 括號 17.25 │ 7u │ 數字 12×3 │ 3u │ 運算 19
+      #   每列中心 x：93 / 285 / 518 / 648 / 778 / 977（1080p）
+      # 行 1：′″  ∪∩  ( )  7✓  8▲  9✗  /
+      - {click: num_prime, long_click: num_dprime, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: num_union, long_click: num_intersection, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: {text: '(){Left}', label: '( )'}, long_click: '<', width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 2.8125}
+      - {click: '7', long_click: '✓', width: 13.625, key_text_size: 20}
+      - {click: '8', long_click: arrow_up, width: 13.625, key_text_size: 20}
+      - {click: '9', long_click: '✗', width: 13.625, key_text_size: 20}
+      - {width: 2.875}
+      - {click: '/', long_click: num_divide, width: 17.25, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # 行 2：%  ∈∉  [ ]  4◀  5  6▶  *
+      - {click: num_percent, long_click: num_permille, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: num_member, long_click: num_not_member, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: {text: '[]{Left}', label: '[ ]'}, long_click: '>', width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 2.8125}
+      - {click: '4', long_click: arrow_left, width: 13.625, key_text_size: 20}
+      - {click: '5', width: 13.625, key_text_size: 20}
+      - {click: '6', long_click: arrow_right, width: 13.625, key_text_size: 20}
+      - {width: 2.875}
+      - {click: '*', long_click: num_times, width: 17.25, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # 行 3：√  ∧∨  { }≈  1≤  2▼  3≥  +
+      - {click: num_radic, long_click: num_pi, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: num_and, long_click: num_or, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: {text: '{}{Left}', label: '{ }'}, long_click: num_approx, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 2.8125}
+      - {click: '1', long_click: num_le, width: 13.625, key_text_size: 20}
+      - {click: '2', long_click: arrow_down, width: 13.625, key_text_size: 20}
+      - {click: '3', long_click: num_ge, width: 13.625, key_text_size: 20}
+      - {width: 2.875}
+      - {click: '+', long_click: '@', width: 17.25, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # 行 4：°  ∀∃  =≠  0  .  -±  ⌫
+      - {click: num_degree, long_click: num_celsius, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: num_for_all, long_click: num_exists, width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: '=', long_click: '≠', width: 11.6875, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 2.8125}
+      - {click: '0', long_click: '#', width: 13.625, key_text_size: 20}
+      - {click: '.', long_click: num_middle_dot, width: 13.625, key_text_size: 20}
+      - {click: '-', long_click: num_pm, width: 13.625, key_text_size: 20}
+      - {width: 2.875}
+      - {click: BackSpace, width: 17.25, key_text_size: 20,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # 行 5：導航對齊符號欄；逗號對齊 0，空格跨 . 和 -，Enter 對齊退格。
+      - {click: back_to_kb, width: 11.6875, label_symbol: ' ',
+         key_back_color: nav_back_color, key_text_color: nav_text_color}
+      - {width: 0.5625}
+      - {click: goto_ascii, width: 11.6875, key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 0.5625}
+      - {click: goto_cjk, width: 11.6875, key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {width: 2.8125}
+      - {click: num_comma, width: 13.625, key_text_size: 20}
+      - {click: space_num, width: 27.25,
+         key_back_color: space_back_color, key_text_color: space_text_color}
+      - {width: 2.875}
+      - {click: Return, width: 17.25, label_symbol: ' ',
+         key_back_color: accent_fill, key_text_color: accent_text,
+         hilited_key_back_color: accent_fill_hl, hilited_key_text_color: accent_text}
+
+
+
+  # ── number_ascii：ASCII 符號頁（從數字鍵盤按 ASC 進入）
+  #    點按 32 個 ASCII 標點；全半角由工具欄的 full_shape 控制。
+  #    長按輸出同類變體，藍色角標標出有選單的鍵。
+  number_ascii:
+    name: 符號
+    author: codelllc09
+    ascii_mode: 1
+    reset_ascii_mode: true
+    width: 10
+    height: 38
+    lock: true
+    key_text_offset_y: 3          # 鍵面文字下移，與上方的長按提示分開
+    keys:
+      # 行 1：括號與分隔符
+      - {click: '{'}
+      - {click: '}'}
+      - {click: '['}
+      - {click: ']'}
+      - {click: '('}
+      - {click: ')'}
+      - {click: '<', long_click: '«'}
+      - {click: '>', long_click: '»'}
+      - {click: '|', long_click: '‖'}
+      - {click: '\'}
+      # 行 2：常用符號、貨幣、運算
+      - {click: '@'}
+      - {click: '#', long_click: '№'}
+      - {click: '$', popup: ['€', '£', '¥', '₹', '₩', '₽', '₱', '¢'],
+         label_symbol: '€…', key_symbol_color: nav_text_color}
+      - {click: '%', long_click: '‰'}
+      - {click: '^'}
+      - {click: '&'}
+      - {click: '*', long_click: '×'}
+      - {click: '+', long_click: '±'}
+      - {click: '-', popup: ['–', '—', '−'], label_symbol: '–…', key_symbol_color: nav_text_color}
+      - {click: '=', long_click: '≠'}
+      # 行 3：引號與標點
+      - {width: 5}
+      - {click: '`'}
+      - {click: "'", popup: ['‘', '’', '‚', '‹', '›'], label_symbol: '‘…', key_symbol_color: nav_text_color}
+      - {click: '"', popup: ['“', '”', '„'], label_symbol: '“…', key_symbol_color: nav_text_color}
+      - {click: '~', long_click: '≈'}
+      - {click: '_'}
+      - {click: ':'}
+      - {click: ';', long_click: '؛'}
+      - {click: '?', popup: ['¿', '؟'], label_symbol: '¿…', key_symbol_color: nav_text_color}
+      - {click: '!', long_click: '¡'}
+      - {width: 5}
+      # 行 4：ABC（回主鍵盤）＋其餘符號＋⌫
+      - {click: back_to_kb, width: 15, label_symbol: ' ',
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: '…', long_click: '⋯'}
+      - {click: '·', long_click: '•'}
+      - {click: '←', long_click: '⇐'}
+      - {click: '↑', long_click: '⇑'}
+      - {click: '↓', long_click: '⇓'}
+      - {click: '→', long_click: '⇒'}
+      - {click: '©', popup: ['®', '™'], label_symbol: '®…', key_symbol_color: nav_text_color}
+      - {click: BackSpace, width: 15,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # 行 5：底行（123 回數字鍵盤）
+      - {click: goto_number, width: 15, key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: ',', long_click: '،', width: 10}
+      - {click: space_ascii, width: 40,
+         key_back_color: space_back_color, key_text_color: space_text_color}
+      - {click: '.', width: 10}
+      - {click: '/', long_click: '÷', width: 10}
+      - {click: Return, width: 15, label_symbol: ' ',
+         key_back_color: accent_fill, key_text_color: accent_text,
+         hilited_key_back_color: accent_fill_hl, hilited_key_text_color: accent_text}
+
+
+  # ── number_zh：中文標點頁（從數字鍵盤按 CJK 進入）
+  #    版面原則：**每行填滿，不留空塊**（用戶裁定 2026-11-06）。
+  #    排序原則：**按使用頻率**——句讀與引號佔最上兩行（最好按），
+  #    書名號與各式括號次之，低頻的全角形 ASCII（／＼％＠）只在末行補位。
+  #    本頁不翻譯：字符全是非 ASCII，走 commitText 直上屏。
+  number_zh:
+    name: 標點
+    author: codelllc09
+    ascii_mode: 0
+    reset_ascii_mode: true
+    width: 10
+    height: 38
+    lock: true
+    key_text_offset_y: 3          # 鍵面文字下移，讓上方的長按提示不吃到數字
+    keys:
+      # 行 1：句讀、雙引號與註記符號。
+      - {click: '，', key_text_offset_x: 6.1}
+      - {click: '。', key_text_offset_x: 8.0}
+      - {click: '、'}
+      - {click: '？', key_text_offset_x: 5.7}
+      - {click: '！', key_text_offset_x: 5.9}
+      - {click: '；', key_text_offset_x: 5.7}
+      - {click: '：', key_text_offset_x: 5.7}
+      - {click: '“', key_text_offset_x: -6.0}
+      - {click: '”', key_text_offset_x: 6.0}
+      - {click: '※'}
+      # 行 2：直角引號、單引號、圓括號與全角方括號。
+      - {click: '「', key_text_offset_x: -6.6}
+      - {click: '」', key_text_offset_x: 6.6}
+      - {click: '『', key_text_offset_x: -6.0}
+      - {click: '』', key_text_offset_x: 6.0}
+      - {click: '‘'}
+      - {click: '’'}
+      - {click: '（', key_text_offset_x: -7.0}
+      - {click: '）', key_text_offset_x: 6.9}
+      - {click: '［', key_text_offset_x: -7.4}
+      - {click: '］', key_text_offset_x: 7.4}
+      # 行 3：書名號與各式括號
+      - {click: '《', key_text_offset_x: -7.6}
+      - {click: '》', key_text_offset_x: 7.6}
+      - {click: '〈', key_text_offset_x: -8.9}
+      - {click: '〉', key_text_offset_x: 8.9}
+      - {click: '【', key_text_offset_x: -7.0}
+      - {click: '】', key_text_offset_x: 7.0}
+      - {click: '〔', key_text_offset_x: -7.5}
+      - {click: '〕', key_text_offset_x: 7.5}
+      - {click: '〖', key_text_offset_x: -6.6}
+      - {click: '〗', key_text_offset_x: 6.6}
+      # 行 4：同上、乘號、漢字零與低頻全角形；兩端接 ABC 和退格。
+      - {click: back_to_kb, width: 15, label_symbol: ' ',
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: '〃'}
+      - {click: '×'}
+      - {click: '〇'}
+      - {click: '／'}
+      - {click: '＼'}
+      - {click: '％'}
+      - {click: '﹏'}
+      - {click: BackSpace, width: 15,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # 行 5：空格居中，左右各兩枚標點；123 和回車對齊上一行的功能鍵。
+      - {click: goto_number, width: 15, key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: '—'}
+      - {click: '…'}
+      - {click: space_cjk, width: 30,
+         key_back_color: space_back_color, key_text_color: space_text_color}
+      - {click: '·'}
+      - {click: '～'}
+      - {click: Return, width: 15, label_symbol: ' ',
+         key_back_color: accent_fill, key_text_color: accent_text,
+         hilited_key_back_color: accent_fill_hl, hilited_key_text_color: accent_text}
+
+  qwerty:
+    name: 通用 26 鍵
+    author: codelllc09
+    # 主鍵盤記住上次語言態（不強制）：reset_ascii_mode false → 用本鍵盤自己的
+    # lastAsciiMode，中英切換後回到主鍵盤仍是原語言。ascii_mode 僅作初值。
+    ascii_mode: 0
+    reset_ascii_mode: false
+    width: 10
+    height: 38
+    label_transform: none            # 字母默認小寫（僅 Shift 生效時大寫）
+    lock: true
+    keys:
+      # ── 主鍵盤只有 4 行（用戶裁定 2026-11-06：多了不行）──
+      # 直接打標點只有 3 個：底行 , 。/ （中文態分別出 ，、。、）；其餘標點一律長按，
+      # 長按值寫 **ASCII**（Rime 才會按中英狀態換形；寫死 CJK 就永遠是中文）。
+      # ── 行 1 ──
+      - {click: q, long_click: '1'}   # 長按 → 1
+      - {click: w, long_click: '2'}   # 長按 → 2
+      - {click: e, long_click: '3'}   # 長按 → 3
+      - {click: r, long_click: '4'}   # 長按 → 4
+      - {click: t, long_click: '5'}   # 長按 → 5
+      - {click: y, long_click: '6'}   # 長按 → 6
+      - {click: u, long_click: '7'}   # 長按 → 7
+      - {click: i, long_click: '8'}   # 長按 → 8
+      - {click: o, long_click: '9'}   # 長按 → 9
+      - {click: p, long_click: '0'}   # 長按 → 0
+      # ── 行 2 ──
+      - {width: 5}
+      - {click: a, long_click: tab_key}   # 長按 → Tab
+      - {click: s, long_click: select_all}   # 長按 → 全選
+      - {click: d, long_click: undo}   # 長按 → 撤銷
+      - {click: f, long_click: redo}   # 長按 → 重做
+      - {click: g, label_symbol: '⇤ ⇥', swipe_left: Home, swipe_right: End}
+      - {click: h, long_click: main_paren_pair}
+      - {click: j, long_click: '^'}   # 長按 → ……
+      - {click: k, long_click: '_'}   # 長按 → ——
+      - {click: l, long_click: "'"}   # 長按 → ‘’ 連按交替
+      - {width: 5}
+      # ── 行 3 ──
+      - {click: Shift_L, width: 15, key_text_size: 15,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: z, long_click: grave_lead}
+      - {click: x, long_click: cut}
+      - {click: c, long_click: copy}
+      - {click: v, long_click: paste}
+      - {click: b, long_click: clipboard_panel}
+      - {click: n, long_click: ':'}   # 長按 → ：
+      - {click: m, long_click: '"'}   # 長按 → “” 連按交替
+      - {click: BackSpace, width: 15,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      # ── 行 4：底行（僅 , . / 三個直接標點；長按給最常用的 ？！ ）──
+      # 123# 在左、地球在右；兩者等寬 10 單位。
+      - {click: sym, long_click: schema_menu,
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: Mode_switch, long_click: theme_menu, width: 10,
+         label_symbol: ' ',
+         key_back_color: globe_img, hilited_key_back_color: globe_hl_back_color}
+      - {click: ',', long_click: ';'}    # 中文 ，；長按 → ；    # 中文：，／長按 ？
+      - {click: space, ascii: space_en, long_click: VOICE_ASSIST, width: 35, key_text_size: 13,
+         key_back_color: space_back_color, key_text_color: space_text_color}
+      - {click: '.', long_click: '!'}    # 中文 。；長按 → ！    # 中文：。／長按 ！
+      # 斜線：**送 ASCII `/`**（送給 Rime，由 punctuator 給 、/／÷ 候選）。
+      # 用戶裁定（2026-11-06）：接受「打 、 要按兩下」的老樣子——因為一旦改成直出 、，
+      # /menu /add /time 等 lua 命令就再也打不出來了（中文態打不出 /；英文態不走 processor）。
+      - {click: '/', long_click: '?',      # 長按 → ？
+         key_back_color: fn_back_color, key_text_color: fn_text_color}
+      - {click: Return, composing: Return1, long_click: CommitComment, width: 15,
+         label_symbol: ' ',
+         key_back_color: accent_fill, key_text_color: accent_text,
+         hilited_key_back_color: accent_fill_hl, hilited_key_text_color: accent_text}
+
+  xuma_L:
+    __include: /preset_keyboards/qwerty
+    name: 徐碼
+    __key_overrides:
+      space: {click: space_zh}
+
+  luna_pinyin:
+    __include: /preset_keyboards/qwerty
+    name: 朙月拼音
+    __key_overrides:
+      Shift_L: {has_menu: "'"}

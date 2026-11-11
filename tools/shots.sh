@@ -1,7 +1,7 @@
 #!/bin/bash
 # shots.sh —— 一鍵刷新 tmp/overview：當前版本「全套界面截圖」（整批覆蓋）
 #
-# 用法：  TRIME_ADB_SERIAL=localhost:5555 ./android/tools/shots.sh
+# 用法：  TRIME_ADB_SERIAL=localhost:5555 ./tools/shots.sh
 # 產物：  tmp/overview/NN-<界面>-<light|dark>.png
 #
 # 前置：容器 1080x2280@420、同文為當前輸入法、app 內已部署最新主題。
@@ -11,7 +11,7 @@
 # 流程全程確定性——重啓 IME 歸位 → 主鍵盤，其後每一步都是固定按鍵導航，
 # 因此檔名由流程決定，改版時只要同步本腳本的座標即可。
 #
-# 導航模型（Hub，見 KEYBOARD_MAP.md）：
+# 導航模型（Hub，見 docs/KEYBOARD_MAP.md）：
 #   主鍵盤 123# → number（數字鍵盤）→ ASC → number_ascii ／ CJK → number_zh
 #   符號頁 123 → 回 number；各頁 ABC → 回主鍵盤
 # 每一步都由**已知狀態**出發（起點用重啓 IME 歸位），拍完再用 page_kind.py
@@ -43,7 +43,7 @@ assert_theme() {   # 主題必須是 V1（configId=v1），否則整批截圖都
   local hit
   hit=$("${ADB[@]}" shell "ls /storage/emulated/0/Android/data/com.osfans.trime/files/rime/v1.trime.yaml" 2>/dev/null | tr -d '\r')
   if [ -z "$hit" ]; then
-    echo "  ✗ 裝置上沒有 v1.trime.yaml，先跑 deploy.sh push" >&2; return 1
+    echo "  ✗ 裝置上沒有 v1.trime.yaml，先跑 deploy.sh push --theme v1" >&2; return 1
   fi
   return 0
 }

@@ -10,7 +10,7 @@ Trime 支持把「鍵背景」設成圖片值（`key_back_color` 以 .png 結尾
 FILL=0 描邊版——與 Gboard 的地球同源同風格。字體按需下載到本地緩存（不入庫，
 10 MB 太大），可用 MATERIAL_SYMBOLS_SHA256 校驗。
 
-顏色直接讀自 android/xuma_L.trime.yaml 的配色，避免圖標與主題不同步。
+顏色直接讀自 rime/theme/sources/v1.theme-source.yaml 的配色，避免圖標與主題不同步。
 幾何：圖檔會**被拉伸填滿鍵位**，所以圖檔長寬比必須等於鍵位長寬比，
       否則圓形會被拉成橢圓（實測：ASPECT 設 1.27 時地球顯示為 86% 寬的扁圓）。
       1080p@420 逐像素量得鍵位 150×146px → 長寬比 ≈1.03（並非按 15 單位×108 推算的 162）。
@@ -28,10 +28,9 @@ from pathlib import Path
 import yaml
 from PIL import Image, ImageDraw, ImageFont
 
-HERE = Path(__file__).resolve().parent
-ANDROID = HERE.parent
-THEME = ANDROID / 'xuma_L.trime.yaml'
-OUT = ANDROID / 'backgrounds'
+from check_trime import RIME_DIR, THEME_SOURCE
+
+OUT = RIME_DIR / 'backgrounds'
 
 FONT_URL = ('https://raw.githubusercontent.com/google/material-design-icons/master/'
             'variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf')
@@ -87,7 +86,7 @@ def key_image(font_path: Path, bg, fg, glyph: int, icon_ratio=ICON_RATIO):
 
 
 def main():
-    theme = yaml.safe_load(THEME.read_text(encoding='utf-8'))
+    theme = yaml.safe_load(THEME_SOURCE.read_text(encoding='utf-8'))
     schemes = theme['preset_color_schemes']
     OUT.mkdir(exist_ok=True)
     font = ensure_font()

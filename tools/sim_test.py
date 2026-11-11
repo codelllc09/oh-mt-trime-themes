@@ -33,12 +33,10 @@ import tempfile
 import time
 from pathlib import Path
 
+from check_trime import deployment_files, gen_custom, load_xuma_config
+
 HERE = Path(__file__).resolve().parent          # tools/
 ANDROID = HERE.parent                            # 本倉根（安卓資產）
-# 共享件根＝桌面主倉（schema/詞典/lua/基準檔）；獨立成倉後經 RIME_DESKTOP_DIR 指引（2026-11-07）
-REPO = Path(os.environ.get('RIME_DESKTOP_DIR', str(Path.home() / '.config/ibus/rime'))).expanduser()
-SIM = REPO / 'tmp' / 'simtest'
-BASELINE = REPO / 'lua/codelllc09/tools/dict_pipeline/archive/rulings/驗收基準.txt'
 
 LIBRIME = os.environ.get('SIM_LIBRIME', '/lib64/librime.so.1')
 LIBLUA = os.environ.get('SIM_LIBRIME_LUA', '/usr/lib64/rime-plugins/librime-lua.so')
@@ -233,34 +231,27 @@ class Harness:
                 if ln.startswith('E') and ln[1:2].isdigit()]
 
 
-def stage_sandbox(user: Path):
-    man = subprocess.run(
-        [sys.executable, str(ANDROID / 'tools' / 'check_trime.py'), 'manifest'],
-        capture_output=True, text=True, check=True, cwd=REPO).stdout
-    for line in man.splitlines():
-        src, dst = line.split('\t')
+def stage_sandbox(user: Path, files, cached: Path):
+    for src, dst in files:
         target = user / dst
         target.parent.mkdir(parents=True, exist_ok=True)
-        srcp = (ANDROID / src) if (ANDROID / src).exists() else (REPO / src)
-        shutil.copy2(srcp, target)
+        shutil.copy2(ANDROID / src, target)
     sp = user / 'lua/codelllc09/tools/dict_pipeline'
     sp.mkdir(parents=True, exist_ok=True)
     (sp / 'spool_pending.txt').touch()
     # 個人配置二件（用戶裁定不入庫 3f5db09）：gen-custom 生成，保沙箱與真機同構
-    subprocess.run([sys.executable, str(ANDROID / 'tools' / 'check_trime.py'),
-                    'gen-custom', str(user)], check=True, capture_output=True)
+    gen_custom(user)
     trime_yaml = user / 'trime.yaml'
     if not trime_yaml.exists():
-        cached = SIM / 'trime.yaml'
         if not cached.exists():
             subprocess.run(['curl', '-sLo', str(cached), TRIME_YAML_URL], check=True)
         shutil.copy2(cached, trime_yaml)
 
 
-def load_baseline():
+def load_baseline(path: Path):
     """驗收基準：碼<TAB>字 每行一條（靜態詞典首位語義，供參照與可達性斷言）。"""
     pairs = []
-    for ln in BASELINE.read_text(encoding='utf-8').splitlines():
+    for ln in path.read_text(encoding='utf-8').splitlines():
         ln = ln.strip()
         if not ln or ln.startswith('#') or '\t' not in ln:
             continue
@@ -269,11 +260,11 @@ def load_baseline():
     return pairs
 
 
-def load_dict_codes(codes):
+def load_dict_codes(path: Path, codes):
     """掃 xuma_L 詞典：每碼的全部活條目字集（動態有效性斷言用，掃法同 check_acceptance）。"""
     out = {c: set() for c in codes}
     started = False
-    for ln in (REPO / 'xuma_L.dict.yaml').read_text(encoding='utf-8').splitlines():
+    for ln in path.read_text(encoding='utf-8').splitlines():
         if not started:
             if ln == '...':
                 started = True
@@ -303,9 +294,12 @@ def main():
     ap.add_argument('--keep', action='store_true')
     args = ap.parse_args()
 
-    user = SIM / 'sandbox' / 'user'
+    xuma = load_xuma_config()
+    files = deployment_files(xuma=xuma)
+    sim = xuma.desktop_dir / 'tmp' / 'simtest'
+    user = sim / 'sandbox' / 'user'
     if user.exists():
-        shutil.rmtree(SIM / 'sandbox')
+        shutil.rmtree(sim / 'sandbox')
     user.mkdir(parents=True)
 
     # ── T12：剝離桌面環境變量（模擬安卓進程）────────────────────
@@ -313,9 +307,10 @@ def main():
         os.environ.pop(var, None)
 
     print('── 沙箱佈置（部署清單 → %s）──' % user)
-    stage_sandbox(user)
-    baseline = load_baseline()
-    dict_codes = load_dict_codes([c for c, _ in baseline])
+    stage_sandbox(user, files, sim / 'trime.yaml')
+    baseline_path = xuma.desktop_dir / 'lua/codelllc09/tools/dict_pipeline/archive/rulings/驗收基準.txt'
+    baseline = load_baseline(baseline_path)
+    dict_codes = load_dict_codes(user / 'xuma_L.dict.yaml', [c for c, _ in baseline])
     item(len(baseline) >= 40, f'驗收基準載入 {len(baseline)} 碼')
 
     print('── 初始化 librime＋librime-lua（無 HOME／XDG 環境）──')
@@ -468,8 +463,7 @@ def main():
         item(None, '基準中未找到繁簡異形樣本')
 
     print('── T11 主題編譯（真機上線的是自包含 v1.trime.yaml）──')
-    # 部署清單送 android/v1.trime.yaml（gen-theme 生成的自包含替身；configId=v1），
-    # xuma_L.trime.yaml 不再進沙箱也不再上手機——此測試必須跟着改，否則永遠紅燈。
+    # 編譯部署清單中的 v1.trime.yaml。rime/theme/sources/v1.theme-source.yaml 是生成來源。
     ok = h.deploy_config('v1.trime.yaml', 'config_version')
     built = user / 'build' / 'v1.trime.yaml'
     item(ok and built.exists(), 'deploy_config_file 編譯主題成功')

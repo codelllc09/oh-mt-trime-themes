@@ -1,0 +1,61 @@
+# tools/gen_factory.py 將定案外觀套在 V1 鍵位上。
+name: V2-pneumatic
+style:
+  color_scheme: pneumatic
+  background_folder: v2-pneumatic
+  candidate_view_height: 40
+  candidate_corner_radius: 2
+  round_corner: 1
+preset_color_schemes:
+  pneumatic:
+    name: 氣動分揀台
+    keyboard_background: case.png
+    candidate_background: strip.png
+    back_color: '#FF102444'
+    text_back_color: '#FF102444'
+    liquid_keyboard_background: '#FF102444'
+    root_background: '#FF182C4A'
+    keyboard_back_color: '#FF182C4A'
+    candidate_text_color: '#FFE8F3FF'
+    comment_text_color: '#FFE8F3FF'
+    label_color: '#FFE8F3FF'
+    text_color: '#FFE8F3FF'
+    border_color: '#FFE8F3FF'
+    hilited_back_color: '#FFDBFA6F'
+    hilited_candidate_back_color: '#FFDBFA6F'
+    hilited_candidate_button_color: '#FFDBFA6F'
+    on_key_back_color: '#FFDBFA6F'
+    hilited_on_key_back_color: '#FFDBFA6F'
+    preview_back_color: '#FFDBFA6F'
+    hilited_candidate_text_color: '#FF20340F'
+    hilited_comment_text_color: '#FF20340F'
+    hilited_label_color: '#FF20340F'
+    on_key_text_color: '#FF20340F'
+    on_key_symbol_color: '#FF20340F'
+    hilited_on_key_text_color: '#FF20340F'
+    hilited_on_key_symbol_color: '#FF20340F'
+    preview_text_color: '#FF20340F'
+    key_back_color: '#FF3876D5'
+    hilited_key_back_color: '#FF3876D5'
+    key_text_color: '#FFFFFFFF'
+    hilited_key_text_color: '#FFFFFFFF'
+    key_symbol_color: '#FFEDF5FF'
+    hilited_key_symbol_color: '#FFEDF5FF'
+    fn_back_color: '#FFBCD2ED'
+    nav_back_color: '#FFBCD2ED'
+    space_back_color: '#FFBCD2ED'
+    off_key_back_color: '#FFBCD2ED'
+    hilited_off_key_back_color: '#FFBCD2ED'
+    fn_text_color: '#FF132948'
+    nav_text_color: '#FF132948'
+    space_text_color: '#FF132948'
+    off_key_text_color: '#FF132948'
+    hilited_off_key_text_color: '#FF132948'
+    fn_symbol_color: '#FF263C60'
+    nav_symbol_color: '#FF263C60'
+    off_key_symbol_color: '#FF263C60'
+    hilited_off_key_symbol_color: '#FF263C60'
+    accent_fill: '#FFD5F774'
+    accent_fill_hl: '#FFD5F774'
+    accent_text: '#FF20340F'
+    accent_symbol: '#FF20340F'

@@ -1,0 +1,18 @@
+# 複製為同目錄的 config.local.yaml，再填寫本機路徑。
+desktop_dir: ~/.config/ibus/rime
+
+# 相對於 desktop_dir，安裝到手機 Rime 目錄下的同一路徑。
+files:
+  - xuma_L.schema.yaml
+  - xuma_L.dict.yaml
+  - xuma_spelling_pseudo.schema.yaml
+  - xuma_spelling_pseudo.dict.yaml
+  - luna_pinyin.extended.dict.yaml
+  - luna_pinyin.hanyu.dict.yaml
+  - symbols.yaml
+
+# 各目錄只收錄直接包含的 *.lua，缺少的選裝目錄會略過。
+lua_dirs:
+  - lua/codelllc09
+  - lua/ace
+  - lua/ace/lib

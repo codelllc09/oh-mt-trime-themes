@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """mock_number_page.py —— 數字鍵盤「加一列」方案示意圖（設計階段用，不入主題）
 
-用途：在真正改 xuma_L.trime.yaml 之前，把幾個候選佈局畫成與實機同尺寸的圖，
+用途：在真正改 rime/theme/sources/v1.theme-source.yaml 之前，把幾個候選佈局畫成與實機同尺寸的圖，
 讓取捨看得見。繪製參數全部取自真實主題與實機量測值：
 
     畫布寬 1080px（1080p@420 的實機寬）
@@ -9,23 +9,22 @@
     水平縫 13px（horizontal_gap: 5）
     單位寬 1 unit = 1080/100 = 10.8px
 
-配色直接讀 xuma_L.trime.yaml 的 xuma_cloud / xuma_night。
+配色直接讀源檔的 xuma_cloud / xuma_night。
 """
 from pathlib import Path
 
 import yaml
 from PIL import Image, ImageDraw, ImageFont
 
-ROOT = Path(__file__).resolve().parent.parent
-THEME = ROOT / 'xuma_L.trime.yaml'
+from check_trime import ROOT, THEME_SOURCE
 
 W = 1080
 CELL_H, KEY_H = 131, 97
 GAP_X = 13
 RADIUS = 22
 
-FONT_LAT = ROOT / 'fonts' / 'xuma_latin.ttf'
-FONT_CJK = ROOT / 'fonts' / 'xuma_key.otf'
+FONT_LAT = ROOT / 'rime' / 'fonts' / 'xuma_latin.ttf'
+FONT_CJK = ROOT / 'rime' / 'fonts' / 'xuma_key.otf'
 # 示意圖要用來寫標題與說明（任意漢字），鍵盤子集字體沒有這些字形 →
 # 用系統 Noto Sans CJK SC（wght=400 靜態實例；VF 默認是 Thin，不要直接用）。
 FONT_UI_CANDIDATES = [
@@ -153,7 +152,7 @@ def draw_kb(scheme, rows, title, notes, out):
 
 
 def main():
-    theme = yaml.safe_load(THEME.read_text(encoding='utf-8'))
+    theme = yaml.safe_load(THEME_SOURCE.read_text(encoding='utf-8'))
     S = theme['preset_color_schemes']
     O = Path('/tmp')
 

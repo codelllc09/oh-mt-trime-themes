@@ -1,0 +1,63 @@
+# 從 V1 繼承版面與動作，由 tools/gen_contour.py 生成主題及鍵帽。
+name: V2-contour
+style:
+  color_scheme: contour_atlas
+  background_folder: v2-contour
+  key_text_size: 21
+  key_long_text_size: 13
+  symbol_text_size: 9
+  round_corner: 4
+  candidate_corner_radius: 3
+
+preset_color_schemes:
+  contour_atlas:
+    name: 等高線地圖
+    back_color: '#FFE9DFC4'
+    root_background: '#FFD9C6A1'
+    candidate_background: legend.png
+    keyboard_back_color: '#FFD9C6A1'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FFE9DFC4'
+    border_color: '#FF867751'
+    text_color: '#FF253C31'
+    text_back_color: '#FFE9DFC4'
+    candidate_text_color: '#FF253C31'
+    candidate_separator_color: '#FFB4A27C'
+    comment_text_color: '#FF514A36'
+    label_color: '#FF514A36'
+    hilited_back_color: '#FF416353'
+    hilited_candidate_back_color: '#FF416353'
+    hilited_candidate_text_color: '#FFFFF5DC'
+    hilited_comment_text_color: '#FFECDFC0'
+    hilited_label_color: '#FFECDFC0'
+    key_back_color: '#FFF5EBD0'
+    key_text_color: '#FF293E32'
+    key_symbol_color: '#FF53503A'
+    hilited_key_back_color: '#FFE7D9B2'
+    hilited_key_text_color: '#FF293E32'
+    hilited_key_symbol_color: '#FF53503A'
+    off_key_back_color: '#FF456457'
+    off_key_text_color: '#FFFFF6DA'
+    off_key_symbol_color: '#FFF1E6C8'
+    hilited_off_key_back_color: '#FF365146'
+    hilited_off_key_text_color: '#FFFFF6DA'
+    hilited_off_key_symbol_color: '#FFF1E6C8'
+    on_key_back_color: '#FFBD9559'
+    on_key_text_color: '#FF27392E'
+    on_key_symbol_color: '#FF27392E'
+    hilited_on_key_back_color: '#FFCDA668'
+    hilited_on_key_text_color: '#FF27392E'
+    hilited_on_key_symbol_color: '#FF27392E'
+    preview_back_color: '#FFE6EAD0'
+    preview_text_color: '#FF293E32'
+    fn_back_color: '#FF456457'
+    fn_text_color: '#FFFFF6DA'
+    number_text_color: '#FF304639'
+    number_symbol_color: '#FF4B5341'
+    accent_fill: '#FFA84530'
+    accent_fill_hl: '#FF8F3827'
+    accent_text: '#FFFFF3DD'
+    space_back_color: '#FF456457'
+    space_text_color: '#FFFFF6DA'
+    nav_back_color: '#FF456457'
+    nav_text_color: '#FF69422C'

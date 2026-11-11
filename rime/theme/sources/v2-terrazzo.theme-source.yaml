@@ -1,0 +1,65 @@
+# 外觀由 tools/gen_contrast.py 套在 V1 鍵位上。
+name: V2-terrazzo
+style:
+  color_scheme: terrazzo_stone
+  background_folder: v2-terrazzo
+  key_text_size: 21
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 1
+  candidate_corner_radius: 1
+
+preset_color_schemes:
+  terrazzo_stone:
+    name: 水磨石
+    keyboard_background: case.png
+    candidate_background: strip.png
+    back_color: '#FFF7F2E8'
+    root_background: '#FFDED3C2'
+    keyboard_back_color: '#FFDED3C2'
+    liquid_keyboard_background: '#FFF7F2E8'
+    border_color: '#FFA79A86'
+    text_color: '#FF2C342D'
+    text_back_color: '#FFF7F2E8'
+    candidate_text_color: '#FF2C342D'
+    candidate_separator_color: '#FFC8BBAB'
+    comment_text_color: '#FF4F594F'
+    label_color: '#FF4F594F'
+    hilited_back_color: '#FF34554A'
+    hilited_candidate_back_color: '#FF34554A'
+    hilited_candidate_text_color: '#FFFFFAF1'
+    hilited_candidate_button_color: '#FF34554A'
+    hilited_comment_text_color: '#FFFFFAF1'
+    hilited_label_color: '#FFFFFAF1'
+    key_back_color: '#FFF8F2E8'
+    key_text_color: '#FF302E2B'
+    key_symbol_color: '#FF49443D'
+    hilited_key_back_color: '#FFE3D8C8'
+    hilited_key_text_color: '#FF302E2B'
+    hilited_key_symbol_color: '#FF49443D'
+    off_key_back_color: '#FFD7CCC0'
+    off_key_text_color: '#FF292520'
+    off_key_symbol_color: '#FF433B33'
+    hilited_off_key_back_color: '#FFC7B9AA'
+    hilited_off_key_text_color: '#FF292520'
+    hilited_off_key_symbol_color: '#FF433B33'
+    on_key_back_color: '#FFD8E0DC'
+    on_key_text_color: '#FF24332E'
+    on_key_symbol_color: '#FF374740'
+    hilited_on_key_back_color: '#FFBECFC6'
+    hilited_on_key_text_color: '#FF24332E'
+    hilited_on_key_symbol_color: '#FF374740'
+    preview_back_color: '#FFF7F2E8'
+    preview_text_color: '#FF2C342D'
+    fn_back_color: '#FFD7CCC0'
+    fn_text_color: '#FF292520'
+    number_text_color: '#FF24332E'
+    number_symbol_color: '#FF374740'
+    accent_fill: '#FF34554A'
+    accent_fill_hl: '#FF274339'
+    accent_text: '#FFFFFAF1'
+    space_back_color: '#FFD7CCC0'
+    space_down_color: '#FFC7B9AA'
+    space_text_color: '#FF292520'
+    nav_back_color: '#FFD7CCC0'
+    nav_text_color: '#FF433B33'

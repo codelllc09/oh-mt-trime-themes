@@ -1,0 +1,71 @@
+# 從 V1 繼承版面與動作，由 tools/gen_labelmaker.py 生成主題及資產。
+name: V2-labelmaker
+style:
+  color_scheme: labelmaker_tape
+  background_folder: v2-labelmaker
+  latin_font: [labelmaker_mono.otf, xuma_latin.ttf]
+  candidate_view_height: 42
+  comment_height: 0
+  candidate_padding: 8
+  candidate_corner_radius: 1
+  key_text_size: 20
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 4
+
+preset_keys:
+  Mode_switch:
+    label: 中／英
+    states: [中／英, 中／英]
+
+preset_color_schemes:
+  labelmaker_tape:
+    name: 石墨灰紙帶
+    back_color: '#FFF5EBD5'
+    root_background: '#FF30352F'
+    keyboard_background: case.png
+    keyboard_back_color: '#FF30352F'
+    liquid_keyboard_background: '#FF30352F'
+    candidate_background: tape.9.png
+    border_color: '#FF81745D'
+    text_color: '#FF29261F'
+    text_back_color: '#FFF5EBD5'
+    candidate_text_color: '#FF29261F'
+    candidate_separator_color: '#FFB9AA8E'
+    comment_text_color: '#FF5C503D'
+    label_color: '#FF5C503D'
+    hilited_back_color: '#FF28261F'
+    hilited_candidate_back_color: '#FF28261F'
+    hilited_candidate_text_color: '#FFFCF1D9'
+    hilited_candidate_button_color: '#FF514837'
+    hilited_label_color: '#FFF1DFB8'
+    hilited_comment_text_color: '#FFF1DFB8'
+    key_back_color: '#FF40463D'
+    hilited_key_back_color: '#FF2E342B'
+    key_text_color: '#FFF5F0DF'
+    hilited_key_text_color: '#FFF5F0DF'
+    key_symbol_color: '#FFD6BC86'
+    hilited_key_symbol_color: '#FFD6BC86'
+    off_key_back_color: '#FF282D26'
+    off_key_text_color: '#FFF5F0DF'
+    off_key_symbol_color: '#FFD6BC86'
+    hilited_off_key_back_color: control_down.png
+    hilited_off_key_text_color: '#FFF5F0DF'
+    hilited_off_key_symbol_color: '#FFD6BC86'
+    on_key_back_color: '#FF7E6037'
+    hilited_on_key_back_color: '#FF684B29'
+    on_key_text_color: '#FFFCF1D9'
+    hilited_on_key_text_color: '#FFFCF1D9'
+    on_key_symbol_color: '#FFFCF1D9'
+    hilited_on_key_symbol_color: '#FFFCF1D9'
+    preview_back_color: '#FFF5EBD5'
+    preview_text_color: '#FF29261F'
+    fn_back_color: '#FF282D26'
+    fn_text_color: '#FFF5F0DF'
+    accent_fill: '#FFE0A553'
+    accent_fill_hl: '#FFC2893D'
+    accent_text: '#FF292013'
+    space_back_color: '#FF252922'
+    space_text_color: '#FFF5F0DF'
+    nav_back_color: '#FF282D26'
+    nav_text_color: '#FFD6BC86'

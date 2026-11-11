@@ -1,0 +1,66 @@
+# 外觀由 tools/gen_contrast.py 套在 V1 鍵位上。
+name: V2-cassette
+style:
+  color_scheme: cassette_tape
+  background_folder: v2-cassette
+  key_text_size: 21
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 2
+  candidate_corner_radius: 2
+
+preset_color_schemes:
+  cassette_tape:
+    name: 卡帶隨身聽
+    keyboard_background: case.png
+    candidate_background: strip.png
+    back_color: '#FF28221D'
+    root_background: '#FF3A342C'
+    keyboard_back_color: '#FF3A342C'
+    liquid_keyboard_background: '#FF28221D'
+    border_color: '#FF877355'
+    text_color: '#FFFFF1D5'
+    text_back_color: '#FF28221D'
+    candidate_text_color: '#FFFFF1D5'
+    candidate_separator_color: '#FF5F5142'
+    comment_text_color: '#FFD8C2A5'
+    label_color: '#FFD8C2A5'
+    hilited_back_color: '#FF684630'
+    hilited_text_color: '#FFFFF1D5'
+    hilited_candidate_back_color: '#FF684630'
+    hilited_candidate_text_color: '#FFFFF1D5'
+    hilited_candidate_button_color: '#FF684630'
+    hilited_comment_text_color: '#FFFFF1D5'
+    hilited_label_color: '#FFFFF1D5'
+    key_back_color: '#FFD4C8B3'
+    key_text_color: '#FF26201C'
+    key_symbol_color: '#FF40372E'
+    hilited_key_back_color: '#FFBAAC94'
+    hilited_key_text_color: '#FF26201C'
+    hilited_key_symbol_color: '#FF40372E'
+    off_key_back_color: '#FF39353B'
+    off_key_text_color: '#FFF9F0DF'
+    off_key_symbol_color: '#FFEBDFCD'
+    hilited_off_key_back_color: '#FF544B53'
+    hilited_off_key_text_color: '#FFF9F0DF'
+    hilited_off_key_symbol_color: '#FFEBDFCD'
+    on_key_back_color: '#FFE3CFAB'
+    on_key_text_color: '#FF33281D'
+    on_key_symbol_color: '#FF4A3725'
+    hilited_on_key_back_color: '#FFCBB287'
+    hilited_on_key_text_color: '#FF33281D'
+    hilited_on_key_symbol_color: '#FF4A3725'
+    preview_back_color: '#FF28221D'
+    preview_text_color: '#FFFFF1D5'
+    fn_back_color: '#FF39353B'
+    fn_text_color: '#FFF9F0DF'
+    number_text_color: '#FF33281D'
+    number_symbol_color: '#FF4A3725'
+    accent_fill: '#FFB43B20'
+    accent_fill_hl: '#FF93301C'
+    accent_text: '#FFFFF9F3'
+    space_back_color: '#FF39353B'
+    space_down_color: '#FF544B53'
+    space_text_color: '#FFF9F0DF'
+    nav_back_color: '#FF39353B'
+    nav_text_color: '#FFEBDFCD'

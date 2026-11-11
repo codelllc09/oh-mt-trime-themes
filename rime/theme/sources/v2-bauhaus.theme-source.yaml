@@ -1,0 +1,65 @@
+# 外觀由 tools/gen_contrast.py 套在 V1 鍵位上。
+name: V2-bauhaus
+style:
+  color_scheme: bauhaus_primary
+  background_folder: v2-bauhaus
+  key_text_size: 21
+  key_long_text_size: 12
+  symbol_text_size: 9
+  round_corner: 0
+  candidate_corner_radius: 0
+
+preset_color_schemes:
+  bauhaus_primary:
+    name: 包浩斯幾何
+    keyboard_background: case.png
+    candidate_background: strip.png
+    back_color: '#FFF4E9CF'
+    root_background: '#FFF4E9CF'
+    keyboard_back_color: '#FFF4E9CF'
+    liquid_keyboard_background: '#FFF4E9CF'
+    border_color: '#FF191919'
+    text_color: '#FF191919'
+    text_back_color: '#FFF4E9CF'
+    candidate_text_color: '#FF191919'
+    candidate_separator_color: '#FFBDAF91'
+    comment_text_color: '#FF332A20'
+    label_color: '#FF332A20'
+    hilited_back_color: '#FF191919'
+    hilited_candidate_back_color: '#FF191919'
+    hilited_candidate_text_color: '#FFFFF7E2'
+    hilited_candidate_button_color: '#FF191919'
+    hilited_comment_text_color: '#FFFFF7E2'
+    hilited_label_color: '#FFFFF7E2'
+    key_back_color: '#FFF4E9CF'
+    key_text_color: '#FF191919'
+    key_symbol_color: '#FF302B22'
+    hilited_key_back_color: '#FFDDD1B3'
+    hilited_key_text_color: '#FF191919'
+    hilited_key_symbol_color: '#FF302B22'
+    off_key_back_color: '#FF191919'
+    off_key_text_color: '#FFFFF7E2'
+    off_key_symbol_color: '#FFFFF7E2'
+    hilited_off_key_back_color: '#FF3C3931'
+    hilited_off_key_text_color: '#FFFFF7E2'
+    hilited_off_key_symbol_color: '#FFFFF7E2'
+    on_key_back_color: '#FFEFBC32'
+    on_key_text_color: '#FF1C190F'
+    on_key_symbol_color: '#FF312713'
+    hilited_on_key_back_color: '#FFD8A723'
+    hilited_on_key_text_color: '#FF1C190F'
+    hilited_on_key_symbol_color: '#FF312713'
+    preview_back_color: '#FFF4E9CF'
+    preview_text_color: '#FF191919'
+    fn_back_color: '#FF191919'
+    fn_text_color: '#FFFFF7E2'
+    number_text_color: '#FF1C190F'
+    number_symbol_color: '#FF312713'
+    accent_fill: '#FFC63829'
+    accent_fill_hl: '#FFA52F23'
+    accent_text: '#FFFFFAF0'
+    space_back_color: '#FF234489'
+    space_down_color: '#FF1C376F'
+    space_text_color: '#FFFFF7E2'
+    nav_back_color: '#FF191919'
+    nav_text_color: '#FFFFF7E2'

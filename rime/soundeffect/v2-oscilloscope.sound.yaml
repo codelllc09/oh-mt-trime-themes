@@ -1,0 +1,66 @@
+# 樣音取自定案 HTML。退格和切換各用一個短鍵音變體。
+name: V2-oscilloscope
+folder: v2-oscilloscope
+sound:
+- glyph-1.wav
+- glyph-2.wav
+- glyph-3.wav
+- space-1.wav
+- return-1.wav
+keyset:
+- keys:
+  - KEYCODE_ENTER
+  - KEYCODE_NUMPAD_ENTER
+  inOrder: true
+  sounds:
+  - 4
+- keys:
+  - KEYCODE_SPACE
+  inOrder: true
+  sounds:
+  - 3
+- keys:
+  - KEYCODE_DEL
+  - KEYCODE_FORWARD_DEL
+  inOrder: true
+  sounds:
+  - 2
+- keys:
+  - KEYCODE_SHIFT_LEFT
+  - KEYCODE_SHIFT_RIGHT
+  - KEYCODE_SWITCH_CHARSET
+  - KEYCODE_EISU
+  - KEYCODE_LANGUAGE_SWITCH
+  - KEYCODE_TAB
+  - KEYCODE_ESCAPE
+  inOrder: true
+  sounds:
+  - 1
+- min: KEYCODE_A
+  max: KEYCODE_Z
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+- min: KEYCODE_0
+  max: KEYCODE_9
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+- keys:
+  - KEYCODE_COMMA
+  - KEYCODE_PERIOD
+  - KEYCODE_SLASH
+  - KEYCODE_SEMICOLON
+  - KEYCODE_APOSTROPHE
+  - KEYCODE_PLUS
+  - KEYCODE_MINUS
+  - KEYCODE_EQUALS
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2

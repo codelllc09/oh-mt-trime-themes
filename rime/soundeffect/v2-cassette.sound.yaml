@@ -1,0 +1,78 @@
+# 由定稿合成試聽逐鍵截取。
+name: V2-cassette
+folder: v2-cassette
+sound:
+- glyph-1.wav
+- glyph-2.wav
+- glyph-3.wav
+- space.wav
+- glyph-4.wav
+- glyph-5.wav
+- erase.wav
+- return.wav
+keyset:
+- keys:
+  - KEYCODE_ENTER
+  - KEYCODE_NUMPAD_ENTER
+  inOrder: true
+  sounds:
+  - 7
+- keys:
+  - KEYCODE_SPACE
+  inOrder: true
+  sounds:
+  - 3
+- keys:
+  - KEYCODE_DEL
+  - KEYCODE_FORWARD_DEL
+  inOrder: true
+  sounds:
+  - 6
+- keys:
+  - KEYCODE_SHIFT_LEFT
+  - KEYCODE_SHIFT_RIGHT
+  - KEYCODE_EISU
+  - KEYCODE_LANGUAGE_SWITCH
+  - KEYCODE_TAB
+  - KEYCODE_ESCAPE
+  inOrder: true
+  sounds:
+  - 0
+- min: KEYCODE_A
+  max: KEYCODE_Z
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+  - 4
+  - 5
+- min: KEYCODE_0
+  max: KEYCODE_9
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+  - 4
+  - 5
+- keys:
+  - KEYCODE_COMMA
+  - KEYCODE_PERIOD
+  - KEYCODE_SLASH
+  - KEYCODE_SEMICOLON
+  - KEYCODE_APOSTROPHE
+  - KEYCODE_PLUS
+  - KEYCODE_MINUS
+  - KEYCODE_EQUALS
+  - KEYCODE_GRAVE
+  - KEYCODE_LEFT_BRACKET
+  - KEYCODE_RIGHT_BRACKET
+  - KEYCODE_BACKSLASH
+  inOrder: false
+  sounds:
+  - 0
+  - 1
+  - 2
+  - 4
+  - 5

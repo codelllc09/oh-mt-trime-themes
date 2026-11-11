@@ -4,14 +4,14 @@
 # 來歷：2026-11-06 容器功能矩陣實測中，憑記憶點座標連錯四次（rmmir/umip/
 #   tyti/tsye），座標映射腳本化後零失誤——測試輸入必走本工具，勿手拼座標。
 #
-# 座標基準：容器/真機橫屏 1920x1160、Trime 徐碼 36 鍵主題（數字行佈局）。
-#   佈局改動後以 uiautomator/screencap 重校。
+# 舊版座標基準：橫屏 1920x1160、Trime 徐碼 36 鍵主題（數字行佈局）。
+#   V1 座標見 docs/KEYBOARD_MAP.md。
 #
 # 用法：
-#   python3 android/tools/kbmap.py --serial <adb-serial> --type tigu --backspace 6
-#   python3 android/tools/kbmap.py --serial <...> --longpress z 1200   # 長按 z 發 `
-#   python3 android/tools/kbmap.py --serial <...> --tap slash          # 點功能鍵
-#   python3 android/tools/kbmap.py --keys                              # 列全部映射
+#   uv run python tools/kbmap.py --serial <adb-serial> --type tigu --backspace 6
+#   uv run python tools/kbmap.py --serial <...> --longpress z --ms 1200
+#   uv run python tools/kbmap.py --serial <...> --tap slash          # 點功能鍵
+#   uv run python tools/kbmap.py --keys                            # 列全部映射
 #
 # 依賴：adb 在 PATH；設備已 adb connect。
 
@@ -32,7 +32,7 @@ COLS = {
     'zxcvbnm': [381, 573, 765, 958, 1150, 1342, 1534],
     '1234567890': [96, 288, 480, 672, 864, 1056, 1248, 1440, 1632, 1824],
 }
-# 底行功能鍵（徐碼 36 鍵主題；1080x2280@420 實測基準座標）
+# 舊 36 鍵版的底行功能鍵（1920x1160）
 FUNCS = {
     'shift': (144, 985), 'backspace': (1776, 985),
     'mode': (144, 1055), 'symbols': (381, 1055),      # 方案中文 / 数字符號
@@ -40,7 +40,7 @@ FUNCS = {
     'period': (1342, 1055), 'slash': (1534, 1055),
     'return': (1776, 1055),
 }
-# 尺寸檔（TESTING.md）：tap 座標按邏輯分辨率線性換算
+# 尺寸檔（docs/TESTING.md）：tap 座標按邏輯分辨率線性換算
 PROFILES = {
     '1080p': (1080, 2280, 1.0, 1.0),
     '2k': (1440, 3200, 1440/1080, 3200/2280),

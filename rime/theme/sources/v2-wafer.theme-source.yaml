@@ -1,0 +1,61 @@
+# tools/gen_factory.py 將定案外觀套在 V1 鍵位上。
+name: V2-wafer
+style:
+  color_scheme: wafer
+  background_folder: v2-wafer
+  candidate_view_height: 40
+  candidate_corner_radius: 2
+  round_corner: 1
+preset_color_schemes:
+  wafer:
+    name: 晶圓步進機
+    keyboard_background: case.png
+    candidate_background: strip.png
+    back_color: '#FFE5E5F2'
+    text_back_color: '#FFE5E5F2'
+    liquid_keyboard_background: '#FFE5E5F2'
+    root_background: '#FF8993AF'
+    keyboard_back_color: '#FF8993AF'
+    candidate_text_color: '#FF282540'
+    comment_text_color: '#FF282540'
+    label_color: '#FF282540'
+    text_color: '#FF282540'
+    border_color: '#FF282540'
+    hilited_back_color: '#FF5E498A'
+    hilited_candidate_back_color: '#FF5E498A'
+    hilited_candidate_button_color: '#FF5E498A'
+    on_key_back_color: '#FF5E498A'
+    hilited_on_key_back_color: '#FF5E498A'
+    preview_back_color: '#FF5E498A'
+    hilited_candidate_text_color: '#FFFFF5FF'
+    hilited_comment_text_color: '#FFFFF5FF'
+    hilited_label_color: '#FFFFF5FF'
+    on_key_text_color: '#FFFFF5FF'
+    on_key_symbol_color: '#FFFFF5FF'
+    hilited_on_key_text_color: '#FFFFF5FF'
+    hilited_on_key_symbol_color: '#FFFFF5FF'
+    preview_text_color: '#FFFFF5FF'
+    key_back_color: '#FFCED6EF'
+    hilited_key_back_color: '#FFCED6EF'
+    key_text_color: '#FF24213D'
+    hilited_key_text_color: '#FF24213D'
+    key_symbol_color: '#FF3C385A'
+    hilited_key_symbol_color: '#FF3C385A'
+    fn_back_color: '#FFD6DEEC'
+    nav_back_color: '#FFD6DEEC'
+    space_back_color: '#FFD6DEEC'
+    off_key_back_color: '#FFD6DEEC'
+    hilited_off_key_back_color: '#FFD6DEEC'
+    fn_text_color: '#FF24213D'
+    nav_text_color: '#FF24213D'
+    space_text_color: '#FF24213D'
+    off_key_text_color: '#FF24213D'
+    hilited_off_key_text_color: '#FF24213D'
+    fn_symbol_color: '#FF3C385A'
+    nav_symbol_color: '#FF3C385A'
+    off_key_symbol_color: '#FF3C385A'
+    hilited_off_key_symbol_color: '#FF3C385A'
+    accent_fill: '#FF5E498A'
+    accent_fill_hl: '#FF5E498A'
+    accent_text: '#FFFFF5FF'
+    accent_symbol: '#FFEEE7FF'

@@ -2,7 +2,7 @@
 # aesthetics.py —— 皮膚美學量化（SPEC §5 驗收的機械化）
 #
 # 兩個模式：
-#   --theme android/xuma_L.trime.yaml
+#   --theme rime/theme/sources/v1.theme-source.yaml
 #       直接從主題配色算 WCAG 對比度矩陣（改 token 後立即知道達不達標，
 #       不用等部署截圖）。判定：AA=4.5（正文）、大字/輔助=3.0、裝飾=標記值。
 #   --shot <png> [--width 1080 --height 2280]

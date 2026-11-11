@@ -1,0 +1,63 @@
+# 外觀由 tools/gen_materials.py 套在 V1 鍵位上。
+name: V2-stainedglass
+style:
+  color_scheme: stainedglass_amber
+  background_folder: v2-stainedglass
+  key_text_size: 21
+  key_long_text_size: 13
+  symbol_text_size: 9
+  round_corner: 2
+  candidate_corner_radius: 2
+
+preset_color_schemes:
+  stainedglass_amber:
+    name: 彩繪玻璃窗
+    back_color: '#FF263748'
+    root_background: '#FF17222B'
+    candidate_background: strip.png
+    keyboard_back_color: '#FF17222B'
+    keyboard_background: case.png
+    liquid_keyboard_background: '#FF202A33'
+    border_color: '#FF89829E'
+    text_color: '#FFF9EDD7'
+    text_back_color: '#FF263748'
+    candidate_text_color: '#FFF9EDD7'
+    candidate_separator_color: '#FF706C80'
+    comment_text_color: '#FFD6CAD1'
+    label_color: '#FFD6CAD1'
+    hilited_back_color: '#FFE2B779'
+    hilited_candidate_back_color: '#FFE2B779'
+    hilited_candidate_text_color: '#FF2D2119'
+    hilited_comment_text_color: '#FF583F28'
+    hilited_label_color: '#FF583F28'
+    key_back_color: '#FF28555E'
+    key_text_color: '#FFF5EFE1'
+    key_symbol_color: '#FFE0E9DB'
+    hilited_key_back_color: '#FF326571'
+    hilited_key_text_color: '#FFF5EFE1'
+    hilited_key_symbol_color: '#FFE0E9DB'
+    off_key_back_color: '#FF494565'
+    off_key_text_color: '#FFF4E9DE'
+    off_key_symbol_color: '#FFE7DBE2'
+    hilited_off_key_back_color: '#FF5B5678'
+    hilited_off_key_text_color: '#FFF4E9DE'
+    hilited_off_key_symbol_color: '#FFE7DBE2'
+    on_key_back_color: '#FFE2B779'
+    on_key_text_color: '#FF2D2119'
+    on_key_symbol_color: '#FF2D2119'
+    hilited_on_key_back_color: '#FFF0C890'
+    hilited_on_key_text_color: '#FF2D2119'
+    hilited_on_key_symbol_color: '#FF2D2119'
+    preview_back_color: '#FFE2B779'
+    preview_text_color: '#FF2D2119'
+    fn_back_color: '#FF494565'
+    fn_text_color: '#FFF4E9DE'
+    number_text_color: '#FF39230F'
+    number_symbol_color: '#FF563819'
+    accent_fill: '#FF95383D'
+    accent_fill_hl: '#FFAB494C'
+    accent_text: '#FFFFF0DF'
+    space_back_color: '#FF494565'
+    space_text_color: '#FFF4E9DE'
+    nav_back_color: '#FF494565'
+    nav_text_color: '#FFF0D3A3'

@@ -2,7 +2,7 @@
 """量按鍵字形的光學居中偏移，給出該寫進 YAML 的 key_text_offset_x。
 
 用法：
-    python3 android/tools/glyph_offsets.py <截圖> [--kb number_zh]
+    uv run python tools/glyph_offsets.py <截圖> [--kb number_zh]
 
 原理：全形標點（，。！？：；「」（）《》）的墨跡不在字身正中——左括號偏右、
 右括號偏左、句讀偏左。Trime 不做光學居中，只能逐鍵給 key_text_offset_x；
@@ -13,13 +13,12 @@
 """
 import argparse
 import sys
-from pathlib import Path
 
 import yaml
 from PIL import Image
 
-REPO = Path(__file__).resolve().parents[2]
-THEME = REPO / 'android' / 'xuma_L.trime.yaml'
+from check_trime import THEME_SOURCE
+
 DENSITY = 420                 # 容器豎屏 1080×2280@420
 WIDTH_UNIT = 1080 / 100       # width:1 = 10.8px @1080
 KEY_FILL_INSET = 16
@@ -83,7 +82,7 @@ def main():
     ap.add_argument('--y', default='1400-2280')
     args = ap.parse_args()
 
-    theme = yaml.safe_load(THEME.read_text(encoding='utf-8'))
+    theme = yaml.safe_load(THEME_SOURCE.read_text(encoding='utf-8'))
     kb = theme['preset_keyboards'][args.kb]
     rows = rows_of(kb)
     y0, y1 = (int(v) for v in args.y.split('-'))
