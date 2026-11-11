@@ -1,0 +1,32 @@
+Oh My Trime Themes
+
+Original theme assets and documentation
+
+The project's original artwork, backgrounds, key sounds, and documentation
+are licensed under Creative Commons Attribution-NonCommercial 4.0
+International (LICENSES/CC-BY-NC-4.0.txt). The licensor waives the requirement
+in Section 3(a)(1)(A)(i) to credit this project or its creators. The remaining
+terms, including the NonCommercial restriction, apply.
+
+Standalone software
+
+Original standalone software is licensed under the PolyForm Noncommercial
+License 1.0.0 (LICENSES/PolyForm-Noncommercial-1.0.0.txt).
+
+Trime and corresponding source
+
+The vendored Trime v3.3.13 configuration, the derived *.trime.yaml files,
+and the Trime patch in tools/patches/ are licensed under GPL-3.0-or-later
+(LICENSES/GPL-3.0.txt). The derived themes expand Trime's default
+configuration and apply this project's keyboard and appearance overrides
+(2026-11-11). Their corresponding source is available under GPL-3.0-or-later
+in rime/theme/sources/, rime/theme/vendor/, tools/check_trime.py,
+tools/render_keyboard.py, and tools/theme_build/.
+
+Third-party assets
+
+Fonts retain the licenses listed in rime/fonts/README.md. The Material
+Design globe and clipboard icons retain Apache-2.0 (rime/fonts/Apache-2.0.txt).
+The typewriter recording is from nvmbky under CC0, as noted in
+rime/soundeffect/v2-typewriter.sound.yaml. These and other third-party
+materials retain their respective licenses and notices.
