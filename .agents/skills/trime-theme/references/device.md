@@ -26,6 +26,8 @@ TRIME_NO_DEPLOY=1 uv run --with pyyaml ./deploy.sh push --theme v1
 
 ### 自動點擊
 
+截圖與驗證預設讀取執行中的 Waydroid 位址。指定 `TRIME_ADB_SERIAL` 時使用指定裝置。
+
 `SER` 為 `adb devices` 顯示的序號。`--section 3` 檢查長按，`--quick` 跳過長按全表、功能鍵和剪貼板，`--no-clip` 只跳過剪貼板。
 
 ```sh

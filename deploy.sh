@@ -12,8 +12,8 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 CHECK="$ROOT/tools/check_trime.py"
 PHONE_DIR="${TRIME_PHONE_DIR:-/storage/emulated/0/rime}"
 # 多目標支持（2026-11-05）：USB 真機默認；設 TRIME_ADB_SERIAL 指向 Waydroid 容器
-# （如 localhost:5555）或網絡 adb 設備，例：
-#   TRIME_ADB_SERIAL=localhost:5555 ./deploy.sh push
+# 或網絡 adb 設備，序號見 adb devices。
+#   TRIME_ADB_SERIAL="$SER" ./deploy.sh push
 SER="${TRIME_ADB_SERIAL:-}"
 adbx() { if [ -n "$SER" ]; then adb -s "$SER" "$@"; else adb "$@"; fi; }
 

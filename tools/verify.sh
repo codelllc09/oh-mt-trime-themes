@@ -19,7 +19,8 @@
 #     ④ 刪掉與第 1 段重複的導航、以及第 5 段多餘的 reset_ime＋focus。
 #   覆蓋不變：批次通過時按逐鍵計數，PASS 總數與舊版一致。
 set -u
-S="${TRIME_ADB_SERIAL:-localhost:5555}"
+source "$(dirname "$0")/adb_serial.sh"
+S=$(trime_adb_serial) || exit 1
 ADB=(adb -s "$S")
 ONLY=""; CLIP=1; QUICK=0
 while [ $# -gt 0 ]; do

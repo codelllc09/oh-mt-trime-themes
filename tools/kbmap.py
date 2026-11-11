@@ -77,7 +77,7 @@ def longpress(serial, x, y, ms=1200, delay=1.2):
 
 def main():
     ap = argparse.ArgumentParser(description='Trime 鍵盤座標映射輸入工具')
-    ap.add_argument('--serial', default='', help='adb serial（如 localhost:5555）')
+    ap.add_argument('--serial', default='', help='adb serial（見 adb devices）')
     ap.add_argument('--type', metavar='WORD', help='逐鍵點擊字母/數字串')
     ap.add_argument('--tap', metavar='FUNC', help='點功能鍵：' + '/'.join(FUNCS))
     ap.add_argument('--longpress', metavar='CH', help='長按字母鍵（如 z 發反查引導）')

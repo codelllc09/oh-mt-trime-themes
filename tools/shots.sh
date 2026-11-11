@@ -1,7 +1,7 @@
 #!/bin/bash
 # shots.sh —— 一鍵刷新 tmp/overview：當前版本「全套界面截圖」（整批覆蓋）
 #
-# 用法：  TRIME_ADB_SERIAL=localhost:5555 ./tools/shots.sh
+# 用法：TRIME_ADB_SERIAL="$SER" ./tools/shots.sh
 # 產物：  tmp/overview/NN-<界面>-<light|dark>.png
 #
 # 前置：容器 1080x2280@420、同文為當前輸入法、app 內已部署最新主題。
@@ -17,8 +17,9 @@
 # 每一步都由**已知狀態**出發（起點用重啓 IME 歸位），拍完再用 page_kind.py
 # 反查一次頁別，檔名與畫面不符就報錯（歷史上錯過三次）。
 set -e
-SER="${TRIME_ADB_SERIAL:-localhost:5555}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT/tools/adb_serial.sh"
+SER=$(trime_adb_serial) || exit 1
 OUT="$ROOT/tmp/overview"
 ADB=(adb -s "$SER")
 
