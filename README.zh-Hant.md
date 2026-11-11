@@ -4,7 +4,9 @@
 
 [同文（Trime）](https://github.com/osfans/trime) 的通用 26 鍵主題集，包含配色、字體與鍵音。以同文 3.3.13 驗證。
 
-[觀看實機演示（含鍵音，26 秒）](docs/media/theme-demo.mp4)
+實機演示（含鍵音，26 秒）
+
+https://github.com/user-attachments/assets/17a5b1f3-2de0-466b-840e-7b6251993aa3
 
 ## 主題名單
 
@@ -19,7 +21,7 @@
 
 ## 安裝
 
-1. 在本倉的 **Releases** 頁面展開 **Assets**，按需下載一個 ZIP。
+1. 在本倉的 [Releases](https://github.com/codelllc09/oh-mt-trime-themes/releases) 頁面展開 **Assets**，按需下載一個 ZIP。
    - **完整包** `trime-themes.zip` 包含全部主題。
    - **單一主題包** 先從[主題名單](#主題名單)看預覽，再下載同名安裝包。例如 V2-typewriter 對應 `trime-v2-typewriter.zip`。V1 的雲白和墨空共用 `trime-v1.zip`。
 2. 在同文設定確認「使用者資料夾」的位置，將 ZIP **內容**解壓到該目錄。`*.trime.yaml` 應直接位於使用者資料夾內，字體、背景和鍵音保留包內的目錄結構。

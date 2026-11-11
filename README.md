@@ -4,7 +4,9 @@
 
 [同文（Trime）](https://github.com/osfans/trime)的通用 26 键主题集，包含配色、字体和按键音效。已在同文 3.3.13 上验证。
 
-[观看实机演示（含按键音效，26 秒）](docs/media/theme-demo.mp4)
+实机演示（含按键音效，26 秒）
+
+https://github.com/user-attachments/assets/17a5b1f3-2de0-466b-840e-7b6251993aa3
 
 ## 主题名单
 
@@ -19,7 +21,7 @@
 
 ## 安装
 
-1. 在本仓库的 **Releases** 页面展开 **Assets**，按需下载一个 ZIP。
+1. 在本仓库的 [Releases](https://github.com/codelllc09/oh-mt-trime-themes/releases) 页面展开 **Assets**，按需下载一个 ZIP。
    - **完整包** `trime-themes.zip` 包含全部主题。
    - **单主题包** 先在[主题名单](#主题名单)查看预览，再下载对应的安装包。例如，V2-typewriter 对应 `trime-v2-typewriter.zip`。V1 的云白和墨空共用 `trime-v1.zip`。
 2. 在同文设置中确认用户数据目录的位置，将 ZIP **内容**解压到该目录。`*.trime.yaml` 应直接放在用户数据目录下，字体、背景和音效保留压缩包内的目录结构。
