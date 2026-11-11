@@ -708,11 +708,13 @@ def main():
                         help='源檔所引用的 Trime 預設')
     parser.add_argument('--assets', type=Path, default=ROOT / 'rime', help='fonts/、backgrounds/ 所在目錄')
     parser.add_argument('--font', type=Path, help='圖中文字體，默認用 fontconfig 尋找 Noto Sans CJK')
-    parser.add_argument('--out', type=Path, default=ROOT / 'tmp' / 'theme-guide', help='輸出目錄')
+    parser.add_argument('--out', type=Path, default=ROOT / 'tmp' / 'theme-guide', help='配色 PNG 輸出目錄')
+    parser.add_argument('--html-out', type=Path, help='V1 指南路徑，預設為輸出目錄的 index.html')
     args = parser.parse_args()
 
     source = read_yaml(args.theme)
     theme = resolve_theme(source, read_yaml(args.base))
+    theme_id = args.theme.stem.removesuffix('.theme-source').removesuffix('.trime')
     theme_name = str(theme.get('name', args.theme.stem))
     pages = guide_pages(read_yaml(args.pages_from) if args.pages_from else source, theme)
     schemes = [sid for sid, data in source.get('preset_color_schemes', {}).items() if isinstance(data, dict)]
@@ -722,6 +724,8 @@ def main():
         parser.error('配色 ID 只能用字母、數字、底線及連字號')
     fonts = Typography(theme['style'], args.assets, args.font)
     include_html = theme_name == 'V1'
+    if args.html_out is not None and not include_html:
+        parser.error('只有 V1 可以指定 --html-out')
     sections = {}
     if include_html:
         models = {page: build(theme, page, {}, schemes[0]) for page in pages}
@@ -748,7 +752,11 @@ def main():
         if has_enter:
             wide_states = draw_states(theme, scheme, pages, fonts, args.assets, palette,
                                       width=2 * SCREEN_W + MARGIN)
-        out = args.out / f'{sid}.png'
+        palette_id = sid
+        if theme_id == 'v1' and sid.removeprefix('xuma_') not in schemes:
+            palette_id = sid.removeprefix('xuma_')
+        filename = f'{theme_id}-{palette_id}.png' if len(schemes) > 1 else f'{theme_id}.png'
+        out = args.out / filename
         sheet = make_sheet(panels, wide_states, theme_name, name, fonts, palette,
                            include_html=include_html)
         sheet.save(out, optimize=True)
@@ -757,7 +765,8 @@ def main():
             states = draw_states(theme, scheme, pages, fonts, args.assets, palette) if has_enter else None
             rendered.append((name, panels, states))
     if include_html:
-        out = args.out / 'index.html'
+        out = args.html_out or args.out / 'index.html'
+        out.parent.mkdir(parents=True, exist_ok=True)
         write_html(out, theme_name, rendered, sections, theme['preset_keyboards'])
         print(f'→ {out}（{len(pages)} 頁、{sum(map(len, sections.values()))} 項註記）')
 

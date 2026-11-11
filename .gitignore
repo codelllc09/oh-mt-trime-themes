@@ -1,9 +1,7 @@
 # 本機產物
 tmp/
 /dist/
-/design/*
-!design/guides/
-!design/README.md
+/design/
 .venv/
 __pycache__/
 *.pyc

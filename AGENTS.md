@@ -21,7 +21,7 @@
 ## 視覺與鍵位改動
 
 - `docs/KEYBOARD_MAP.md` 是現行鍵位、頁面和長按規則的唯一來源；修改後只同步受影響部分。
-- 每次修改輸入方案或主題後，按[生成步驟](design/README.md#由配置生成的鍵位指南)重生成受影響的配色 PNG。互動鍵位指南只維護 `design/guides/v1/index.html`。
+- 每次修改輸入方案或主題後，按[生成步驟](docs/DESIGN.md#由配置生成的鍵位指南)更新 `rime/theme/overview/` 受影響的配色 PNG。共用鍵位變動時更新 `keyboard-guide.html`。
 - 版面、鍵位或配色改動先提供現狀／建議**並排**的單檔 HTML，再按用戶選定方案修改主題。
 - 示意圖必須呈現短按和長按兩層；優先由 `tools/render_keyboard.py` 讀主題生成，避免手寫稿與配置分叉。
 - 不憑字形判定字符是否正確；交互驗證讀 Unicode 碼位，視覺問題才看截圖。

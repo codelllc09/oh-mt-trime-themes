@@ -219,9 +219,7 @@ Trime 的 `horizontal_gap` 只能整頁統一；上述不等間距由無點擊�
 
 各款 V2 主題均沿用本表的短按、長按、滑動與導航規則。
 V2-pixelblock 的水平鍵縫設為 0，組與組之間以色片的階梯邊分隔。
-V2-labelmaker 的地球鍵鍵帽顯示「中／英」。安裝方式見 [V2-typewriter](../README.md#v2-typewriter)、
-[V2-calculator](../README.md#v2-calculator)、[V2-labelmaker](../README.md#v2-labelmaker)、
-[V2-halftone](../README.md#v2-halftone) 及 [V2-contour](../README.md#v2-contour)。
+V2-labelmaker 的地球鍵鍵帽顯示「中／英」。安裝方式見 [README](../README.md#安裝)。
 
 | 項 | 值 | 說明 |
 |---|---|---|

@@ -113,6 +113,28 @@ Tab、撤銷／恢復及剪貼板操作需要在真機多行文本框中單獨�
 | 中文引號看似不對 | 讀 Unicode 碼位，再檢查字體鏈 |
 | 崩潰頁信息被截斷 | `adb logcat -d -s AndroidRuntime:E` |
 
+## 離線語音（可選）
+
+Trime 繼續作為預設鍵盤，使用原有方案與主題。「Fcitx5 SenseVoice」是可單獨安裝的
+Android 語音輸入法（`com.fcitx5sensevoice`），無須小企鵝主程式或其 Rime 插件。
+語音 APK 與模型需另行準備。
+
+| 元件 | 實測版本與來源 |
+|---|---|
+| Trime | 3.3.8 起支援 `VOICE_ASSIST`，本倉以 3.3.13 驗證。 [Trime 發行頁](https://github.com/osfans/trime/releases/tag/v3.3.13) |
+| 獨立語音輸入法 | Fcitx5 SenseVoice 0.1.7，原始碼提交 `6119808`，Android 9 以上。 [原始碼與建置說明](https://github.com/stormrise/fcitx5-sensevoice) |
+| 語音 APK 內含 | sherpa-onnx 1.13.8、Silero VAD、SenseVoice Small INT8（2024-07-17）。 [sherpa-onnx 發行頁](https://github.com/k2-fsa/sherpa-onnx/releases/tag/v1.13.8) · [模型檔](https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/tree/main) |
+
+上游該提交預設使用 2025-09-09 粵語微調版。要重現本倉實測的版本，請在建置語音 APK 時
+改用表中的 2024-07-17 模型，並同步 `ModelManager.kt` 內的模型 SHA-256。
+ARM64 手機使用 `arm64-v8a`，本倉的 Waydroid 測試版另打包了 `x86_64`。
+
+安裝語音 APK 後，在 Android 的「管理螢幕鍵盤」啓用它並授予麥克風權限，再到
+Trime「一般」→「首選語音輸入」選 **Fcitx5 SenseVoice**。依
+[主鍵盤長按規則](KEYBOARD_MAP.md#長按表) 開啓語音面板，點麥克風開始錄音。
+辨識在手機本機完成，文字直接送回原輸入框，點面板上的鍵盤圖示即可切回 Trime。
+Sayboard 可保留作備用。
+
 ## Waydroid 一次性環境
 
 ```sh

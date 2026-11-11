@@ -16,7 +16,7 @@ description: 為 Oh My Trime Themes 設計、製作或更新 Trime 主題及鍵�
 
 - 新外觀沿用 V1 鍵位。顯示名用 `V2-xxx`，配置 ID 用 `v2-xxx`。在 `rime/theme/sources/` 維護 `*.theme-source.yaml`，生成的 `*.trime.yaml` 放在 `rime/theme/`。優先重用 [V2 生成函式](../../../tools/gen_calculator.py) 的 `inherit_skin`、`skin_keys` 和 `write_theme_assets`。
 - 音效沿用定案樣本，按鍵類別寫入 `rime/soundeffect/<id>.sound.yaml`，WAV 放在同名子目錄。獨立 ZIP 以 `soundeffect/` 為根，包含描述檔及其引用的 WAV。取用實錄時保留來源與授權。
-- 在 [部署清單](../../../tools/check_trime.py) 納入主題及其資產。用獨立主題清單核對引用、鍵位與音效包，並依 [指南生成步驟](../../../design/README.md#由配置生成的鍵位指南) 更新受影響的配色 PNG。共用鍵位變動時更新 V1 互動指南。交付主題 YAML、配色圖與配套音效包。
+- 在 [部署清單](../../../tools/check_trime.py) 納入主題及其資產。用獨立主題清單核對引用、鍵位與音效包，並依 [指南生成步驟](../../../docs/DESIGN.md#由配置生成的鍵位指南) 更新受影響的配色 PNG。共用鍵位變動時更新 V1 互動指南。交付主題 YAML、配色圖與配套音效包。
 
 ## Waydroid 驗收
 
