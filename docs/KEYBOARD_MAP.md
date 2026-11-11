@@ -211,6 +211,7 @@ V1 的拉丁鍵面用 Roboto 子集，中文引號用 Noto Sans CJK SC Regular �
 各款 V2 主題均沿用本表的短按、長按、滑動與導航規則。
 V2-pixelblock 的水平鍵縫設為 0，組與組之間以色片的階梯邊分隔。
 V2-labelmaker 的地球鍵鍵帽顯示「中／英」。安裝方式見 [README](../README.md#安装)。
+重建 V1、V2 的命令見[主題生成指南](../.agents/skills/trime-theme/references/build.md#重建主題)。
 
 | 項 | 值 | 說明 |
 |---|---|---|

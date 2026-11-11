@@ -14,11 +14,13 @@ uv run --with pyyaml python tools/render_keyboard.py number --scheme xuma_night 
 
 ## 重建主題
 
+常規重建用 `gen-theme`，預設生成 V1。**共用入口無法直接處理時，新增專用腳本。** 有適用的共用函式就重用。
+
 ```sh
 uv run --with pyyaml python tools/check_trime.py gen-theme
 ```
 
-V2 沿用 V1 鍵位。源檔放在 `rime/theme/sources/`，顯示名用 `V2-xxx`，主題 ID 用 `v2-xxx`。在 [`theme_build`](../../../../tools/theme_build/__init__.py) 登記繪圖函式。
+V2 沿用 V1 鍵位。源檔放在 `rime/theme/sources/`，顯示名用 `V2-xxx`，主題 ID 用 `v2-xxx`。使用共用入口的繪圖函式在 [`theme_build`](../../../../tools/theme_build/__init__.py) 登記。
 
 ```sh
 uv run --with pyyaml --with pillow python tools/check_trime.py gen-theme --theme v2-typewriter
